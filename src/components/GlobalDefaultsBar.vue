@@ -1,87 +1,89 @@
 <template>
-  <div
-    class="w-full bg-base-100/95 backdrop-blur-md border-b border-base-200 shadow-xs"
-  >
-    <!-- Header Summary Bar -->
+  <div class="flex flex-wrap items-center justify-center gap-2 min-w-0">
+    <!-- 1. Global Metadata Language Selector -->
     <div
-      class="max-w-[1920px] mx-auto px-3 lg:px-5 py-2 bg-base-200/40 flex flex-wrap items-center justify-between gap-2.5"
+      class="flex flex-wrap items-center gap-1.5 px-2 py-1 rounded-xl bg-base-200/60 border border-base-300/70"
     >
-      <!-- 1. Global Metadata Language Selector -->
-      <div class="flex flex-wrap items-center gap-2">
-        <span
-          class="text-xs font-bold uppercase tracking-wider opacity-70 flex items-center gap-1.5"
+      <span
+        class="text-[11px] font-bold uppercase tracking-wider opacity-75 flex items-center gap-1"
+        :title="
+          currentLocale === 'de'
+            ? 'Standard-Metadatensprache (xml:lang) für neue Einträge'
+            : 'Default Metadata Language (xml:lang) for new entries'
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-3.5 text-primary shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-4 text-primary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-            />
-          </svg>
-          {{
-            currentLocale === "de"
-              ? "Metadaten-Sprache (xml:lang):"
-              : "Metadata Language (xml:lang):"
-          }}
-        </span>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+          />
+        </svg>
+        <span class="hidden 2xl:inline">{{
+          currentLocale === "de" ? "Metadaten-Sprache:" : "Metadata Language:"
+        }}</span>
+        <span class="2xl:hidden">xml:lang</span>
+      </span>
 
-        <div
-          class="flex items-center border border-base-300 rounded-lg overflow-hidden bg-base-200/50"
-        >
-          <button
-            v-for="lang in availableLanguages"
-            :key="lang.code"
-            type="button"
-            class="btn btn-xs border-0 rounded-none px-1.5 min-w-0"
-            :class="
-              defaultMetadataLanguage === lang.code
-                ? 'btn-primary'
-                : 'btn-ghost opacity-60 hover:opacity-100'
-            "
-            @click="setLanguage(lang.code)"
-            :title="lang.name"
-          >
-            <FlagIcon :code="lang.code" size="md" />
-          </button>
-        </div>
-
+      <div
+        class="flex items-center border border-base-300 rounded-lg overflow-hidden bg-base-100"
+      >
         <button
+          v-for="lang in availableLanguages"
+          :key="lang.code"
           type="button"
-          class="btn btn-xs btn-outline btn-primary gap-1"
-          @click="emitApplyLanguage"
-          :title="
-            currentLocale === 'de'
-              ? 'Aktualisiert die Sprache in allen Feldern und Datensätzen'
-              : 'Applies this language to all fields and records'
+          class="btn btn-xs border-0 rounded-none px-1.5 min-w-0"
+          :class="
+            defaultMetadataLanguage === lang.code
+              ? 'btn-primary'
+              : 'btn-ghost opacity-60 hover:opacity-100'
           "
+          @click="setLanguage(lang.code)"
+          :title="lang.name"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-3.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          {{ currentLocale === "de" ? "Auf alle anwenden" : "Apply to all" }}
+          <FlagIcon :code="lang.code" size="md" />
         </button>
       </div>
 
-      <!-- 2. Pools, Settings & Global Rights -->
-      <div class="flex items-center gap-2 flex-wrap">
+      <button
+        type="button"
+        class="btn btn-xs btn-outline btn-primary gap-1"
+        @click="emitApplyLanguage"
+        :title="
+          currentLocale === 'de'
+            ? 'Aktualisiert die Sprache in allen Feldern und Datensätzen'
+            : 'Applies this language to all fields and records'
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+          />
+        </svg>
+        <span class="hidden xl:inline">{{
+          currentLocale === "de" ? "Auf alle" : "Apply to all"
+        }}</span>
+      </button>
+    </div>
+
+    <!-- 2. Pools, Settings & Global Rights -->
+    <div class="flex items-center gap-1.5 flex-wrap">
         <!-- Person Pool -->
         <button
           type="button"
@@ -202,57 +204,59 @@
             {{ getLicenceShortCode(globalRights.licence) || "CC BY 4.0" }}
           </span>
         </button>
-      </div>
     </div>
 
-    <!-- Person Pool Modal -->
-    <PersonPickerModal
-      :isOpen="isPersonModalOpen"
-      mode="manage"
-      @close="isPersonModalOpen = false"
-    />
+    <!-- Modals teleported to body so header backdrop-filter/sticky stacking context never clips them -->
+    <Teleport to="body">
+      <!-- Person Pool Modal -->
+      <PersonPickerModal
+        :isOpen="isPersonModalOpen"
+        mode="manage"
+        @close="isPersonModalOpen = false"
+      />
 
-    <!-- Organization Pool Modal -->
-    <OrganizationPickerModal
-      :isOpen="isOrgModalOpen"
-      mode="manage"
-      :currentLocale="currentLocale"
-      @close="isOrgModalOpen = false"
-    />
+      <!-- Organization Pool Modal -->
+      <OrganizationPickerModal
+        :isOpen="isOrgModalOpen"
+        mode="manage"
+        :currentLocale="currentLocale"
+        @close="isOrgModalOpen = false"
+      />
 
-    <!-- Software Pool Modal -->
-    <SoftwarePickerModal
-      :isOpen="isSoftwareModalOpen"
-      mode="manage"
-      :locale="currentLocale"
-      @close="isSoftwareModalOpen = false"
-    />
+      <!-- Software Pool Modal -->
+      <SoftwarePickerModal
+        :isOpen="isSoftwareModalOpen"
+        mode="manage"
+        :locale="currentLocale"
+        @close="isSoftwareModalOpen = false"
+      />
 
-    <!-- Equipment Pool Modal -->
-    <EquipmentPickerModal
-      :isOpen="isEquipmentModalOpen"
-      mode="manage"
-      :locale="currentLocale"
-      @close="isEquipmentModalOpen = false"
-    />
+      <!-- Equipment Pool Modal -->
+      <EquipmentPickerModal
+        :isOpen="isEquipmentModalOpen"
+        mode="manage"
+        :locale="currentLocale"
+        @close="isEquipmentModalOpen = false"
+      />
 
-    <!-- API Settings Modal -->
-    <ApiSettingsModal
-      :isOpen="isApiSettingsOpen"
-      :currentLocale="currentLocale"
-      @close="isApiSettingsOpen = false"
-    />
+      <!-- API Settings Modal -->
+      <ApiSettingsModal
+        :isOpen="isApiSettingsOpen"
+        :currentLocale="currentLocale"
+        @close="isApiSettingsOpen = false"
+      />
 
-    <!-- Rights & Licenses Modal -->
-    <RightsSettingsModal
-      :isOpen="isRightsModalOpen"
-      :locale="currentLocale"
-      :collectionForm="collectionForm"
-      :heritageItems="heritageItems"
-      :digitalItems="digitalItems"
-      @close="isRightsModalOpen = false"
-      @apply-rights="onApplyRightsFromModal"
-    />
+      <!-- Rights & Licenses Modal -->
+      <RightsSettingsModal
+        :isOpen="isRightsModalOpen"
+        :locale="currentLocale"
+        :collectionForm="collectionForm"
+        :heritageItems="heritageItems"
+        :digitalItems="digitalItems"
+        @close="isRightsModalOpen = false"
+        @apply-rights="onApplyRightsFromModal"
+      />
+    </Teleport>
   </div>
 </template>
 

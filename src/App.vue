@@ -50,10 +50,10 @@
       </div>
     </div>
 
-    <!-- Modern Glassmorphic Top Header + Docked Global Controls -->
+    <!-- Modern Glassmorphic Top Header (Brand + Global Pools/Lang + Controls on 1 unified row) -->
     <div class="sticky top-0 z-50 w-full">
       <header
-        class="glass-header w-full px-4 lg:px-8 py-3 flex items-center justify-between transition-all"
+        class="glass-header w-full px-3 lg:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 transition-all"
       >
       <!-- Brand & Logo (Authentic 2-Color Attic Red-Figure Vase Hermes + Chiseled Greek SVG Wordmark "ΗΕΡΜΗΣ") + App Title -->
       <div class="flex items-center gap-3.5 min-w-0">
@@ -93,28 +93,37 @@
         <div class="hidden sm:flex flex-col min-w-0">
           <div class="flex items-center gap-2">
             <h1
-              class="font-display font-extrabold text-lg lg:text-xl tracking-tight text-base-content leading-tight truncate"
+              class="font-display font-extrabold text-base lg:text-lg tracking-tight text-base-content leading-tight truncate"
             >
               HERMES
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.6</span
+              >v0.1.7 · 2026-11-14</span
             >
           </div>
-          <p class="text-[11px] lg:text-xs text-base-content/65 truncate">
-            {{
-              currentLocale === "de"
-                ? "CARARE 2.0.6 Metadaten-Editor für 3D-Kulturgut"
-                : "CARARE 2.0.6 Metadata Editor for 3D Cultural Heritage"
-            }}
+          <p class="text-[11px] text-base-content/70 font-medium truncate">
+            Heritage Metadata Entry System
           </p>
         </div>
       </div>
 
+      <!-- Center: Global Metadata Language, Pools & Rights (same row as Logo & Controls) -->
+      <div class="flex-1 flex items-center justify-center min-w-0 order-3 xl:order-2 w-full xl:w-auto">
+        <GlobalDefaultsBar
+          :current-locale="currentLocale"
+          :collection-form="getChildComp(collectionRef)?.form"
+          :heritage-items="getChildComp(heritageRef)?.items || []"
+          :digital-items="getChildComp(digitalRef)?.items || []"
+          @apply-rights="applyGlobalRightsToAll"
+          @apply-language="applyGlobalLanguageToAll"
+          @apply-collection="applyGlobalCollectionToForm"
+        />
+      </div>
+
       <!-- Right: Controls (Manual, XML Preview, Locale Switcher, Theme Switcher) -->
 
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2.5 shrink-0 order-2 xl:order-3">
         <!-- Handbook / Manual Link Button -->
 
         <button
@@ -239,16 +248,6 @@
         </label>
       </div>
     </header>
-
-      <GlobalDefaultsBar
-        :current-locale="currentLocale"
-        :collection-form="getChildComp(collectionRef)?.form"
-        :heritage-items="getChildComp(heritageRef)?.items || []"
-        :digital-items="getChildComp(digitalRef)?.items || []"
-        @apply-rights="applyGlobalRightsToAll"
-        @apply-language="applyGlobalLanguageToAll"
-        @apply-collection="applyGlobalCollectionToForm"
-      />
     </div>
 
     <!-- Main Content Layout -->
@@ -259,7 +258,7 @@
       <!-- Left Sidebar Container -->
 
       <aside
-        class="sticky top-36 left-0 w-60 xl:w-64 shrink-0 flex flex-col gap-4 min-w-0"
+        class="sticky top-24 left-0 w-60 xl:w-64 shrink-0 flex flex-col gap-4 min-w-0"
       >
         <!-- Navigation Card -->
 
@@ -2519,32 +2518,32 @@ import schemaDict from "./assets/schema_dictionary.json";
 const steps = [
   {
     id: "collectionInformation",
-    en: "Collection Information",
-    de: "Sammlungs-Identifikation",
+    en: "Collection",
+    de: "Sammlung",
   },
 
   {
     id: "heritageAssetIdentification",
-    en: "Heritage Asset Identification",
-    de: "Kulturgut-Erfassung",
+    en: "Heritage Asset",
+    de: "Kulturgut",
   },
 
   {
     id: "digitalResource",
-    en: "Digital Resources & 3D Assets",
-    de: "Digitale Ressourcen & 3D-Modelle",
+    en: "Digital Resource",
+    de: "Digitalisat",
   },
 
   {
     id: "activity",
-    en: "Activities & Authenticity (DAP)",
-    de: "Aktivitäten & Authentizität (DAP)",
+    en: "Activities",
+    de: "Aktivitäten",
   },
 
   {
     id: "files",
-    en: "Archival Payload & Checksums (BagIt)",
-    de: "Archivierungs-Payload & Prüfsummen (BagIt)",
+    en: "Archival Package",
+    de: "Archivpaket",
   },
 ];
 

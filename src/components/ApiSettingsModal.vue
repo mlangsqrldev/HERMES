@@ -1,5 +1,9 @@
 <template>
-  <dialog class="modal" :class="{ 'modal-open': isOpen }">
+  <Teleport to="body">
+    <dialog
+      v-if="isOpen"
+      class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
+    >
     <div
       class="modal-box max-w-xl p-0 overflow-hidden flex flex-col bg-base-100 shadow-2xl border border-base-300"
     >
@@ -290,11 +294,12 @@
         </div>
       </div>
     </div>
-    <div
-      class="modal-backdrop bg-black/50 backdrop-blur-sm"
-      @click="$emit('close')"
-    ></div>
-  </dialog>
+      <div
+        class="modal-backdrop bg-black/50 backdrop-blur-sm"
+        @click="$emit('close')"
+      ></div>
+    </dialog>
+  </Teleport>
 </template>
 
 <script setup>

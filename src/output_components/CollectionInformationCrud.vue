@@ -87,9 +87,11 @@
                         : "Active Project Collection")
                     }}
                   </h4>
-                  <span class="badge badge-primary badge-xs font-semibold"
-                    >1 Sammlung pro Projekt</span
-                  >
+                  <span class="badge badge-primary badge-xs font-semibold">{{
+                    currentLocale === "de"
+                      ? "1 Sammlung pro Projekt"
+                      : "1 Collection per Project"
+                  }}</span>
                 </div>
                 <p class="text-xs text-base-content/60">
                   {{
