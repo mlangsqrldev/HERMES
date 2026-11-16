@@ -120,3 +120,15 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 - **Organisations- & Personen-Pool beim Template-Export/-Import (`src/App.vue`):**
   - Template-JSON-Exporte sichern nun auch `organizations` und `persons`.
   - Beim Template-Import (`applyImportedTemplatesText`) werden sowohl explizite `organizations`/`persons`-Listen als auch in den Template-Daten enthaltene Quellen, Kontakte, Aufbewahrungsorte und Akteure automatisch über `addOrUpdateOrganization` und `addOrUpdatePerson` in die zentralen Pools übernommen.
+
+---
+
+## 9. Nachtrag `v0.1.17` (16.11.2026) – BagIt-Export-Fix, Drawer-Teleport & letzte QA-Korrekturen
+
+- **BagIt-Archivpaket-Export repariert (`src/utils/markdownReportGenerator.js`):**
+  - `extractCleanText` war nur lokal innerhalb von `generatePdfReport` definiert, wurde aber auch in `generateMarkdownReport` aufgerufen (`ReferenceError: extractCleanText is not defined`). Die Hilfsfunktion liegt nun auf Modulebene, sodass `BagIt-Archivpaket (.zip)` fehlerfrei erzeugt wird.
+- **Abmessungen-Drawer barrierefrei via `<Teleport to="body">` (`src/output_components/HeritageAssetIdentificationCrud.vue`):**
+  - Der Slide-over-Drawer (*Abmessungen hinzufügen* etc.) wird nun über `<Teleport to="body">` mit `v-if="isDrawerOpen"` und `role="dialog" aria-modal="true"` gerendert, sodass alle Felder direkt im Accessibility-Tree und per Tastatur (`Tab`) erreichbar sind.
+- **Feinschliff aus dem QA-Lauf:**
+  - `CollectionInformationCrud.vue`: `Sammlungs-Identifikator` auf `Sammlungs-ID` vereinheitlicht.
+  - `DigitalResourceCrud.vue`: Animation-Hinweis im `Ressourcentyp`-Tooltip (`type`) auch im Template-Fallback ergänzt.

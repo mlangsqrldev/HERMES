@@ -1,6 +1,41 @@
 import { jsPDF } from "jspdf";
 import { resolveTermUri, resolveTermList } from "./termResolver.js";
 
+// Rock-solid helper to safely extract clean string from strings, arrays, or multilingual CARARE objects
+function extractCleanText(val, fallback = "—") {
+  if (val === null || val === undefined || val === "") return fallback;
+  if (typeof val === "string") return val.trim() || fallback;
+  if (typeof val === "number") return String(val);
+  if (Array.isArray(val)) {
+    if (val.length === 0) return fallback;
+    const pref =
+      val.find(
+        (v) =>
+          v &&
+          (v["title#preferred"] ||
+            v["name#preferred"] ||
+            v.preferred === true ||
+            v.preferred === "true"),
+      ) || val[0];
+    return extractCleanText(pref, fallback);
+  }
+  if (typeof val === "object") {
+    const extracted =
+      val._value ||
+      val["#text"] ||
+      val.label ||
+      val.prefLabel ||
+      val.name ||
+      val.title ||
+      val.value;
+    if (extracted !== undefined && extracted !== null && extracted !== "") {
+      return extractCleanText(extracted, fallback);
+    }
+    return fallback;
+  }
+  return String(val);
+}
+
 /**
  * Helper to extract clean entity ID
  */
@@ -844,41 +879,6 @@ export function generatePdfReport(allData = {}, locale = "de") {
   const linkHotspots = [];
   // Entity Starting Page Registry: id -> pageNumber
   const entityPageMap = {};
-
-  // Rock-solid helper to safely extract clean string from strings, arrays, or multilingual CARARE objects
-  const extractCleanText = (val, fallback = "—") => {
-    if (val === null || val === undefined || val === "") return fallback;
-    if (typeof val === "string") return val.trim() || fallback;
-    if (typeof val === "number") return String(val);
-    if (Array.isArray(val)) {
-      if (val.length === 0) return fallback;
-      const pref =
-        val.find(
-          (v) =>
-            v &&
-            (v["title#preferred"] ||
-              v["name#preferred"] ||
-              v.preferred === true ||
-              v.preferred === "true"),
-        ) || val[0];
-      return extractCleanText(pref, fallback);
-    }
-    if (typeof val === "object") {
-      const extracted =
-        val._value ||
-        val["#text"] ||
-        val.label ||
-        val.prefLabel ||
-        val.name ||
-        val.title ||
-        val.value;
-      if (extracted !== undefined && extracted !== null && extracted !== "") {
-        return extractCleanText(extracted, fallback);
-      }
-      return fallback;
-    }
-    return String(val);
-  };
 
   // Clean term formatter: strips bulky http:// URIs to present crisp terms for museum staff
   const formatMuseumTerm = (val) => {

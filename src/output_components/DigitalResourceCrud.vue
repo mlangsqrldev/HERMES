@@ -1069,14 +1069,18 @@
                     :data-tip="
                       getLabel(
                         'type',
-                        'The nature or genre of the digital resource. Select from 5 predefined values. For a 3D model: \'3D\'.',
+                        currentLocale === 'de'
+                          ? 'Art bzw. Gattung der digitalen Ressource (5 CARARE-Werte). Für 3D-Modelle (inkl. animierter .glb/.gltf-Szenen): ‚3D-Modell‘; für gerenderte Video-Animationen/Turntables: ‚Film‘.'
+                          : 'The nature or genre of the digital resource (5 predefined CARARE values). For 3D models (including animated .glb/.gltf): \'3D\'; for rendered video animations/turntables: \'Movie\'.',
                         'doc',
                       )
                     "
                     v-if="
                       getLabel(
                         'type',
-                        'The nature or genre of the digital resource. Select from 5 predefined values. For a 3D model: \'3D\'.',
+                        currentLocale === 'de'
+                          ? 'Art bzw. Gattung der digitalen Ressource (5 CARARE-Werte). Für 3D-Modelle (inkl. animierter .glb/.gltf-Szenen): ‚3D-Modell‘; für gerenderte Video-Animationen/Turntables: ‚Film‘.'
+                          : 'The nature or genre of the digital resource (5 predefined CARARE values). For 3D models (including animated .glb/.gltf): \'3D\'; for rendered video animations/turntables: \'Movie\'.',
                         'doc',
                       )
                     "

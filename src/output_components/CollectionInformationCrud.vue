@@ -2487,7 +2487,7 @@ const fieldLabels = {
     en: "Collection Information",
     de: "Sammlungsinformationen",
   },
-  id: { en: "Collection Identifier", de: "Sammlungs-Identifikator" },
+  id: { en: "Collection ID", de: "Sammlungs-ID" },
   title: { en: "Collection Title", de: "Sammlungstitel" },
   source: { en: "Source", de: "Quelle" },
   contacts: { en: "Contacts", de: "Kontaktpersonen" },

@@ -2990,23 +2990,18 @@
       </div>
     </div>
 
-    <div
-      class="drawer-side z-[100]"
-      :aria-hidden="!isDrawerOpen"
-      :style="isDrawerOpen ? { visibility: 'visible' } : undefined"
-    >
-      <label
-        for="drawer-heritageAssetIdentification"
-        aria-label="close sidebar"
-        class="drawer-overlay"
-      ></label>
-
+    <Teleport to="body">
       <div
-        role="dialog"
-        :aria-modal="isDrawerOpen ? 'true' : undefined"
-        :aria-label="currentLocale === 'de' ? 'Eintrag hinzufügen oder bearbeiten' : 'Add or edit entry'"
-        class="w-full max-w-lg h-screen bg-base-100 flex flex-col pointer-events-auto"
+        v-if="isDrawerOpen"
+        class="fixed inset-0 z-[9999] flex justify-end bg-black/50 backdrop-blur-xs"
+        @click.self="closeDrawer()"
       >
+        <div
+          role="dialog"
+          aria-modal="true"
+          :aria-label="currentLocale === 'de' ? 'Eintrag hinzufügen oder bearbeiten' : 'Add or edit entry'"
+          class="w-full max-w-lg h-screen bg-base-100 flex flex-col pointer-events-auto shadow-2xl"
+        >
         <div class="flex-1 overflow-y-auto p-6">
           <div
             class="flex items-start justify-between mb-6 pb-4 border-b border-base-200"
@@ -6615,6 +6610,7 @@
         </div>
       </div>
     </div>
+    </Teleport>
   </div>
 
   <PersonPickerModal
