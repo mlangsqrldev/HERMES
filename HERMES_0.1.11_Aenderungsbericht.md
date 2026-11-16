@@ -150,3 +150,12 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 - **Sprachauswahl-Dropdown (`src/components/LanguageBadgePicker.vue`):**
   - `.menu { max-width: 100% }` aus `src/style.css` hatte das Sprach-Dropdown auf die Breite des kleinen `EN ▼`-Buttons gestaucht, sodass Texte und das aktive blaue Badge rechts überliefen. Durch `flex flex-col` mit `w-44 min-w-[11rem] max-w-none` sitzt das Dropdown jetzt sauber und bündig.
 - **Release-Paket:** Bereitgestellt als einzelne datierte portable Anwendung `HERMES_v0.1.19_2026-11-16.exe`.
+
+---
+
+## 12. Nachtrag `v0.1.20` (16.11.2026) – Doppeltes „Erstellung“-Feld entfernt & kompaktes Bezeichnung/Name/Beschreibung-Layout
+
+- **Sammlung (`src/output_components/CollectionInformationCrud.vue`):**
+  - Doppelte Überschrift `Erstellung` über `Erstellt am` entfernt; nur noch ein kompaktes Datumsfeld `Erstellt am` (`Created On`).
+- **Kulturgut (`src/output_components/HeritageAssetIdentificationCrud.vue`):**
+  - Redundanten `Bezeichnung / Titel & IDs`-Header sowie verschachtelte innere Karten-Rahmen und übergroße Abstände bei `Inventar- / Objekt-ID`, `Name` und `Beschreibung` deutlich kompakter gestaltet.
