@@ -50,23 +50,13 @@
         v-if="mode === 'ancient'"
         class="badge badge-warning badge-xs font-semibold gap-1 py-1 px-2"
       >
-        🏛️
-        {{
-          currentLocale === "de"
-            ? "Fundort via Pleiades"
-            : "Findspot via Pleiades"
-        }}
+        🏛️ Ancient (Pleiades)
       </span>
       <span
         v-else
         class="badge badge-info badge-xs font-semibold gap-1 py-1 px-2"
       >
-        🌍
-        {{
-          currentLocale === "de"
-            ? "Moderne Geodaten via GeoNames"
-            : "Modern geodata via GeoNames"
-        }}
+        🌍 Modern (Geonames)
       </span>
     </div>
 

@@ -13,6 +13,7 @@
 
       <div class="flex flex-wrap items-center gap-1.5">
         <button
+          v-if="mode !== 'historical'"
           type="button"
           class="btn btn-xs btn-outline gap-1"
           @click="showOrgPicker = true"
@@ -23,6 +24,7 @@
           }}
         </button>
         <button
+          v-if="mode !== 'historical'"
           type="button"
           class="btn btn-xs btn-outline btn-primary gap-1"
           @click="showPersonPicker = true"
@@ -45,16 +47,160 @@
       </div>
     </div>
 
-    <!-- Helpful context hint for historical creators -->
-    <div
-      v-if="mode === 'historical'"
-      class="text-xs text-base-content/70 bg-base-200/50 border border-base-300/70 rounded-lg px-3 py-2"
-    >
-      {{
-        currentLocale === "de"
-          ? "Hinweis: Hier werden ausschließlich historische Urheber:innen / Schöpfer:innen des Kulturguts eingetragen (z. B. Bildhauer, Architekt, Werkstatt). Falls unbekannt, bleibt dieses Feld leer."
-          : "Note: Enter only historical creators/authors of the heritage asset here (e.g. sculptor, architect, workshop). Leave empty if unknown."
-      }}
+    <!-- Helpful context hint + GND & HECTOR search + Recent 5 for historical creators -->
+    <div v-if="mode === 'historical'" class="space-y-2.5">
+      <div
+        class="text-xs text-base-content/70 bg-base-200/50 border border-base-300/70 rounded-lg px-3 py-2"
+      >
+        {{
+          currentLocale === "de"
+            ? "Hinweis: Hier werden ausschließlich historische Urheber:innen / Schöpfer:innen des Kulturguts eingetragen (z. B. Bildhauer, Architekt, Werkstatt). Falls unbekannt, bleibt dieses Feld leer."
+            : "Note: Enter only historical creators/authors of the heritage asset here (e.g. sculptor, architect, workshop). Leave empty if unknown."
+        }}
+      </div>
+
+      <!-- GND & HECTOR Live Search -->
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <div class="join flex-1 min-w-[220px]">
+            <input
+              type="text"
+              v-model="histSearchQuery"
+              @input="onHistSearchInput"
+              @focus="histDropdownOpen = histSearchResults.length > 0"
+              class="input input-sm input-bordered join-item w-full bg-base-100"
+              :placeholder="
+                currentLocale === 'de'
+                  ? 'GND & HECTOR durchsuchen (z. B. Polyklet, Phidias, Werkstatt...)'
+                  : 'Search GND & HECTOR (e.g. Polykleitos, Phidias, Workshop...)'
+              "
+            />
+            <button
+              v-if="histSearchQuery"
+              type="button"
+              class="btn btn-sm btn-ghost join-item border border-base-300"
+              @click="
+                histSearchQuery = '';
+                histSearchResults = [];
+                histDropdownOpen = false;
+              "
+            >
+              ✕
+            </button>
+          </div>
+          <div class="join">
+            <button
+              type="button"
+              class="btn btn-xs join-item"
+              :class="histSearchSource === 'all' ? 'btn-primary' : 'btn-outline border-base-300'"
+              @click="
+                histSearchSource = 'all';
+                if (histSearchQuery.trim().length >= 2) runHistSearch();
+              "
+            >
+              GND + HECTOR
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs join-item"
+              :class="histSearchSource === 'gnd' ? 'btn-primary' : 'btn-outline border-base-300'"
+              @click="
+                histSearchSource = 'gnd';
+                if (histSearchQuery.trim().length >= 2) runHistSearch();
+              "
+            >
+              GND
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs join-item"
+              :class="histSearchSource === 'hector' ? 'btn-primary' : 'btn-outline border-base-300'"
+              @click="
+                histSearchSource = 'hector';
+                if (histSearchQuery.trim().length >= 2) runHistSearch();
+              "
+            >
+              HECTOR
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-if="histSearchLoading"
+          class="text-[11px] text-primary mt-1 flex items-center gap-1.5"
+        >
+          <span class="loading loading-spinner loading-xs"></span>
+          {{
+            currentLocale === "de"
+              ? "Durchsuche GND & HECTOR..."
+              : "Searching GND & HECTOR..."
+          }}
+        </div>
+
+        <!-- Dropdown Results -->
+        <div
+          v-if="histDropdownOpen && histSearchResults.length > 0"
+          class="absolute z-40 left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-xl bg-base-100 border border-base-300 shadow-xl divide-y divide-base-200"
+        >
+          <button
+            v-for="(res, rIdx) in histSearchResults"
+            :key="res.uri || rIdx"
+            type="button"
+            class="w-full text-left px-3 py-2 hover:bg-primary/10 flex items-center justify-between gap-2 transition-colors"
+            @click="selectHistResult(res)"
+          >
+            <div class="min-w-0">
+              <div class="font-semibold text-xs text-base-content truncate">
+                {{ res.name }}
+              </div>
+              <div
+                v-if="res.subtitle"
+                class="text-[11px] text-base-content/60 truncate"
+              >
+                {{ res.subtitle }}
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span
+                class="badge badge-xs font-mono"
+                :class="
+                  res.source === 'GND'
+                    ? 'badge-info badge-outline'
+                    : 'badge-primary badge-outline'
+                "
+              >
+                {{ res.source }}
+              </span>
+              <span class="text-[11px] text-primary font-bold">+</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Last 5 Used Historical Creators -->
+      <div
+        v-if="recentHistoricalCreators.length > 0"
+        class="flex flex-wrap items-center gap-1.5 pt-0.5"
+      >
+        <span class="text-[11px] font-semibold text-base-content/60 mr-1">
+          {{
+            currentLocale === "de"
+              ? "Zuletzt verwendet:"
+              : "Recently used:"
+          }}
+        </span>
+        <button
+          v-for="(rec, recIdx) in recentHistoricalCreators"
+          :key="rec.name + recIdx"
+          type="button"
+          class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary hover:bg-primary/10 gap-1 font-normal"
+          :title="rec.id || rec.name"
+          @click="addHistoricalQuickItem(rec)"
+        >
+          <span class="text-primary font-bold">+</span>
+          <span class="font-medium">{{ rec.name }}</span>
+        </button>
+      </div>
     </div>
 
     <!-- Inline Add / Edit Form -->
@@ -430,8 +576,9 @@
       }}
     </div>
 
-    <!-- Person Pool Picker Modal -->
+    <!-- Person Pool Picker Modal (hidden for historical mode) -->
     <PersonPickerModal
+      v-if="mode !== 'historical'"
       :is-open="showPersonPicker"
       :current-locale="currentLocale"
       :mode="mode === 'contact' ? 'contacts' : 'actors'"
@@ -440,8 +587,9 @@
       @select="handlePickedPersons"
     />
 
-    <!-- Organization Pool Picker Modal -->
+    <!-- Organization Pool Picker Modal (hidden for historical mode) -->
     <OrganizationPickerModal
+      v-if="mode !== 'historical'"
       :is-open="showOrgPicker"
       :current-locale="currentLocale"
       @close="showOrgPicker = false"
@@ -710,17 +858,180 @@ const saveDraft = () => {
     next[editingIndex.value] = entry;
   } else {
     next.push(entry);
-    // Persist person identity in pool without roles
-    addOrUpdatePerson({
-      name: entry.name,
-      id: entry.id || "",
-      organization: entry.organization || "",
-      email: entry.email || "",
-      type: entry.type || "person",
-    });
+    if (props.mode === "historical") {
+      recordRecentHistoricalCreator(entry);
+    } else {
+      // Persist person identity in pool without roles
+      addOrUpdatePerson({
+        name: entry.name,
+        id: entry.id || "",
+        organization: entry.organization || "",
+        email: entry.email || "",
+        type: entry.type || "person",
+      });
+    }
   }
   emit("update:modelValue", next);
   closeForm();
+};
+
+// --- Historical Creators: GND & HECTOR Search + Last 5 Recently Used ---
+const RECENT_HIST_KEY = "hermes_recent_historical_creators_v1";
+const loadRecentHistorical = () => {
+  try {
+    const raw = localStorage.getItem(RECENT_HIST_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.slice(0, 5) : [];
+  } catch {
+    return [];
+  }
+};
+const recentHistoricalCreators = ref(loadRecentHistorical());
+const recordRecentHistoricalCreator = (entry) => {
+  if (!entry || !entry.name) return;
+  const clean = {
+    name: String(entry.name).trim(),
+    id: String(entry.id || "").trim(),
+    type: entry.type || "person",
+    roles: Array.isArray(entry.roles) ? entry.roles : [],
+  };
+  const next = [
+    clean,
+    ...recentHistoricalCreators.value.filter(
+      (r) => r.name.toLowerCase() !== clean.name.toLowerCase(),
+    ),
+  ].slice(0, 5);
+  recentHistoricalCreators.value = next;
+  try {
+    localStorage.setItem(RECENT_HIST_KEY, JSON.stringify(next));
+  } catch {
+    // ignore storage errors
+  }
+};
+
+const histSearchQuery = ref("");
+const histSearchSource = ref("all"); // 'all' | 'gnd' | 'hector'
+const histSearchResults = ref([]);
+const histSearchLoading = ref(false);
+const histDropdownOpen = ref(false);
+let histSearchTimer = null;
+
+const onHistSearchInput = () => {
+  clearTimeout(histSearchTimer);
+  const q = histSearchQuery.value.trim();
+  if (q.length < 2) {
+    histSearchResults.value = [];
+    histDropdownOpen.value = false;
+    return;
+  }
+  histSearchTimer = setTimeout(runHistSearch, 280);
+};
+
+const runHistSearch = async () => {
+  const q = histSearchQuery.value.trim();
+  if (q.length < 2) return;
+  histSearchLoading.value = true;
+  const results = [];
+  const tasks = [];
+
+  if (histSearchSource.value === "all" || histSearchSource.value === "gnd") {
+    tasks.push(
+      fetch(
+        `https://lobid.org/gnd/search?q=${encodeURIComponent(q)}&filter=type:Person%20OR%20type:CorporateBody&format=json&size=8`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          const members = Array.isArray(data?.member) ? data.member : [];
+          for (const m of members) {
+            const name = m.preferredName || "";
+            if (!name) continue;
+            const types = Array.isArray(m.type) ? m.type : [];
+            const mappedType = types.includes("CorporateBody")
+              ? "organization"
+              : "person";
+            const sub =
+              (Array.isArray(m.professionOrOccupation) &&
+                m.professionOrOccupation[0]?.label) ||
+              (Array.isArray(m.biographicalOrHistoricalInformation) &&
+                m.biographicalOrHistoricalInformation[0]) ||
+              m.gndIdentifier ||
+              "";
+            results.push({
+              name,
+              id: m.id || (m.gndIdentifier ? `https://d-nb.info/gnd/${m.gndIdentifier}` : ""),
+              type: mappedType,
+              subtitle: sub,
+              source: "GND",
+            });
+          }
+        })
+        .catch(() => {}),
+    );
+  }
+
+  if (histSearchSource.value === "all" || histSearchSource.value === "hector") {
+    const lang = props.currentLocale === "de" ? "de" : "en";
+    tasks.push(
+      fetch(
+        `https://vocabs.bcdh.uni-bonn.de/rest/v1/hector/search?query=${encodeURIComponent(q)}*&lang=${lang}`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          const list = Array.isArray(data?.results) ? data.results : [];
+          for (const item of list.slice(0, 8)) {
+            const name = item.prefLabel || "";
+            if (!name) continue;
+            results.push({
+              name,
+              id: item.uri || "",
+              type: /werkstatt|workshop|atelier/i.test(name)
+                ? "workshop"
+                : "person",
+              subtitle: item.uri || "HECTOR",
+              source: "HECTOR",
+            });
+          }
+        })
+        .catch(() => {}),
+    );
+  }
+
+  await Promise.all(tasks);
+  histSearchResults.value = results;
+  histDropdownOpen.value = results.length > 0;
+  histSearchLoading.value = false;
+};
+
+const addHistoricalQuickItem = (entry) => {
+  if (!entry || !entry.name) return;
+  const cleanName = entry.name.trim();
+  const next = [...items.value];
+  const exists = next.some(
+    (item) => (item.name || "").trim().toLowerCase() === cleanName.toLowerCase(),
+  );
+  if (!exists) {
+    const itemToAdd = {
+      name: cleanName,
+      id: entry.id || "",
+      type: entry.type || "person",
+      roles: Array.isArray(entry.roles) ? [...entry.roles] : [],
+    };
+    next.push(itemToAdd);
+    emit("update:modelValue", next);
+    recordRecentHistoricalCreator(itemToAdd);
+  }
+};
+
+const selectHistResult = (res) => {
+  addHistoricalQuickItem({
+    name: res.name,
+    id: res.id || "",
+    type: res.type || "person",
+    roles: [],
+  });
+  histSearchQuery.value = "";
+  histSearchResults.value = [];
+  histDropdownOpen.value = false;
 };
 
 const removeItem = (idx) => {

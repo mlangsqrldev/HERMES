@@ -51,8 +51,8 @@
       <table class="table table-zebra table-sm w-full">
         <thead>
           <tr class="bg-base-200/60">
-            <th>{{ currentLocale === "de" ? "Ort / Bezeichnung" : "Location / Name" }}</th>
-            <th>{{ currentLocale === "de" ? "Land / Region" : "Geopolitical Area" }}</th>
+            <th>{{ currentLocale === "de" ? "Ort" : "Location" }}</th>
+            <th>{{ currentLocale === "de" ? "Region" : "Geopolitical Area" }}</th>
             <th>{{ currentLocale === "de" ? "Adresse" : "Address" }}</th>
             <th>{{ currentLocale === "de" ? "Koordinaten" : "Coordinates" }}</th>
             <th class="w-24 text-right">
@@ -145,7 +145,11 @@
     </div>
 
     <!-- Centered Modal -->
-    <dialog class="modal z-[9999]" :class="{ 'modal-open': isModalOpen }">
+    <Teleport to="body">
+      <dialog
+        v-if="isModalOpen"
+        class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
+      >
       <div
         class="modal-box max-w-3xl w-11/12 bg-base-100 border border-base-300 shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]"
       >
@@ -199,208 +203,156 @@
           </div>
         </div>
 
-        <!-- Modal Body -->
+        <!-- Modal Body (all fields on one unified page, no tabs) -->
         <div class="p-5 overflow-y-auto space-y-4 flex-1">
-          <!-- Mode Tabs: Historical vs. Modern -->
-          <div class="tabs tabs-boxed bg-base-200/80 p-1 flex">
-            <button
-              type="button"
-              class="tab tab-sm flex-1 gap-1.5 font-semibold transition-all"
-              :class="
-                spatialKind === 'historical'
-                  ? 'tab-active !bg-warning !text-warning-content shadow-sm'
-                  : 'text-base-content/70 hover:text-base-content'
-              "
-              @click="setSpatialKind('historical')"
-            >
-              🏛️
-              {{
-                currentLocale === "de"
-                  ? "Historischer Name / Fundort"
-                  : "Historical Name / Findspot"
-              }}
-            </button>
-            <button
-              type="button"
-              class="tab tab-sm flex-1 gap-1.5 font-semibold transition-all"
-              :class="
-                spatialKind === 'modern'
-                  ? 'tab-active !bg-info !text-info-content shadow-sm'
-                  : 'text-base-content/70 hover:text-base-content'
-              "
-              @click="setSpatialKind('modern')"
-            >
-              🌍
-              {{
-                currentLocale === "de"
-                  ? "Moderner Ortsname / Geodaten"
-                  : "Modern Location / Geodata"
-              }}
-            </button>
+          <!-- Ancient (Pleiades) & Modern (Geonames) side by side -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-bold text-xs uppercase tracking-wider">
+                  Ancient (Pleiades)
+                </span>
+              </label>
+              <PlaceAutocomplete
+                v-model="draft['locationSet.historicalName']"
+                allowed-modes="ancient"
+                :current-locale="currentLocale"
+                @select="handleAncientPlaceSelect"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-bold text-xs uppercase tracking-wider">
+                  Modern (Geonames)
+                </span>
+              </label>
+              <PlaceAutocomplete
+                v-model="draft['locationSet.namedLocation']"
+                allowed-modes="modern"
+                :current-locale="currentLocale"
+                @select="handlePlaceSelect"
+              />
+            </div>
           </div>
 
-          <!-- Historical Name -->
-          <div v-if="spatialKind === 'historical'" class="form-control w-full">
+          <div class="form-control w-full">
             <label class="label py-1">
               <span class="label-text font-bold text-xs uppercase tracking-wider">
                 {{
                   currentLocale === "de"
-                    ? "Historischer Ortsname / Antiker Fundort"
-                    : "Historical Name / Ancient Findspot"
+                    ? "Geopolitische Region"
+                    : "Geopolitical Area"
                 }}
               </span>
             </label>
             <input
               type="text"
-              v-model="draft['locationSet.historicalName']"
+              v-model="draft['locationSet.geopoliticalArea']"
               class="input input-sm input-bordered w-full"
               :placeholder="
                 currentLocale === 'de'
-                  ? 'z. B. Olympia, Pergamon, Forum Romanum'
-                  : 'e.g. Olympia, Pergamon, Forum Romanum'
+                  ? 'z. B. Deutschland, Griechenland'
+                  : 'e.g. Germany, Greece'
               "
             />
           </div>
 
-          <!-- Modern Location + Map + Address -->
-          <div v-else class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="form-control w-full">
-                <label class="label py-1">
-                  <span class="label-text font-bold text-xs uppercase tracking-wider">
-                    {{
-                      currentLocale === "de"
-                        ? "Ortsname (Named Location)"
-                        : "Named Location"
-                    }}
-                  </span>
-                </label>
-                <PlaceAutocomplete
-                  v-model="draft['locationSet.namedLocation']"
-                  :current-locale="currentLocale"
-                  @select="handlePlaceSelect"
-                />
-              </div>
+          <!-- Interactive Map Picker -->
+          <SpatialMapPicker
+            :lat="draft['geometry.quickpoint.y']"
+            :lng="draft['geometry.quickpoint.x']"
+            :current-locale="currentLocale"
+            @update:lat="(v) => (draft['geometry.quickpoint.y'] = v)"
+            @update:lng="(v) => (draft['geometry.quickpoint.x'] = v)"
+            @place-selected="handleMapPlaceSelect"
+          />
 
-              <div class="form-control w-full">
-                <label class="label py-1">
-                  <span class="label-text font-bold text-xs uppercase tracking-wider">
-                    {{
-                      currentLocale === "de"
-                        ? "Land / Geopolitische Region"
-                        : "Geopolitical Area / Country"
-                    }}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  v-model="draft['locationSet.geopoliticalArea']"
-                  class="input input-sm input-bordered w-full"
-                  :placeholder="
-                    currentLocale === 'de'
-                      ? 'z. B. Deutschland, Griechenland'
-                      : 'e.g. Germany, Greece'
-                  "
-                />
-              </div>
+          <!-- Coordinates Quick Input -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="form-control">
+              <label class="label py-0.5">
+                <span class="label-text text-xs font-semibold">
+                  {{ currentLocale === "de" ? "Breitengrad (Y)" : "Latitude (Y)" }}
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="draft['geometry.quickpoint.y']"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="50.7374"
+              />
             </div>
-
-            <!-- Interactive Map Picker -->
-            <SpatialMapPicker
-              :lat="draft['geometry.quickpoint.y']"
-              :lng="draft['geometry.quickpoint.x']"
-              :current-locale="currentLocale"
-              @update:lat="(v) => (draft['geometry.quickpoint.y'] = v)"
-              @update:lng="(v) => (draft['geometry.quickpoint.x'] = v)"
-              @place-selected="handleMapPlaceSelect"
-            />
-
-            <!-- Coordinates Quick Input -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div class="form-control">
-                <label class="label py-0.5">
-                  <span class="label-text text-xs font-semibold">
-                    {{ currentLocale === "de" ? "Breitengrad (Lat / Y)" : "Latitude (Y)" }}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  v-model="draft['geometry.quickpoint.y']"
-                  class="input input-sm input-bordered w-full font-mono text-xs"
-                  placeholder="50.7374"
-                />
-              </div>
-              <div class="form-control">
-                <label class="label py-0.5">
-                  <span class="label-text text-xs font-semibold">
-                    {{ currentLocale === "de" ? "Längengrad (Lng / X)" : "Longitude (X)" }}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  v-model="draft['geometry.quickpoint.x']"
-                  class="input input-sm input-bordered w-full font-mono text-xs"
-                  placeholder="7.0982"
-                />
-              </div>
-              <div class="form-control">
-                <label class="label py-0.5">
-                  <span class="label-text text-xs font-semibold">
-                    {{ currentLocale === "de" ? "Koordinatensystem (SRS)" : "Reference System (SRS)" }}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  v-model="draft['spatialReferenceSystem']"
-                  class="input input-sm input-bordered w-full font-mono text-xs"
-                  placeholder="WGS84 / EPSG:4326"
-                />
-              </div>
+            <div class="form-control">
+              <label class="label py-0.5">
+                <span class="label-text text-xs font-semibold">
+                  {{ currentLocale === "de" ? "Längengrad (X)" : "Longitude (X)" }}
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="draft['geometry.quickpoint.x']"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="7.0982"
+              />
             </div>
+            <div class="form-control">
+              <label class="label py-0.5">
+                <span class="label-text text-xs font-semibold">
+                  {{ currentLocale === "de" ? "Koordinatensystem (SRS)" : "Reference System (SRS)" }}
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="draft['spatialReferenceSystem']"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="WGS84"
+              />
+            </div>
+          </div>
 
-            <!-- Optional Address Details -->
-            <div class="p-3.5 rounded-xl bg-base-200/40 border border-base-200 space-y-2.5">
-              <div class="text-xs font-bold uppercase tracking-wider text-base-content/70">
-                {{ currentLocale === "de" ? "Adressdaten (Optional)" : "Address Details (Optional)" }}
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <input
-                  type="text"
-                  v-model="draft['locationSet.address.buildingName']"
-                  class="input input-sm input-bordered w-full text-xs sm:col-span-3"
-                  :placeholder="currentLocale === 'de' ? 'Gebäude / Einrichtung' : 'Building / Institution'"
-                />
-                <input
-                  type="text"
-                  v-model="draft['locationSet.address.roadName']"
-                  class="input input-sm input-bordered w-full text-xs sm:col-span-2"
-                  :placeholder="currentLocale === 'de' ? 'Straße' : 'Street'"
-                />
-                <input
-                  type="text"
-                  v-model="draft['locationSet.address.numberInRoad']"
-                  class="input input-sm input-bordered w-full text-xs"
-                  :placeholder="currentLocale === 'de' ? 'Hausnr.' : 'No.'"
-                />
-                <input
-                  type="text"
-                  v-model="draft['locationSet.address.postcodeOrZipcode']"
-                  class="input input-sm input-bordered w-full text-xs font-mono"
-                  :placeholder="currentLocale === 'de' ? 'PLZ' : 'Postcode'"
-                />
-                <input
-                  type="text"
-                  v-model="draft['locationSet.address.townOrCity']"
-                  class="input input-sm input-bordered w-full text-xs"
-                  :placeholder="currentLocale === 'de' ? 'Stadt' : 'City'"
-                />
-                <input
-                  type="text"
-                  v-model="draft['locationSet.address.country']"
-                  class="input input-sm input-bordered w-full text-xs font-mono uppercase"
-                  :placeholder="currentLocale === 'de' ? 'Land (DE, GB...)' : 'Country (DE, GB...)'"
-                />
-              </div>
+          <!-- Optional Address Details -->
+          <div class="p-3.5 rounded-xl bg-base-200/40 border border-base-200 space-y-2.5">
+            <div class="text-xs font-bold uppercase tracking-wider text-base-content/70">
+              {{ currentLocale === "de" ? "Adressdaten (Optional)" : "Address Details (Optional)" }}
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <input
+                type="text"
+                v-model="draft['locationSet.address.buildingName']"
+                class="input input-sm input-bordered w-full text-xs sm:col-span-3"
+                :placeholder="currentLocale === 'de' ? 'Gebäude' : 'Building'"
+              />
+              <input
+                type="text"
+                v-model="draft['locationSet.address.roadName']"
+                class="input input-sm input-bordered w-full text-xs sm:col-span-2"
+                :placeholder="currentLocale === 'de' ? 'Straße' : 'Street'"
+              />
+              <input
+                type="text"
+                v-model="draft['locationSet.address.numberInRoad']"
+                class="input input-sm input-bordered w-full text-xs"
+                :placeholder="currentLocale === 'de' ? 'Hausnr.' : 'No.'"
+              />
+              <input
+                type="text"
+                v-model="draft['locationSet.address.postcodeOrZipcode']"
+                class="input input-sm input-bordered w-full text-xs font-mono"
+                :placeholder="currentLocale === 'de' ? 'PLZ' : 'Postcode'"
+              />
+              <input
+                type="text"
+                v-model="draft['locationSet.address.townOrCity']"
+                class="input input-sm input-bordered w-full text-xs"
+                :placeholder="currentLocale === 'de' ? 'Stadt' : 'City'"
+              />
+              <input
+                type="text"
+                v-model="draft['locationSet.address.country']"
+                class="input input-sm input-bordered w-full text-xs font-mono uppercase"
+                :placeholder="currentLocale === 'de' ? 'Land (DE, GB...)' : 'Country (DE, GB...)'"
+              />
             </div>
           </div>
         </div>
@@ -436,7 +388,8 @@
       >
         <button>close</button>
       </form>
-    </dialog>
+      </dialog>
+    </Teleport>
 
     <OrganizationPickerModal
       v-if="allowOrgPool"
@@ -581,6 +534,20 @@ const openModal = (idx = null) => {
 const closeModal = () => {
   isModalOpen.value = false;
   editingIndex.value = null;
+};
+
+const handleAncientPlaceSelect = (place) => {
+  if (!place) return;
+  if (place.name) draft["locationSet.historicalName"] = place.name;
+  if (place.countryName || place.country) {
+    if (!draft["locationSet.geopoliticalArea"]) {
+      draft["locationSet.geopoliticalArea"] = place.countryName || place.country;
+    }
+  }
+  if (place.lat != null && place.lng != null) {
+    if (!draft["geometry.quickpoint.y"]) draft["geometry.quickpoint.y"] = String(place.lat);
+    if (!draft["geometry.quickpoint.x"]) draft["geometry.quickpoint.x"] = String(place.lng);
+  }
 };
 
 const handlePlaceSelect = (place) => {

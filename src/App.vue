@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.7 · 2026-11-14</span
+              >v0.1.8 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -660,6 +660,23 @@
                 ? "1 XML pro Objekt (ZIP)"
                 : "1 XML per Asset (ZIP)"
             }}
+          </button>
+
+          <!-- BonnData / Dataverse JSON Export (Test) -->
+          <button
+            class="btn btn-sm btn-outline gap-2 justify-start font-medium hover:border-primary hover:text-primary transition-all"
+            @click="exportToBonnDataJson"
+            :disabled="currentFile != '' && progress != 100"
+            :title="
+              currentLocale === 'de'
+                ? 'Exportiert die Projektdaten als Dataverse-kompatibles JSON für den Import in bonndata.uni-bonn.de'
+                : 'Export project metadata as Dataverse-compatible JSON for bonndata.uni-bonn.de import'
+            "
+          >
+            <span class="text-base">🏛️</span>
+            <span>{{
+              currentLocale === "de" ? "BonnData (JSON)" : "BonnData (JSON)"
+            }}</span>
           </button>
 
           <div
@@ -1295,6 +1312,7 @@ import LiveXmlPreview from "./components/LiveXmlPreview.vue";
 import defaultTemplates from "./assets/default_templates.json";
 
 import { parseCarareXml } from "./utils/carareXmlParser.js";
+import { buildBonnDataJson } from "./utils/bonndataExporter.js";
 
 import {
   defaultMetadataLanguage,
@@ -7146,6 +7164,69 @@ const exportToCarareXML = async () => {
 
     errorMessage.value =
       error.message || "An unexpected error occurred during XML export.";
+  } finally {
+    isExporting.value = false;
+  }
+};
+
+const exportToBonnDataJson = async () => {
+  isExporting.value = true;
+  exportStatus.value = null;
+  errorMessage.value = "";
+
+  try {
+    const payload = buildBonnDataJson({
+      collectionForm: getChildComp(collectionRef)?.form || {},
+      heritageItems: getChildComp(heritageRef)?.items || [],
+      digitalItems: getChildComp(digitalRef)?.items || [],
+      activityItems: getChildComp(activityRef)?.items || [],
+      globalRights,
+      defaultMetadataLanguage: defaultMetadataLanguage.value || "de",
+    });
+
+    const jsonString = JSON.stringify(payload, null, 2);
+    const defaultFilename = `hermes-bonndata-${Date.now()}.json`;
+
+    if (isTauri()) {
+      const selectedPath = await save({
+        defaultPath: defaultFilename,
+        filters: [
+          {
+            name: "BonnData / Dataverse JSON",
+            extensions: ["json"],
+          },
+        ],
+      });
+
+      if (!selectedPath) {
+        isExporting.value = false;
+        return;
+      }
+
+      const encoder = new TextEncoder();
+      await writeFile(selectedPath, encoder.encode(jsonString));
+    } else {
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = defaultFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    exportStatus.value = "success";
+    markExported();
+    setTimeout(() => {
+      exportStatus.value = null;
+    }, 4000);
+  } catch (error) {
+    console.error("BonnData JSON Export failed:", error);
+    exportStatus.value = "error";
+    errorMessage.value =
+      error.message || "An unexpected error occurred during BonnData JSON export.";
   } finally {
     isExporting.value = false;
   }

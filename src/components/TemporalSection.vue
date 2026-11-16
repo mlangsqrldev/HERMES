@@ -51,11 +51,11 @@
       <table class="table table-zebra table-sm w-full">
         <thead>
           <tr class="bg-base-200/60">
-            <th>{{ currentLocale === "de" ? "Epoche / Periode" : "Period" }}</th>
+            <th>{{ currentLocale === "de" ? "Epoche" : "Period" }}</th>
             <th>{{ currentLocale === "de" ? "Beginn" : "Start Date" }}</th>
             <th>{{ currentLocale === "de" ? "Ende" : "End Date" }}</th>
             <th>{{ currentLocale === "de" ? "Anzeigedatum" : "Display Date" }}</th>
-            <th>{{ currentLocale === "de" ? "Qualifier / URI" : "Qualifier / URI" }}</th>
+            <th>{{ currentLocale === "de" ? "Qualifier" : "Qualifier" }}</th>
             <th class="w-24 text-right">
               {{ currentLocale === "de" ? "Aktionen" : "Actions" }}
             </th>
@@ -168,7 +168,11 @@
     </div>
 
     <!-- Centered Modal -->
-    <dialog class="modal z-[9999]" :class="{ 'modal-open': isModalOpen }">
+    <Teleport to="body">
+      <dialog
+        v-if="isModalOpen"
+        class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
+      >
       <div
         class="modal-box max-w-2xl w-11/12 bg-base-100 border border-base-300 shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]"
       >
@@ -220,7 +224,7 @@
               <span class="label-text font-bold text-xs uppercase tracking-wider">
                 {{
                   currentLocale === "de"
-                    ? "Epoche / Periode (PeriodName)"
+                    ? "Epoche (PeriodName)"
                     : "Period Name"
                 }}
               </span>
@@ -283,7 +287,7 @@
               <span class="label-text font-bold text-xs uppercase tracking-wider">
                 {{
                   currentLocale === "de"
-                    ? "Anzeigedatum / Freitext (Display Date)"
+                    ? "Anzeigedatum (Display Date)"
                     : "Display Date"
                 }}
               </span>
@@ -306,8 +310,8 @@
               <span class="label-text font-bold text-xs uppercase tracking-wider">
                 {{
                   currentLocale === "de"
-                    ? "Qualifier / Normdaten-URI (Date Range Qualifier)"
-                    : "Date Range Qualifier / Authority URI"
+                    ? "Normdaten-URI (Date Range Qualifier)"
+                    : "Date Range Qualifier"
                 }}
               </span>
             </label>
@@ -351,7 +355,8 @@
       >
         <button>close</button>
       </form>
-    </dialog>
+      </dialog>
+    </Teleport>
   </div>
 </template>
 
@@ -427,20 +432,33 @@ const closeModal = () => {
 
 const handlePeriodoSelect = (data) => {
   if (!data) return;
-  if (data.label) draft.periodName = data.label;
-  if (data.start !== undefined && data.start !== null) {
-    draft["timeSpan.startDate"] = String(data.start);
-  }
-  if (data.stop !== undefined && data.stop !== null) {
-    draft["timeSpan.endDate"] = String(data.stop);
-  }
+  const name = data.periodName || data.label || "";
+  const start =
+    data.startDate !== undefined && data.startDate !== null
+      ? String(data.startDate)
+      : data.start !== undefined && data.start !== null
+        ? String(data.start)
+        : "";
+  const stop =
+    data.endDate !== undefined && data.endDate !== null
+      ? String(data.endDate)
+      : data.stop !== undefined && data.stop !== null
+        ? String(data.stop)
+        : "";
+  const uri = data.dateRangeQualifier || data.uri || "";
+
+  if (name) draft.periodName = name;
+  if (start !== "") draft["timeSpan.startDate"] = start;
+  if (stop !== "") draft["timeSpan.endDate"] = stop;
   if (data.displayDate) {
     draft.displayDate = data.displayDate;
-  } else if (data.start && data.stop) {
-    draft.displayDate = `${data.start} – ${data.stop}`;
+  } else if (start && stop) {
+    draft.displayDate = `${start} – ${stop}`;
+  } else if (start || stop) {
+    draft.displayDate = start || stop;
   }
-  if (data.uri) {
-    draft["timeSpan.dateRangeQualifier"] = data.uri;
+  if (uri) {
+    draft["timeSpan.dateRangeQualifier"] = uri;
   }
 };
 
