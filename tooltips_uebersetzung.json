@@ -1,0 +1,3172 @@
+{
+  "_meta": {
+    "description": "Zentrale Tooltip-Übersetzungsdatei für HERMES (DE/EN). Leicht verständliche Vorschläge für Museumsmitarbeiter:innen.",
+    "modules": [
+      "CollectionInformation",
+      "HeritageAsset",
+      "DigitalResource",
+      "Activity",
+      "Components"
+    ]
+  },
+  "CollectionInformation": {
+    "id": {
+      "label_de": "Sammlungs-ID",
+      "label_en": "Collection ID",
+      "used_in_ui": true,
+      "de": "Eindeutige Kennung dieser Sammlung bzw. dieses Datenpakets (ohne Leer- oder Sonderzeichen, z. B. DE-MUS-814111_Aegypten_2026). Nach der Vergabe bitte nicht mehr ändern.",
+      "en": "Unique identifier for this collection or data package (no spaces or special characters, e.g. DE-MUS-814111_Egypt_2026). Do not change once assigned."
+    },
+    "title": {
+      "label_de": "Titel",
+      "label_en": "Title",
+      "used_in_ui": true,
+      "de": "Verständlicher Name der Sammlung oder des Projekts (z. B. „Ägyptische Steinskulpturen – Grabungsprojekt Memphis“). Kann mehrsprachig gepflegt werden.",
+      "en": "Clear title of the collection or project (e.g. 'Egyptian Stone Sculptures – Memphis Excavation'). Can be entered in multiple languages."
+    },
+    "source": {
+      "label_de": "Quelle",
+      "label_en": "Source",
+      "used_in_ui": true,
+      "de": "Name der Einrichtung oder des Museums, das dieses Datenpaket bereitstellt (z. B. Akademisches Kunstmuseum Bonn).",
+      "en": "Name of the institution or museum providing this data package (e.g. Academic Art Museum Bonn)."
+    },
+    "contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Ansprechperson(en) im Museum oder Projekt für Rückfragen zu dieser Sammlung.",
+      "en": "Contact person(s) at the museum or project for questions about this collection."
+    },
+    "contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Vorname(n) und Nachname der Ansprechperson für dieses Datenpaket. Eine ORCID-ID kann als zusätzliches Attribut ergänzt werden.",
+      "en": "First and last name of the contact person for this data package. An ORCID ID can be added as an additional attribute."
+    },
+    "contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Aufgabe der Ansprechperson im Projekt. Empfehlung: kontrolliertes Vokabular verwenden.",
+      "en": "Role of the contact person in the project. Recommendation: use a controlled vocabulary."
+    },
+    "contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": false,
+      "de": "Name der Organisation, der die Ansprechperson angehört.",
+      "en": "Name of the organisation to which the contact person belongs."
+    },
+    "contacts.email": {
+      "label_de": "E-Mail",
+      "label_en": "Email",
+      "used_in_ui": false,
+      "de": "E-Mail-Adresse der Ansprechperson.",
+      "en": "Email address of the contact person."
+    },
+    "contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "contacts.address.buildingName": {
+      "label_de": "Adresszusatz",
+      "label_en": "Building Name",
+      "used_in_ui": false,
+      "de": "Zusatz zur Adresse, z.B. Name des Gebäudes oder der Abteilung (vgl. DIN 5008).",
+      "en": "Address supplement, e.g. building or department name (cf. DIN 5008)."
+    },
+    "contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "House Number",
+      "used_in_ui": false,
+      "de": "Hausnummer der Adresse.",
+      "en": "House number of the address."
+    },
+    "contacts.address.roadName": {
+      "label_de": "Straße",
+      "label_en": "Street",
+      "used_in_ui": false,
+      "de": "Straßenname der Adresse, ohne Hausnummer.",
+      "en": "Street name of the address, without house number."
+    },
+    "contacts.address.townOrCity": {
+      "label_de": "Ort",
+      "label_en": "City",
+      "used_in_ui": false,
+      "de": "Ort (Stadt/Gemeinde) der Adresse.",
+      "en": "City or town of the address."
+    },
+    "contacts.address.postcodeOrZipcode": {
+      "label_de": "Postleitzahl",
+      "label_en": "Postcode",
+      "used_in_ui": false,
+      "de": "Postleitzahl der Adresse.",
+      "en": "Postcode of the address."
+    },
+    "contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "contacts.address.country": {
+      "label_de": "Land",
+      "label_en": "Country",
+      "used_in_ui": false,
+      "de": "Land der Adresse.",
+      "en": "Country of the address."
+    },
+    "rights": {
+      "label_de": "Rechte",
+      "label_en": "Rights",
+      "used_in_ui": false,
+      "de": "Mit der Sammlung als Ganzes verbunden. Datenanbietern wird dringend empfohlen, dieses Element auszufüllen.",
+      "en": "Associated with the collection as a whole. Content providers are strongly recommended to complete this element."
+    },
+    "rights.copyrightCreditLine": {
+      "label_de": "Urheberrechtsvermerk",
+      "label_en": "Copyright Credit Line",
+      "used_in_ui": false,
+      "de": "Urheberrechtsvermerk für dieses Datenpaket: Name des Rechteinhabers und Jahr.",
+      "en": "Copyright notice for this data package: name of the rights holder and year."
+    },
+    "rights.accessRights": {
+      "label_de": "Zugriffsrechte",
+      "label_en": "Access Rights",
+      "used_in_ui": false,
+      "de": "Zugriffsrechte für dieses Datenpaket (Bilddateien und Metadaten zusammen) – d.h. für alle Datensätze, die gemeinsam ausgeliefert werden.",
+      "en": "Access rights for this data package (image files and metadata together) – i.e. for all records delivered together."
+    },
+    "rights.reproductionRights": {
+      "label_de": "Reproduktionsrechte",
+      "label_en": "Reproduction Rights",
+      "used_in_ui": false,
+      "de": "Aussage über die Reproduktionsrechte an diesem Datenpaket, einschließlich Kontaktinformationen für Anfragen.",
+      "en": "A statement about the reproduction rights for this data package, including contact information for enquiries."
+    },
+    "rights.licence": {
+      "label_de": "Lizenz",
+      "label_en": "Licence",
+      "used_in_ui": false,
+      "de": "Lizenz für dieses Datenpaket. Name oder URI der Lizenz, unter der alle enthaltenen Datensätze bereitgestellt werden.",
+      "en": "Licence for this data package. Name or URI of the licence under which all contained records are provided."
+    },
+    "rights.europeanaRights": {
+      "label_de": "Europeana-Rechte",
+      "label_en": "Europeana rights",
+      "used_in_ui": false,
+      "de": "Europeana-Rechte – eine der 12 Rechte-Erklärungen, die Europeana in ihrem Portal verwendet. Erforderlich für Inhalte, die Europeana bereitgestellt werden.",
+      "en": "Europeana Rights – one of the 12 rights statements used by Europeana in its portal.  See: http://pro.europeana.eu/page/available-rights-statements.  Required for content being provided to Europeana."
+    },
+    "language": {
+      "label_de": "Sprache",
+      "label_en": "Language",
+      "used_in_ui": false,
+      "de": "Standardsprache aller Metadaten dieses Datenpakets. ISO 639-1 zweistelliger Code.",
+      "en": "Default language of all metadata in this data package. ISO 639-1 two-letter code."
+    },
+    "statement": {
+      "label_de": "Aussage",
+      "label_en": "Statement",
+      "used_in_ui": true,
+      "de": "Kurze inhaltliche Beschreibung der Sammlung: Was gehört dazu, aus welchem Kontext stammen die Objekte und wofür wurde sie zusammengestellt?",
+      "en": "Brief description of the collection: what it contains, its historical or institutional context, and why it was compiled."
+    },
+    "creation": {
+      "label_de": "Erstellung",
+      "label_en": "Creation",
+      "used_in_ui": false,
+      "de": "Datum, an dem dieses Datenpaket in HERMES angelegt wurde.",
+      "en": "Date when this data package was created in HERMES."
+    },
+    "creation.createdOn": {
+      "label_de": "Erstellt am",
+      "label_en": "Created On",
+      "used_in_ui": true,
+      "de": "Anlegedatum dieses Datenpakets (nicht das Alter der Objekte). Format: JJJJ-MM-TT.",
+      "en": "Date when this data package was created (not the age of the objects). Format: YYYY-MM-DD."
+    },
+    "creation.query": {
+      "label_de": "Abfrage",
+      "label_en": "Query",
+      "used_in_ui": false,
+      "de": "Die zur Extraktion der Daten verwendete Abfrage.",
+      "en": "The query used to extract the data."
+    },
+    "keywords": {
+      "label_de": "Schlagwörter",
+      "label_en": "Keywords",
+      "used_in_ui": false,
+      "de": "Passende Schlagwörter zur Sammlung (bevorzugt aus dem HECTOR-Vokabular, z. B. Architektur, Grabkunst).",
+      "en": "Relevant keywords for the collection (preferably from the HECTOR vocabulary, e.g. architecture, funerary art)."
+    },
+    "coverage": {
+      "label_de": "Abdeckung",
+      "label_en": "Coverage",
+      "used_in_ui": true,
+      "de": "Grobe zeitliche und geografische Einordnung der gesamten Sammlung.",
+      "en": "Broad temporal and geographic scope of the entire collection."
+    },
+    "coverage.temporal": {
+      "label_de": "Zeitlich",
+      "label_en": "Temporal",
+      "used_in_ui": true,
+      "de": "Welchen Zeitraum oder welche Epoche deckt die Sammlung insgesamt ab (z. B. Altes Reich, Antike)?",
+      "en": "Which time span or historical period does the collection cover overall (e.g. Old Kingdom, Antiquity)?"
+    },
+    "coverage.temporal.timeSpan.startDate": {
+      "label_de": "Zeitliche Abdeckung – Startdatum",
+      "label_en": "Temporal Coverage – Start Date",
+      "used_in_ui": false,
+      "de": "Frühestes Datum der allgemeinen zeitlichen Abdeckung dieses Datenpakets (nicht einzelner Objekte).",
+      "en": "Earliest date of the general temporal coverage of this data package (not of individual objects)."
+    },
+    "coverage.temporal.timeSpan.endDate": {
+      "label_de": "Zeitliche Abdeckung – Enddatum",
+      "label_en": "Temporal Coverage – End Date",
+      "used_in_ui": false,
+      "de": "Spätestes Datum der allgemeinen zeitlichen Abdeckung dieses Datenpakets (nicht einzelner Objekte).",
+      "en": "Latest date of the general temporal coverage of this data package (not of individual objects)."
+    },
+    "coverage.temporal.timeSpan.dateRangeQualifier": {
+      "label_de": "Datumsbereichs-Qualifikator",
+      "label_en": "Date range qualifier",
+      "used_in_ui": false,
+      "de": "die Art der angegebenen Zeitspanne (z.B. durchgehend, zu einem bestimmten Zeitpunkt während usw.). Die Verwendung eines kontrollierten Vokabulars wird empfohlen.",
+      "en": "the nature of the time span given (e.g. throughout, at some time during, etc.) Use of a controlled vocabulary is recommended."
+    },
+    "coverage.temporal.periodName": {
+      "label_de": "Epochenname",
+      "label_en": "Period name",
+      "used_in_ui": false,
+      "de": "der Name der Epoche in der Geschichte, in der etwas passiert ist. Das Element kann unter Verwendung des XML:lang-Attributs wiederholt werden.",
+      "en": "the name given to the period in history when something occurred. The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "coverage.temporal.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "a free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "coverage.temporal.scientificDate": {
+      "label_de": "Wissenschaftliches Datum",
+      "label_en": "Scientific date",
+      "used_in_ui": false,
+      "de": "Datum nach wissenschaftlichen Datierungsmethoden, z.B. \\'1250 bp +/-30 PBN-1675\\', genau so erfasst, wie vom Spezialisten erhalten.",
+      "en": "date according to scientific dating methods, e.g. ‘1250 bp +/-30 PBN-1675’, recorded precisely as received from the specialist."
+    },
+    "coverage.temporal.scientificDateMethod": {
+      "label_de": "Wissenschaftliche Datierungsmethode",
+      "label_en": "Scientific date method",
+      "used_in_ui": false,
+      "de": "z.B. \\'Radiokarbon-Datierung\\'. Die Verwendung eines kontrollierten Vokabulars wird empfohlen.",
+      "en": "e.g. ‘radiocarbon dating’. Use of a controlled vocabulary is recommended; the vocabulary used should be indicated using an attribute. No particular common vocabulary is recommended for use."
+    },
+    "coverage.spatial": {
+      "label_de": "Räumlich",
+      "label_en": "Spatial",
+      "used_in_ui": true,
+      "de": "Aus welcher Region, welchem Land oder welchem historischen Ort stammen die Objekte der Sammlung?",
+      "en": "Which region, country, or historical site do the objects in this collection come from?"
+    },
+    "coverage.spatial.locationSet": {
+      "label_de": "Räumliche Abdeckung",
+      "label_en": "Spatial Coverage",
+      "used_in_ui": false,
+      "de": "Allgemeine geografische Abdeckung dieses Datenpakets, z.B. das abgedeckte Land. Empfehlung: GeoNames-URI als Attribut angeben.",
+      "en": "General geographic coverage of this data package, e.g. the country covered. Recommendation: provide a GeoNames URI as attribute."
+    },
+    "coverage.spatial.locationSet.namedLocation": {
+      "label_de": "Benannter Ort",
+      "label_en": "Named location",
+      "used_in_ui": false,
+      "de": "Der Name eines Ortes oder Standorts, der für die beschriebene Entität relevant ist. Die Verwendung eines kontrollierten Vokabulars wird empfohlen.. Datenanbietern wird dringend empfohlen, dieses Element auszufüllen.",
+      "en": "The name of a place or location which is relevant to the entity being described, for example ‘Lake Windermere’. The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred. Use of a controlled vocabulary such as http://www.geonames.org/ is recommended. Content providers are strongly recommended to complete this element."
+    },
+    "coverage.spatial.locationSet.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift",
+      "en": "The postal address"
+    },
+    "coverage.spatial.locationSet.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "coverage.spatial.locationSet.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "coverage.spatial.locationSet.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "coverage.spatial.locationSet.geopoliticalArea": {
+      "label_de": "Geopolitisches Gebiet",
+      "label_en": "Geopolitical area",
+      "used_in_ui": false,
+      "de": "Der Name einer Verwaltungsregion, die nicht Teil der Adresse ist, z.B. Schottland, England, Toskana usw. Kann auch für ein historisches geopolitisches Gebiet oder eine Verwaltungseinheit verwendet werden.",
+      "en": "The name of an administrative region which does not form part of the address, for example Scotland, England, Tuscany etc. May also be used for a historical geopolitical area, or an administrative unit (e.g. as defined in the INSPIRE directive)."
+    },
+    "coverage.spatial.locationSet.historicalName": {
+      "label_de": "Historischer Name",
+      "label_en": "Historical name",
+      "used_in_ui": false,
+      "de": "Das Element kann unter Verwendung des XML:lang-Attributs wiederholt werden, wenn der Elementwert in alternativen Sprachen verfügbar ist. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "coverage.spatial.geometry.spatialReferenceSystem": {
+      "label_de": "Räumliches Referenzsystem",
+      "label_en": "Spatial reference system",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wird empfohlen. Die räumliche Koordinatenreferenz ESPG wird zur Verwendung empfohlen. (Obligatorisch, wenn Koordinaten bereitgestellt werden)",
+      "en": "Use of a controlled vocabulary is recommended, and the vocabulary used may be indicated using an attribute (e.g. WGS84). The ESPG spatial coordinate reference is recommended for use. (Mandatory where coordinates are provided)"
+    },
+    "coverage.spatial.geometry.quickpoint": {
+      "label_de": "Quickpoint",
+      "label_en": "Quickpoint",
+      "used_in_ui": false,
+      "de": "dies ist der Mittelpunkt",
+      "en": "this is the centre point"
+    },
+    "coverage.spatial.geometry.quickpoint.x": {
+      "label_de": "X",
+      "label_en": "X",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.quickpoint.y": {
+      "label_de": "Y",
+      "label_en": "Y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.quickpoint.z": {
+      "label_de": "Z",
+      "label_en": "Z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "coverage.spatial.geometry.boundingBox.minX": {
+      "label_de": "Min x",
+      "label_en": "Min x",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.boundingBox.maxX": {
+      "label_de": "Max x",
+      "label_en": "Max x",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.boundingBox.minY": {
+      "label_de": "Min y",
+      "label_en": "Min y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.boundingBox.maxY": {
+      "label_de": "Max y",
+      "label_en": "Max y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.boundingBox.minZ": {
+      "label_de": "Min z",
+      "label_en": "Min z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "coverage.spatial.geometry.boundingBox.maxZ": {
+      "label_de": "Max z",
+      "label_en": "Max z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "coverage.spatial.geometry.otherGeometries": {
+      "label_de": "Andere Geometrien",
+      "label_en": "Other geometries",
+      "used_in_ui": false,
+      "de": "Bezugssystem, Einheiten",
+      "en": "Datum, units"
+    },
+    "coverage.spatial.geometry.otherGeometries.type": {
+      "label_de": "Typ",
+      "label_en": "Type",
+      "used_in_ui": false,
+      "de": "(Punkt, Linie, Polygon) (wiederholende Gruppe, um die Aufzeichnung einer Reihe von Punkten zu ermöglichen)",
+      "en": "(Point, Line, Polygon) (repeating group to allow a series of points to be recorded)"
+    },
+    "coverage.spatial.geometry.otherGeometries.type.x": {
+      "label_de": "X",
+      "label_en": "X",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.otherGeometries.type.y": {
+      "label_de": "Y",
+      "label_en": "Y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "coverage.spatial.geometry.otherGeometries.type.z": {
+      "label_de": "Z",
+      "label_en": "Z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "coverage.spatial.geometry.otherGeometries.accuracy": {
+      "label_de": "Genauigkeit",
+      "label_en": "Accuracy",
+      "used_in_ui": false,
+      "de": "Freitext, die Genauigkeit des Punktes in Metern.",
+      "en": "free-text, the accuracy of the point in metres."
+    },
+    "coverage.spatial.geometry.entity": {
+      "label_de": "Entität",
+      "label_en": "Entity",
+      "used_in_ui": false,
+      "de": "GML, Well-known text (WKT).",
+      "en": "GML, Well-known text (WKT)."
+    },
+    "coverage.spatial.geometry.storedPrecision": {
+      "label_de": "Gespeicherte Genauigkeit",
+      "label_en": "Stored precision",
+      "used_in_ui": false,
+      "de": "Die Genauigkeit einer Koordinate, wie sie im System gespeichert und an die Benutzer geliefert wird.",
+      "en": "The precision of a coordinate as stored in the system and as delivered to the users."
+    },
+    "coverage.spatial.geometry.area": {
+      "label_de": "Fläche",
+      "label_en": "Area",
+      "used_in_ui": false,
+      "de": "Einheiten",
+      "en": "Units"
+    },
+    "coverage.spatial.representations": {
+      "label_de": "Darstellungen",
+      "label_en": "Representations",
+      "used_in_ui": false,
+      "de": "Wie ein Merkmal auf einer Karte dargestellt wird",
+      "en": "How a feature is represented on a map"
+    },
+    "coverage.spatial.cartesianCoordinates3D": {
+      "label_de": "Kartesische Koordinaten 3D",
+      "label_en": "Cartesian coordinates3d",
+      "used_in_ui": false,
+      "de": "wird für die lokalen Koordinaten innerhalb eines 3D-Modells verwendet",
+      "en": "use for the local coordinates within a 3D model"
+    },
+    "coverage.spatial.cartesianCoordinates3D.cartesianCoordinatesSystem": {
+      "label_de": "Kartesisches Koordinatensystem",
+      "label_en": "Cartesian coordinates system",
+      "used_in_ui": false,
+      "de": "dies ist das lokale Koordinatensystem, das innerhalb der jeweiligen Software verwendet wird",
+      "en": "this is the local coordinate system in use within the particular software"
+    },
+    "coverage.spatial.cartesianCoordinates3D.viewpoints": {
+      "label_de": "Blickwinkel",
+      "label_en": "Viewpoints",
+      "used_in_ui": false,
+      "de": "ein Blickwinkel innerhalb des 3D-Modells, d.h. wo die Kamera im Digitalisierungsprozess positioniert ist",
+      "en": "a viewpoint within the 3D model, i.e. where the camera is positioned in the digitisation process"
+    },
+    "dcRelation": {
+      "label_de": "DC-Relation",
+      "label_en": "DC Relation",
+      "used_in_ui": false,
+      "de": "Allgemeiner Link zu verwandten Ressourcen – verweist auf die Institution, ein verwandtes Projekt oder eine Publikation.",
+      "en": "General link to related resources – points to the institution, a related project, or a publication."
+    }
+  },
+  "HeritageAsset": {
+    "recordInformation": {
+      "label_de": "Datensatzinformationen",
+      "label_en": "Record information",
+      "used_in_ui": true,
+      "de": "Verwaltungsdaten zu diesem Objekteintrag (interne Datensatz-ID, Quelle, Anlegedatum und Bearbeiter).",
+      "en": "Administrative metadata for this object record (internal record ID, source institution, creation date, and contact)."
+    },
+    "recordInformation.id": {
+      "label_de": "Kulturgut-Datensatz-ID (intern)",
+      "label_en": "Heritage Asset Record ID",
+      "used_in_ui": true,
+      "de": "Interne System-ID dieses Datensatzes (wird automatisch vergeben und darf nachträglich nicht geändert werden). Nicht die Inventarnummer!",
+      "en": "Internal system ID of this record (assigned automatically; do not change afterwards). Not the museum inventory number!"
+    },
+    "recordInformation.source": {
+      "label_de": "Quelle",
+      "label_en": "Source",
+      "used_in_ui": true,
+      "de": "Name der Einrichtung oder Abteilung, die diesen Objekteintrag pflegt.",
+      "en": "Name of the institution or department maintaining this object record."
+    },
+    "recordInformation.country": {
+      "label_de": "Land",
+      "label_en": "Country",
+      "used_in_ui": false,
+      "de": "Land, in dem die Organisation mit der Hauptverantwortung für den Datensatz ansässig ist.",
+      "en": "Country in which the organisation primarily responsible for the record is based."
+    },
+    "recordInformation.creation": {
+      "label_de": "Erstellung",
+      "label_en": "Creation",
+      "used_in_ui": false,
+      "de": "Wann und von wem dieser Datensatz angelegt wurde.",
+      "en": "When and by whom this record was created."
+    },
+    "recordInformation.creation.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": true,
+      "de": "Datum, an dem dieser Datensatz im System angelegt wurde (nicht das Entstehungsdatum des Objekts).",
+      "en": "Date when this record was created in the system (not the creation date of the object itself)."
+    },
+    "recordInformation.creation.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Vor- und Nachname der Person, die diesen Objekteintrag erfasst hat.",
+      "en": "First and last name of the person who created this object record."
+    },
+    "recordInformation.creation.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": true,
+      "de": "Aufgabe der Person im Museum oder Projekt (z. B. Dokumentation, Kurator:in, Grabungsleitung).",
+      "en": "Role of the person in the museum or project (e.g. Documentation, Curator, Excavation Lead)."
+    },
+    "recordInformation.creation.contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": true,
+      "de": "Museum, Universität oder Einrichtung, zu der die Kontaktperson gehört.",
+      "en": "Museum, university, or institution to which the contact person belongs."
+    },
+    "recordInformation.creation.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "recordInformation.creation.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "recordInformation.creation.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "recordInformation.creation.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "recordInformation.update": {
+      "label_de": "Aktualisierung",
+      "label_en": "Update",
+      "used_in_ui": false,
+      "de": "Das Datum der letzten Aktualisierung des Datensatzes und durch wen.",
+      "en": "The date of the last update to the record and by whom."
+    },
+    "recordInformation.update.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": false,
+      "de": "Datum der letzten Aktualisierung dieses Datensatzes.",
+      "en": "Date of the last update to this record."
+    },
+    "recordInformation.update.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Vorname(n) und Nachname der Person, die die letzte Aktualisierung dieses Datensatzes vorgenommen hat.",
+      "en": "First and last name of the person who made the most recent update to this record."
+    },
+    "recordInformation.update.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Die spezielle Rolle, die die Person oder Organisation spielt",
+      "en": "The particular role played by the person or organization"
+    },
+    "recordInformation.update.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "recordInformation.update.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "recordInformation.update.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "recordInformation.update.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "recordInformation.language": {
+      "label_de": "Sprache",
+      "label_en": "Language",
+      "used_in_ui": false,
+      "de": "Sprache der Metadaten dieses Datensatzes. ISO 639-1 zweistelliger Code.",
+      "en": "Language of the metadata in this record. ISO 639-1 two-letter code."
+    },
+    "recordInformation.metadataRights": {
+      "label_de": "Metadatenrechte",
+      "label_en": "Metadata Rights",
+      "used_in_ui": false,
+      "de": "Lizenz für die Nutzung dieser Metadaten – nicht für das Kulturgut oder die digitale Ressource.",
+      "en": "Licence for the use of these metadata – not for the heritage asset or the digital resource."
+    },
+    "appellation": {
+      "label_de": "Bezeichnung",
+      "label_en": "Appellation",
+      "used_in_ui": false,
+      "de": "Informationen über den Identifikator (ID) und den Namen des Denkmals.",
+      "en": "Information about the identifier (ID) and name of the monument."
+    },
+    "appellation.id": {
+      "label_de": "Inventar- / Objekt-ID",
+      "label_en": "Inventory / Object ID",
+      "used_in_ui": true,
+      "de": "Offizielle Inventar-, Katalog- oder Fundnummer des Objekts im Museum (z. B. ÄM 12345).",
+      "en": "Official museum inventory, catalogue, or find number of the object (e.g. ÄM 12345)."
+    },
+    "appellation.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Geläufige Bezeichnung oder Titel des Objekts (z. B. „Sitzstatue eines Schreibers“). Kann mehrsprachig angegeben werden.",
+      "en": "Common name or title of the object (e.g. 'Seated Statue of a Scribe'). Can be entered in multiple languages."
+    },
+    "description": {
+      "label_de": "Beschreibung",
+      "label_en": "Description",
+      "used_in_ui": true,
+      "de": "Ausführliche fachliche Beschreibung des Objekts: Darstellung, Form, Besonderheiten, Dekor oder Erhaltungskontext.",
+      "en": "Detailed scholarly description of the object: motif, form, distinctive features, decoration, or context."
+    },
+    "generalType": {
+      "label_de": "Allgemeiner Typ",
+      "label_en": "General Type",
+      "used_in_ui": true,
+      "de": "Grobe Einordnung des Kulturguts in eine der 7 Hauptkategorien (z. B. Objekt/Fundstück, Bauwerk, Fundstätte).",
+      "en": "Broad classification of the heritage asset into one of the 7 main categories (e.g. Object/Artefact, Building, Site)."
+    },
+    "actors": {
+      "label_de": "Akteure",
+      "label_en": "Actors",
+      "used_in_ui": false,
+      "de": "Historische Urheber oder beteiligte Personen/Institutionen am Objekt (z. B. Bildhauer, Werkstatt, Stifter, Ausgräber).",
+      "en": "Historical creators or people/organisations associated with the object (e.g. sculptor, workshop, patron)."
+    },
+    "actors.id": {
+      "label_de": "ID",
+      "label_en": "ID",
+      "used_in_ui": true,
+      "de": "Normdaten-Link der Person oder Werkstatt (z. B. GND- oder Wikidata-URI), falls bekannt. Bei unbekanntem Urheber einfach leer lassen.",
+      "en": "Authority file link for the person or workshop (e.g. GND or Wikidata URI), if known. Leave blank if unknown."
+    },
+    "actors.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Name des historischen Urhebers, der Werkstatt oder einer sonstigen am Objekt beteiligten Person.",
+      "en": "Name of the historical creator, workshop, or other person associated with the object."
+    },
+    "actors.actorType": {
+      "label_de": "Akteurtyp",
+      "label_en": "Actor type",
+      "used_in_ui": false,
+      "de": "Gibt an, ob der Akteur eine Einzelperson, eine Gruppe von Personen oder eine Organisation ist.",
+      "en": "Indicates whether the actor is an individual, a group of individuals or an organization."
+    },
+    "actors.roles": {
+      "label_de": "Rollen",
+      "label_en": "Roles",
+      "used_in_ui": true,
+      "de": "Welche Rolle hatte diese Person bzw. Werkstatt beim Objekt (z. B. Künstler, Werkstatt, Auftraggeber, Restaurator)?",
+      "en": "What role did this person or workshop have in relation to the object (e.g. Artist, Workshop, Patron, Conservator)?"
+    },
+    "actors.contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Kontaktinformationen, falls bekannt",
+      "en": "Contact information if known"
+    },
+    "actors.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Titel, Vorname, Nachname, sonstiger Name",
+      "en": "Title, first name, last name, other name"
+    },
+    "actors.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Die spezielle Rolle, die die Person oder Organisation spielt",
+      "en": "The particular role played by the person or organization"
+    },
+    "actors.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "actors.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "actors.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "actors.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "actors.vitalDates": {
+      "label_de": "Lebensdaten",
+      "label_en": "Vital dates",
+      "used_in_ui": false,
+      "de": "Geburtsdatum, Todesdatum falls bekannt.",
+      "en": "Date of birth, date of death if known."
+    },
+    "actors.vitalDates.dateOfBirth": {
+      "label_de": "Geburtsdatum",
+      "label_en": "Date of birth",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "actors.vitalDates.dateOfDeath": {
+      "label_de": "Todesdatum",
+      "label_en": "Date of death",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "actors.vitalDates.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "actors.placeOfBirth": {
+      "label_de": "Geburtsort",
+      "label_en": "Place of birth",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.placeOfDeath": {
+      "label_de": "Sterbeort",
+      "label_en": "Place of death",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.placeOfActivity": {
+      "label_de": "Ort der Tätigkeit",
+      "label_en": "Place of activity",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.bibliographicalNote": {
+      "label_de": "Bibliografische Notiz",
+      "label_en": "Bibliographical note",
+      "used_in_ui": false,
+      "de": "Das Element kann unter Verwendung des XML:lang-Attributs wiederholt werden, wenn der Elementwert in alternativen Sprachen verfügbar ist. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "designations": {
+      "label_de": "Ausweisungen",
+      "label_en": "Designations",
+      "used_in_ui": false,
+      "de": "Dies sind Informationen über etwaige Ausweisungen für ein Denkmal oder Gebäude, die ihm rechtlichen Schutz verleihen. Es kann mehr als eine Ausweisung geben.",
+      "en": "This is information about any designations for a monument or building which provide it with protection in law.  There may be more than one designation."
+    },
+    "designations.protectionType": {
+      "label_de": "Schutzart",
+      "label_en": "Protection type",
+      "used_in_ui": false,
+      "de": "Die Art der Ausweisung oder des Schutzes.",
+      "en": "The type of designation or protection."
+    },
+    "designations.grade": {
+      "label_de": "Grad",
+      "label_en": "Grade",
+      "used_in_ui": false,
+      "de": "Der Grad oder das Niveau des Schutzes.",
+      "en": "The grade or level of protection."
+    },
+    "designations.dateFrom": {
+      "label_de": "Datum von",
+      "label_en": "Date from",
+      "used_in_ui": false,
+      "de": "Das Datum des Inkrafttretens.",
+      "en": "The date it came into force."
+    },
+    "designations.dateTo": {
+      "label_de": "Datum bis",
+      "label_en": "Date to",
+      "used_in_ui": false,
+      "de": "Das Datum, bis zu dem das Denkmal geschützt wird / wurde.",
+      "en": "The date until which the monument will be / has been protected."
+    },
+    "designations.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "conditions": {
+      "label_de": "Bedingungen",
+      "label_en": "Conditions",
+      "used_in_ui": true,
+      "de": "Angaben zum aktuellen Erhaltungszustand des Objekts und eventuellen Schäden oder Restaurierungsbedarfen.",
+      "en": "Information about the current physical condition of the object and any damage or conservation needs."
+    },
+    "conditions.condition": {
+      "label_de": "Zustand",
+      "label_en": "Condition",
+      "used_in_ui": true,
+      "de": "Kurze Gesamtbewertung des Erhaltungszustands (z. B. gut erhalten, fragmentiert, restauriert).",
+      "en": "Brief overall assessment of the condition (e.g. well preserved, fragmented, restored)."
+    },
+    "conditions.conditionAssessment": {
+      "label_de": "Zustandsbewertung",
+      "label_en": "Condition Assessment",
+      "used_in_ui": true,
+      "de": "Genauere Beschreibung von Schäden, Fehlstellen, betroffenen Bereichen und empfohlenen Maßnahmen.",
+      "en": "More detailed description of damage, missing parts, affected areas, and recommended conservation measures."
+    },
+    "conditions.conditionDate": {
+      "label_de": "Datum der Zustandsbewertung",
+      "label_en": "Condition Date",
+      "used_in_ui": true,
+      "de": "Datum oder Zeitraum der Zustandsprüfung (auch ungefähre Angaben möglich, z. B. „1950er Jahre“ oder „2026-05-12“).",
+      "en": "Date or period when the condition was assessed (approximate dates are allowed, e.g. '1950s' or '2026-05-12')."
+    },
+    "conditions.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "conditions.wasPresentAt": {
+      "label_de": "War Anwesend Bei (Zustandsbewertung)",
+      "label_en": "Was Present At (Condition Assessment)",
+      "used_in_ui": true,
+      "de": "Verknüpfung zu der Aktivität (z. B. Restaurierung oder Begutachtung), bei der dieser Zustand festgestellt wurde.",
+      "en": "Link to the activity (e.g. conservation or inspection) during which this condition was recorded."
+    },
+    "provenance": {
+      "label_de": "Provenienz",
+      "label_en": "Provenance",
+      "used_in_ui": true,
+      "de": "Herkunfts- und Besitzgeschichte des Objekts (z. B. Fundort, Vorbesitzer, Erwerbungsjahr, Sammlungshistorie).",
+      "en": "Ownership and custody history of the object (e.g. findspot, previous owners, year of acquisition, collection history)."
+    },
+    "characters": {
+      "label_de": "Objektbeschreibung (Material & Maße)",
+      "label_en": "Object Description (Materials & Dimensions)",
+      "used_in_ui": true,
+      "de": "Fachliche Merkmale des Objekts: Denkmaltyp, Datierung, Material, Inschriften und Abmessungen.",
+      "en": "Key characteristics of the object: monument type, dating, materials, inscriptions, and dimensions."
+    },
+    "characters.heritageAssetType": {
+      "label_de": "Denkmaltyp",
+      "label_en": "Monument Type",
+      "used_in_ui": true,
+      "de": "Genaue Objekt- oder Denkmalgattung aus dem HECTOR-Vokabular (z. B. Grabstele, Amphore, Tempel).",
+      "en": "Specific object or monument type from the HECTOR vocabulary (e.g. funerary stele, amphora, temple)."
+    },
+    "characters.temporal": {
+      "label_de": "Zeitlich",
+      "label_en": "Temporal",
+      "used_in_ui": true,
+      "de": "Zeitliche Einordnung des Objekts (Entstehungszeitraum, Epoche und ggf. naturwissenschaftliche Datierung).",
+      "en": "Temporal classification of the object (date of creation, historical period, and optional scientific dating)."
+    },
+    "characters.temporal.timeSpan": {
+      "label_de": "Zeitspanne",
+      "label_en": "Time span",
+      "used_in_ui": true,
+      "de": "Zeitspanne der Entstehung bzw. Nutzung des Objekts.",
+      "en": "Time span during which the object was created or used."
+    },
+    "characters.temporal.timeSpan.startDate": {
+      "label_de": "Startdatum",
+      "label_en": "Start Date",
+      "used_in_ui": true,
+      "de": "Frühestes Entstehungsjahr des Objekts (z. B. -2500 für 2500 v. Chr.). Nicht das Digitalisierungsdatum!",
+      "en": "Earliest year of creation of the object (e.g. -2500 for 2500 BCE). Not the digitisation date!"
+    },
+    "characters.temporal.timeSpan.endDate": {
+      "label_de": "Enddatum",
+      "label_en": "End Date",
+      "used_in_ui": true,
+      "de": "Spätestes Entstehungsjahr des Objekts (z. B. -2400 für 2400 v. Chr.).",
+      "en": "Latest year of creation of the object (e.g. -2400 for 2400 BCE)."
+    },
+    "characters.temporal.timeSpan.dateRangeQualifier": {
+      "label_de": "Datumsbereichs-Qualifikator",
+      "label_en": "Date range qualifier",
+      "used_in_ui": false,
+      "de": "die Art der angegebenen Zeitspanne (z.B. durchgehend, zu einem bestimmten Zeitpunkt während usw.). Die Verwendung eines kontrollierten Vokabulars wird empfohlen.",
+      "en": "the nature of the time span given (e.g. throughout, at some time during, etc.) Use of a controlled vocabulary is recommended."
+    },
+    "characters.temporal.periodName": {
+      "label_de": "Epochenname",
+      "label_en": "Period Name",
+      "used_in_ui": true,
+      "de": "Historische Epoche oder Kulturstufe (z. B. Altes Reich, Römische Kaiserzeit) – idealerweise über PeriodO.",
+      "en": "Historical period or cultural phase (e.g. Old Kingdom, Roman Imperial Period) – ideally via PeriodO."
+    },
+    "characters.temporal.displayDate": {
+      "label_de": "Anzeigezeitraum",
+      "label_en": "Display Date",
+      "used_in_ui": true,
+      "de": "Gut lesbare Datumsangabe für Besucher und Kataloge (z. B. „ca. 2500–2400 v. Chr.“ oder „um 450 v. Chr.“).",
+      "en": "Human-readable date for visitors and catalogues (e.g. 'c. 2500–2400 BCE' or 'around 450 BCE')."
+    },
+    "characters.temporal.scientificDate": {
+      "label_de": "Wissenschaftliches Datum",
+      "label_en": "Scientific Date",
+      "used_in_ui": true,
+      "de": "Messwert einer naturwissenschaftlichen Datierung exakt wie vom Labor angegeben (z. B. „2450 ± 30 BP (Lab-Nr. ...)“).",
+      "en": "Result of scientific dating exactly as reported by the laboratory (e.g. '2450 ± 30 BP (Lab ID ...)')."
+    },
+    "characters.temporal.scientificDateMethod": {
+      "label_de": "Methode der wissenschaftlichen Datierung",
+      "label_en": "Scientific Date Method",
+      "used_in_ui": true,
+      "de": "Verwendete Datierungsmethode (z. B. Radiokarbon / C14, Thermolumineszenz, Dendrochronologie).",
+      "en": "Scientific dating method used (e.g. Radiocarbon / C14, Thermoluminescence, Dendrochronology)."
+    },
+    "characters.materials": {
+      "label_de": "Material",
+      "label_en": "Material",
+      "used_in_ui": true,
+      "de": "Woraus besteht das Objekt (z. B. Kalkstein, Bronze, Terrakotta)? Mehrere Materialien möglich.",
+      "en": "What material(s) is the object made of (e.g. limestone, bronze, terracotta)? Multiple entries possible."
+    },
+    "characters.inscriptions": {
+      "label_de": "Inschriftsinhalt",
+      "label_en": "Inscription Content",
+      "used_in_ui": true,
+      "de": "Transkription vorhandener Inschriften auf dem Objekt (falls möglich in Originalschrift und/oder Übersetzung).",
+      "en": "Transcription of any inscriptions on the object (in original script and/or translation if applicable)."
+    },
+    "characters.dimensions": {
+      "label_de": "Abmessungen",
+      "label_en": "Dimensions",
+      "used_in_ui": true,
+      "de": "Physische Maße des Objekts (Höhe, Breite, Tiefe, Durchmesser, Gewicht usw.).",
+      "en": "Physical measurements of the object (height, width, depth, diameter, weight, etc.)."
+    },
+    "characters.dimensions.extent": {
+      "label_de": "Ausmaß",
+      "label_en": "Extent",
+      "used_in_ui": true,
+      "de": "Welcher Teil des Objekts wurde gemessen (z. B. Gesamtobjekt, Sockel, Fragment)?",
+      "en": "Which part of the object was measured (e.g. whole object, base, fragment)?"
+    },
+    "characters.dimensions.measurementType": {
+      "label_de": "Maßart",
+      "label_en": "Measurement Type",
+      "used_in_ui": true,
+      "de": "Welche Messgröße wurde erfasst (z. B. Höhe, Breite, Tiefe, Durchmesser, Gewicht)?",
+      "en": "Which dimension was measured (e.g. height, width, depth, diameter, weight)?"
+    },
+    "characters.dimensions.units": {
+      "label_de": "Einheit",
+      "label_en": "Units",
+      "used_in_ui": true,
+      "de": "Verwendete Maßeinheit (z. B. cm, mm, m, kg, g).",
+      "en": "Unit of measurement used (e.g. cm, mm, m, kg, g)."
+    },
+    "characters.dimensions.scale": {
+      "label_de": "Maßstab",
+      "label_en": "Scale",
+      "used_in_ui": true,
+      "de": "Maßstab, falls es sich um ein Modell oder eine Replik handelt (bei Originalobjekten leer lassen).",
+      "en": "Scale, if the object is a model or replica (leave blank for original objects)."
+    },
+    "characters.dimensions.value": {
+      "label_de": "Maß",
+      "label_en": "Value",
+      "used_in_ui": true,
+      "de": "Gemessener Zahlenwert in der gewählten Einheit (z. B. 42.5).",
+      "en": "Measured numerical value in the chosen unit (e.g. 42.5)."
+    },
+    "characters.craft": {
+      "label_de": "Wasserfahrzeug",
+      "label_en": "Craft",
+      "used_in_ui": false,
+      "de": "Dies ist eine Sammlung von Informationen zur Beschreibung von Schiffswracks, falls vorhanden",
+      "en": "This is a set of information to describe shipwrecks if any"
+    },
+    "characters.craft.placeOfRegistration": {
+      "label_de": "Registrierungsort",
+      "label_en": "Place of registration",
+      "used_in_ui": false,
+      "de": "Des Schiffes",
+      "en": "Of the ship"
+    },
+    "characters.craft.nationality": {
+      "label_de": "Nationalität",
+      "label_en": "Nationality",
+      "used_in_ui": false,
+      "de": "Des Schiffes",
+      "en": "Of the ship"
+    },
+    "characters.craft.constructionMethod": {
+      "label_de": "Bauweise",
+      "label_en": "Construction method",
+      "used_in_ui": false,
+      "de": "Des Schiffes",
+      "en": "Of the ship"
+    },
+    "characters.craft.propulsion": {
+      "label_de": "Antrieb",
+      "label_en": "Propulsion",
+      "used_in_ui": false,
+      "de": "Des Schiffes",
+      "en": "Of the ship"
+    },
+    "characters.craft.lastJourneyDetails": {
+      "label_de": "Details zur letzten Reise",
+      "label_en": "Last journey details",
+      "used_in_ui": false,
+      "de": "Des Schiffes",
+      "en": "Of the ship"
+    },
+    "characters.craft.lastJourneyDetails.departure": {
+      "label_de": "Abfahrt",
+      "label_en": "Departure",
+      "used_in_ui": false,
+      "de": "Abfahrtshafen",
+      "en": "Port of departure"
+    },
+    "characters.craft.lastJourneyDetails.destination": {
+      "label_de": "Ziel",
+      "label_en": "Destination",
+      "used_in_ui": false,
+      "de": "Zielhafen",
+      "en": "Port of destination"
+    },
+    "characters.craft.lastJourneyDetails.cargo": {
+      "label_de": "Fracht",
+      "label_en": "Cargo",
+      "used_in_ui": false,
+      "de": "Des Schiffes",
+      "en": "Of the ship"
+    },
+    "characters.craft.lastJourneyDetails.mannerOfLoss": {
+      "label_de": "Art des Verlusts",
+      "label_en": "Manner of loss",
+      "used_in_ui": false,
+      "de": "Wie das Schiff verloren ging",
+      "en": "How the ship was lost"
+    },
+    "characters.craft.lastJourneyDetails.dateOfLoss": {
+      "label_de": "Verlustdatum",
+      "label_en": "Date of loss",
+      "used_in_ui": false,
+      "de": "Wann das Schiff verloren ging.. Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "When the ship was lost .. If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "characters.craft.lastJourneyDetails.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "spatial": {
+      "label_de": "Räumlich",
+      "label_en": "Spatial",
+      "used_in_ui": true,
+      "de": "Woher stammt das Objekt (Fundort/Herkunftsort) bzw. wo befindet es sich (bei Bauwerken/Denkmälern)?",
+      "en": "Where does the object come from (findspot/origin) or where is it located (for buildings/monuments)?"
+    },
+    "spatial.locationSet": {
+      "label_de": "Ortsdatensatz",
+      "label_en": "Location set",
+      "used_in_ui": true,
+      "de": "Ortsangaben und geografische Namen zum Fund- oder Standort.",
+      "en": "Place names and geographic details for the findspot or location."
+    },
+    "spatial.locationSet.namedLocation": {
+      "label_de": "Benannter Ort",
+      "label_en": "Named Location",
+      "used_in_ui": false,
+      "de": "Name eines Ortes oder einer Lokalität, die für das Kulturgut relevant ist. Kann mehrsprachig angegeben werden, bevorzugter Wert markierbar.",
+      "en": "Name of a place or location relevant to the heritage asset. Can be provided in multiple languages, with a preferred value indicated."
+    },
+    "spatial.locationSet.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift",
+      "en": "The postal address"
+    },
+    "spatial.locationSet.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "spatial.locationSet.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "spatial.locationSet.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "spatial.locationSet.geopoliticalArea": {
+      "label_de": "Geopolitisches Gebiet",
+      "label_en": "Geopolitical Area",
+      "used_in_ui": false,
+      "de": "Übergeordnete geopolitische Einheit (Land, Region, Provinz).",
+      "en": "Higher-level geopolitical unit (country, region, province)."
+    },
+    "spatial.locationSet.geopoliticalAreaType": {
+      "label_de": "Typ des geopolitischen Gebiets",
+      "label_en": "Geopolitical Area Type",
+      "used_in_ui": false,
+      "de": "Art der Verwaltungseinheit (z. B. Land, Bundesland, Provinz, Gemeinde).",
+      "en": "Type of administrative area (e.g. country, federal state, province, municipality)."
+    },
+    "spatial.locationSet.historicalName": {
+      "label_de": "Historischer Name",
+      "label_en": "Historical Name",
+      "used_in_ui": false,
+      "de": "Historischer Name des Ortes, falls dieser sich vom heutigen Namen unterscheidet.",
+      "en": "Historical name of the place, if it differs from the current name."
+    },
+    "spatial.geometry": {
+      "label_de": "Geometrie",
+      "label_en": "Geometry",
+      "used_in_ui": true,
+      "de": "Optionale genaue Koordinaten (Längen-/Breitengrad) des Fund- oder Standorts.",
+      "en": "Optional exact coordinates (longitude/latitude) of the findspot or site."
+    },
+    "spatial.geometry.spatialReferenceSystem": {
+      "label_de": "Räumliches Referenzsystem",
+      "label_en": "Spatial Reference System",
+      "used_in_ui": true,
+      "de": "Verwendetes Koordinatensystem (z. B. WGS84 / EPSG:4326). Nur nötig, wenn Koordinaten eingetragen werden.",
+      "en": "Coordinate reference system used (e.g. WGS84 / EPSG:4326). Only needed if coordinates are entered."
+    },
+    "spatial.geometry.quickpoint": {
+      "label_de": "Quickpoint",
+      "label_en": "Quickpoint",
+      "used_in_ui": true,
+      "de": "Zentraler Punkt (Mittelpunkt) des Fundorts oder Denkmals.",
+      "en": "Central point of the findspot or monument."
+    },
+    "spatial.geometry.quickpoint.x": {
+      "label_de": "X-Koordinate",
+      "label_en": "X Coordinate",
+      "used_in_ui": true,
+      "de": "Längengrad (Longitude) bzw. Rechtswert (X) des Mittelpunkts.",
+      "en": "Longitude (or Easting / X coordinate) of the centre point."
+    },
+    "spatial.geometry.quickpoint.y": {
+      "label_de": "Y-Koordinate",
+      "label_en": "Y Coordinate",
+      "used_in_ui": true,
+      "de": "Breitengrad (Latitude) bzw. Hochwert (Y) des Mittelpunkts.",
+      "en": "Latitude (or Northing / Y coordinate) of the centre point."
+    },
+    "spatial.geometry.quickpoint.z": {
+      "label_de": "Z-Koordinate (Höhe)",
+      "label_en": "Z Coordinate (Height)",
+      "used_in_ui": true,
+      "de": "Höhe über dem Meeresspiegel in Metern (optional).",
+      "en": "Elevation above sea level in metres (optional)."
+    },
+    "spatial.geometry.quickpoint.accuracy": {
+      "label_de": "Genauigkeit",
+      "label_en": "Accuracy",
+      "used_in_ui": true,
+      "de": "Geschätzte Genauigkeit der Koordinaten in Metern (z. B. „± 10 m“).",
+      "en": "Estimated accuracy of the coordinates in metres (e.g. '± 10 m')."
+    },
+    "spatial.geometry.boundingBox.minX": {
+      "label_de": "Min x",
+      "label_en": "Min x",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.maxX": {
+      "label_de": "Max x",
+      "label_en": "Max x",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.minY": {
+      "label_de": "Min y",
+      "label_en": "Min y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.maxY": {
+      "label_de": "Max y",
+      "label_en": "Max y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.minZ": {
+      "label_de": "Min z",
+      "label_en": "Min z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.boundingBox.maxZ": {
+      "label_de": "Max z",
+      "label_en": "Max z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.otherGeometries": {
+      "label_de": "Andere Geometrien",
+      "label_en": "Other geometries",
+      "used_in_ui": false,
+      "de": "Bezugssystem, Einheiten",
+      "en": "Datum, units"
+    },
+    "spatial.geometry.otherGeometries.type": {
+      "label_de": "Typ",
+      "label_en": "Type",
+      "used_in_ui": false,
+      "de": "(Punkt, Linie, Polygon) (wiederholende Gruppe, um die Aufzeichnung einer Reihe von Punkten zu ermöglichen)",
+      "en": "(Point, Line, Polygon) (repeating group to allow a series of points to be recorded)"
+    },
+    "spatial.geometry.otherGeometries.type.x": {
+      "label_de": "X",
+      "label_en": "X",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.otherGeometries.type.y": {
+      "label_de": "Y",
+      "label_en": "Y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.otherGeometries.type.z": {
+      "label_de": "Z",
+      "label_en": "Z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.otherGeometries.accuracy": {
+      "label_de": "Genauigkeit",
+      "label_en": "Accuracy",
+      "used_in_ui": false,
+      "de": "Freitext, die Genauigkeit des Punktes in Metern.",
+      "en": "free-text, the accuracy of the point in metres."
+    },
+    "spatial.geometry.entity": {
+      "label_de": "Entität",
+      "label_en": "Entity",
+      "used_in_ui": false,
+      "de": "GML, Well-known text (WKT).",
+      "en": "GML, Well-known text (WKT)."
+    },
+    "spatial.geometry.storedPrecision": {
+      "label_de": "Gespeicherte Genauigkeit",
+      "label_en": "Stored precision",
+      "used_in_ui": false,
+      "de": "Die Genauigkeit einer Koordinate, wie sie im System gespeichert und an die Benutzer geliefert wird.",
+      "en": "The precision of a coordinate as stored in the system and as delivered to the users."
+    },
+    "spatial.geometry.area": {
+      "label_de": "Fläche",
+      "label_en": "Area",
+      "used_in_ui": false,
+      "de": "Einheiten",
+      "en": "Units"
+    },
+    "spatial.representations": {
+      "label_de": "Darstellungen",
+      "label_en": "Representations",
+      "used_in_ui": false,
+      "de": "Wie ein Merkmal auf einer Karte dargestellt wird",
+      "en": "How a feature is represented on a map"
+    },
+    "spatial.cartesianCoordinates3D": {
+      "label_de": "Kartesische Koordinaten 3D",
+      "label_en": "Cartesian coordinates3d",
+      "used_in_ui": false,
+      "de": "wird für die lokalen Koordinaten innerhalb eines 3D-Modells verwendet",
+      "en": "use for the local coordinates within a 3D model"
+    },
+    "spatial.cartesianCoordinates3D.cartesianCoordinatesSystem": {
+      "label_de": "Kartesisches Koordinatensystem",
+      "label_en": "Cartesian coordinates system",
+      "used_in_ui": false,
+      "de": "dies ist das lokale Koordinatensystem, das innerhalb der jeweiligen Software verwendet wird",
+      "en": "this is the local coordinate system in use within the particular software"
+    },
+    "spatial.cartesianCoordinates3D.viewpoints": {
+      "label_de": "Blickwinkel",
+      "label_en": "Viewpoints",
+      "used_in_ui": false,
+      "de": "ein Blickwinkel innerhalb des 3D-Modells, d.h. wo die Kamera im Digitalisierungsprozess positioniert ist",
+      "en": "a viewpoint within the 3D model, i.e. where the camera is positioned in the digitisation process"
+    },
+    "repositoryLocation": {
+      "label_de": "Aufbewahrungsort",
+      "label_en": "Repository Location",
+      "used_in_ui": true,
+      "de": "Museum, Archiv oder Depot, in dem das Objekt aktuell aufbewahrt wird.",
+      "en": "Museum, archive, or repository currently holding the object."
+    },
+    "publicationStatement.publisher": {
+      "label_de": "Herausgeber",
+      "label_en": "Publisher",
+      "used_in_ui": false,
+      "de": "Organisation, die diesen Datensatz zum Kulturgut veröffentlicht bzw. zugänglich macht.",
+      "en": "Organisation publishing or making accessible this record about the heritage asset."
+    },
+    "publicationStatement.place": {
+      "label_de": "Ort",
+      "label_en": "Place",
+      "used_in_ui": false,
+      "de": "Ort der Veröffentlichung.",
+      "en": "Place of publication."
+    },
+    "publicationStatement.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": false,
+      "de": "Datum der Veröffentlichung.",
+      "en": "Date of publication."
+    },
+    "rights.copyrightCreditLine": {
+      "label_de": "Urheberrechtsvermerk",
+      "label_en": "Copyright Credit Line",
+      "used_in_ui": false,
+      "de": "Urheberrechtsvermerk für das Kulturgut selbst (nicht für die digitale Ressource). Name des Rechteinhabers und ggf. Jahr.",
+      "en": "Copyright notice for the heritage asset itself (not for the digital resource). Name of the rights holder and year if applicable."
+    },
+    "rights.accessRights": {
+      "label_de": "Zugriffsrechte",
+      "label_en": "Access Rights",
+      "used_in_ui": false,
+      "de": "Aussage über die Zugänglichkeit des Kulturguts.",
+      "en": "A statement about the access rights to the heritage asset."
+    },
+    "rights.reproductionRights": {
+      "label_de": "Reproduktionsrechte",
+      "label_en": "Reproduction Rights",
+      "used_in_ui": false,
+      "de": "Aussage über die Reproduktionsrechte am Kulturgut, einschließlich Kontaktinformationen. ",
+      "en": "A statement about the reproduction rights for the heritage asset, including contact information."
+    },
+    "rights.licence": {
+      "label_de": "Lizenz",
+      "label_en": "Licence",
+      "used_in_ui": false,
+      "de": "Lizenz für das Kulturgut. Empfehlung: Creative-Commons-URI verwenden.",
+      "en": "Licence for the heritage asset. Recommendation: use a Creative Commons URI."
+    },
+    "rights.europeanaRights": {
+      "label_de": "Europeana-Rechte",
+      "label_en": "Europeana rights",
+      "used_in_ui": false,
+      "de": "Europeana-Rechte – eine der 12 Rechte-Erklärungen, die Europeana in ihrem Portal verwendet. Erforderlich für Inhalte, die Europeana bereitgestellt werden.",
+      "en": "Europeana Rights – one of the 12 rights statements used by Europeana in its portal.  See: http://pro.europeana.eu/page/available-rights-statements.  Required for content being provided to Europeana."
+    },
+    "references": {
+      "label_de": "Referenzen",
+      "label_en": "References",
+      "used_in_ui": true,
+      "de": "Literaturhinweise, Kataloge oder Archivquellen zum Objekt (keine digitalen 3D-Dateien – diese gehören ins Modul Digitale Ressourcen).",
+      "en": "Publications, catalogues, or archival sources about the object (not digital 3D files – those belong in Digital Resources)."
+    },
+    "references.appellation": {
+      "label_de": "Bezeichnung",
+      "label_en": "Appellation",
+      "used_in_ui": true,
+      "de": "Titel und ggf. Kennung der zitierten Publikation oder Archivquelle.",
+      "en": "Title and optional identifier of the cited publication or archival source."
+    },
+    "references.appellation.id": {
+      "label_de": "Referenz-ID",
+      "label_en": "Reference ID",
+      "used_in_ui": true,
+      "de": "DOI, ISBN oder Signatur der Quelle (falls vorhanden).",
+      "en": "DOI, ISBN, or archival call number of the source (if available)."
+    },
+    "references.appellation.name": {
+      "label_de": "Titel",
+      "label_en": "Title",
+      "used_in_ui": true,
+      "de": "Titel der Publikation, des Ausstellungskatalogs oder der Akte.",
+      "en": "Title of the publication, exhibition catalogue, or archival file."
+    },
+    "references.actors": {
+      "label_de": "Akteure",
+      "label_en": "Actors",
+      "used_in_ui": true,
+      "de": "Autor:innen, Herausgeber:innen oder beteiligte Institutionen der zitierten Quelle.",
+      "en": "Authors, editors, or organisations responsible for the cited source."
+    },
+    "references.actors.id": {
+      "label_de": "Akteur-ID",
+      "label_en": "Actor ID",
+      "used_in_ui": true,
+      "de": "ORCID-, GND- oder Wikidata-ID des Autors/Herausgebers (optional).",
+      "en": "ORCID, GND, or Wikidata ID of the author/editor (optional)."
+    },
+    "references.actors.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Name der Autorin / des Autors oder der herausgebenden Einrichtung.",
+      "en": "Name of the author or publishing organisation."
+    },
+    "references.actors.actorType": {
+      "label_de": "Akteurtyp",
+      "label_en": "Actor type",
+      "used_in_ui": false,
+      "de": "Gibt an, ob der Akteur eine Einzelperson, eine Gruppe von Personen oder eine Organisation ist.",
+      "en": "Indicates whether the actor is an individual, a group of individuals or an organization."
+    },
+    "references.actors.roles": {
+      "label_de": "Rollen",
+      "label_en": "Roles",
+      "used_in_ui": true,
+      "de": "Rolle bei dieser Publikation (z. B. Autor, Herausgeber, Fotograf).",
+      "en": "Role in this publication (e.g. Author, Editor, Photographer)."
+    },
+    "references.actors.contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Kontaktinformationen, falls bekannt",
+      "en": "Contact information if known"
+    },
+    "references.actors.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Titel, Vorname, Nachname, sonstiger Name",
+      "en": "Title, first name, last name, other name"
+    },
+    "references.actors.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Rolle der Organisation oder Person in Bezug auf die zitierte Referenz.",
+      "en": "Role of the organisation or person in relation to the cited reference."
+    },
+    "references.actors.contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": false,
+      "de": "Name der Organisation, die an der zitierten Quelle beteiligt war.",
+      "en": "Name of the organisation involved in the cited source."
+    },
+    "references.actors.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "references.actors.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "references.actors.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "references.actors.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "references.actors.vitalDates": {
+      "label_de": "Lebensdaten",
+      "label_en": "Vital dates",
+      "used_in_ui": false,
+      "de": "Geburtsdatum, Todesdatum falls bekannt.",
+      "en": "Date of birth, date of death if known."
+    },
+    "references.actors.vitalDates.dateOfBirth": {
+      "label_de": "Geburtsdatum",
+      "label_en": "Date of birth",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "references.actors.vitalDates.dateOfDeath": {
+      "label_de": "Todesdatum",
+      "label_en": "Date of death",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "references.actors.vitalDates.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "references.actors.placeOfBirth": {
+      "label_de": "Geburtsort",
+      "label_en": "Place of birth",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "references.actors.placeOfDeath": {
+      "label_de": "Sterbeort",
+      "label_en": "Place of death",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "references.actors.placeOfActivity": {
+      "label_de": "Ort der Tätigkeit",
+      "label_en": "Place of activity",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "references.actors.bibliographicalNote": {
+      "label_de": "Bibliografische Notiz",
+      "label_en": "Bibliographical note",
+      "used_in_ui": false,
+      "de": "Das Element kann unter Verwendung des XML:lang-Attributs wiederholt werden, wenn der Elementwert in alternativen Sprachen verfügbar ist. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "references.type": {
+      "label_de": "Typ",
+      "label_en": "Type",
+      "used_in_ui": true,
+      "de": "Art der Quelle (z. B. Monografie, Aufsatz, Grabungsbericht, Archivakte).",
+      "en": "Type of source (e.g. monograph, article, excavation report, archival record)."
+    },
+    "references.rights": {
+      "label_de": "Rechte",
+      "label_en": "Rights",
+      "used_in_ui": true,
+      "de": "Rechte- oder Lizenzhinweis zur zitierten Quelle (optional).",
+      "en": "Copyright or licence note for the cited source (optional)."
+    },
+    "references.publicationStatement.publisher": {
+      "label_de": "Herausgeber (Publikationsangabe)",
+      "label_en": "Publisher (Publication Statement)",
+      "used_in_ui": false,
+      "de": "Herausgeber der zitierten Quelle, im Sinne der Publikationsangabe (Ort, Datum, Herausgeber).",
+      "en": "Publisher of the cited source, as part of the publication statement (place, date, publisher)."
+    },
+    "references.publicationStatement.place": {
+      "label_de": "Ort",
+      "label_en": "Place",
+      "used_in_ui": false,
+      "de": "Der Publikation",
+      "en": "Of publication"
+    },
+    "references.publicationStatement.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": false,
+      "de": "Der Publikation",
+      "en": "Of publication"
+    },
+    "references.note": {
+      "label_de": "Anmerkung",
+      "label_en": "Note",
+      "used_in_ui": true,
+      "de": "Seitenzahlen, Katalognummer oder ergänzender Hinweis zur Quelle (z. B. „S. 45–48, Taf. 12“).",
+      "en": "Page numbers, catalogue number, or additional note (e.g. 'pp. 45–48, pl. 12')."
+    },
+    "references.link": {
+      "label_de": "Link",
+      "label_en": "Link",
+      "used_in_ui": true,
+      "de": "Weblink (URL oder DOI-Link) zur Online-Ausgabe der Publikation, falls verfügbar.",
+      "en": "Web link (URL or DOI link) to the online version of the publication, if available."
+    },
+    "hasRepresentation": {
+      "label_de": "Hat Darstellung",
+      "label_en": "Has Representation",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen diesem Kulturgut und einer digitalen Ressource, in der es dargestellt wird. [Hinweis: UI-Beschriftung \\'Hat Darstellung\\'; Schema-Begriff \\'hasRepresentation\\'.]",
+      "en": "The relation between this heritage asset and a digital resource in which it is represented. Give the ID number of the target record or a URI."
+    },
+    "isSuccessorOf": {
+      "label_de": "Ist Nachfolger Von",
+      "label_en": "Is Successor Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen diesem Kulturgut und einem früheren, z.B. eine Kirche ist Nachfolgerin einer früheren Kirche am selben Ort.",
+      "en": "The relation between a heritage asset and an earlier one, e.g. a church is successor of an earlier church on the same site."
+    },
+    "wasPresentAt": {
+      "label_de": "War Anwesend Bei",
+      "label_en": "Was Present At",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen diesem Kulturgut und einer Aktivität, bei der es anwesend war – z.B. eine Burg war bei einer Belagerung anwesend, ein Kreuz war bei einer Digitalisierung anwesend.",
+      "en": "The relation between a heritage asset and an activity that it was present at, e.g. a castle was present at a siege, a cross was present at a digitisation event."
+    },
+    "hasPart": {
+      "label_de": "Hat Teil",
+      "label_en": "Has Part",
+      "used_in_ui": false,
+      "de": "Wird für Kulturgüter verwendet, die andere Objekte enthalten.",
+      "en": "Used for heritage assets that incorporate other assets."
+    },
+    "isPartOf": {
+      "label_de": "Ist Teil Von",
+      "label_en": "Is Part Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen diesem Kulturgut und dem größeren Kulturgut, zu dem es gehört.",
+      "en": "The relation between a heritage asset and the larger heritage asset of which it is part."
+    },
+    "isReplicaOf": {
+      "label_de": "Ist Replik Von",
+      "label_en": "Is Replica Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen einer Replik und dem Original-Kulturgut.",
+      "en": "The relation between a replica and the original heritage asset."
+    },
+    "wasDigitizedBy": {
+      "label_de": "Wurde Digitalisiert Von",
+      "label_en": "Was Digitized By",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen diesem Kulturgut und einer Aktivität, bei der es digitalisiert wurde (Spezialfall von \\'War Anwesend Bei\\').",
+      "en": "The relation between a heritage asset and an activity in which it was digitised (a specialisation of \\'Was Present At\\')."
+    },
+    "dcRelation": {
+      "label_de": "DC-Beziehung",
+      "label_en": "DC Relation",
+      "used_in_ui": false,
+      "de": "Allgemeine Verknüpfung zu verwandten Ressourcen. URI des Objekts in einem externen System.",
+      "en": "General link to related resources. URI of the object in an external system."
+    }
+  },
+  "DigitalResource": {
+    "recordInformation": {
+      "label_de": "Datensatzinformationen",
+      "label_en": "Record information",
+      "used_in_ui": true,
+      "de": "Verwaltungsdaten zu diesem Digitalisat-Eintrag (interne ID, zuständige Einrichtung, Erstelldatum).",
+      "en": "Administrative metadata for this digital resource record (internal ID, maintaining institution, creation date)."
+    },
+    "recordInformation.id": {
+      "label_de": "Digitalisat-Datensatz-ID (intern)",
+      "label_en": "Digital Resource Record ID",
+      "used_in_ui": true,
+      "de": "Interne System-ID dieses Digitalisat-Datensatzes (eindeutig innerhalb der Sammlung).",
+      "en": "Internal system ID of this digital resource record (unique within the collection)."
+    },
+    "recordInformation.source": {
+      "label_de": "Quelle",
+      "label_en": "Source",
+      "used_in_ui": true,
+      "de": "Einrichtung oder Museum, das diesen Eintrag zur digitalen Datei pflegt.",
+      "en": "Institution or museum maintaining this record for the digital file."
+    },
+    "recordInformation.country": {
+      "label_de": "Land",
+      "label_en": "Country",
+      "used_in_ui": false,
+      "de": "Land, in dem die Organisation mit der Hauptverantwortung für diesen Datensatz ansässig ist.",
+      "en": "Country in which the head office of the organisation that maintains this record is based."
+    },
+    "recordInformation.creation": {
+      "label_de": "Erstellung",
+      "label_en": "Creation",
+      "used_in_ui": false,
+      "de": "Wann und von wem dieser Metadaten-Eintrag angelegt wurde.",
+      "en": "When and by whom this metadata record was created."
+    },
+    "recordInformation.creation.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": true,
+      "de": "Anlegedatum dieses Metadaten-Eintrags (nicht das Aufnahmedatum des 3D-Modells bzw. Fotos).",
+      "en": "Date when this metadata record was created (not the capture date of the 3D model or photo)."
+    },
+    "recordInformation.creation.contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Ansprechperson für Rückfragen zu den Metadaten dieser digitalen Datei.",
+      "en": "Contact person for questions about the metadata of this digital file."
+    },
+    "recordInformation.creation.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Vor- und Nachname der Person, die diesen Eintrag erfasst hat.",
+      "en": "First and last name of the person who entered this record."
+    },
+    "recordInformation.creation.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": true,
+      "de": "Funktion der Person im Projekt oder Museum.",
+      "en": "Role of the person in the project or museum."
+    },
+    "recordInformation.creation.contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": true,
+      "de": "Einrichtung, zu der die Kontaktperson gehört.",
+      "en": "Institution to which the contact person belongs."
+    },
+    "recordInformation.creation.contacts.email": {
+      "label_de": "E-Mail",
+      "label_en": "Email",
+      "used_in_ui": true,
+      "de": "E-Mail-Adresse der Kontaktperson für Rückfragen.",
+      "en": "Email address of the contact person for inquiries."
+    },
+    "recordInformation.creation.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": true,
+      "de": "Postanschrift der Kontaktperson oder Einrichtung (optional).",
+      "en": "Postal address of the contact person or institution (optional)."
+    },
+    "recordInformation.creation.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": true,
+      "de": "Hausnummer der Anschrift.",
+      "en": "Street/building number."
+    },
+    "recordInformation.creation.contacts.address.roadName": {
+      "label_de": "Straßenname",
+      "label_en": "Road name",
+      "used_in_ui": true,
+      "de": "Straßenname der Anschrift.",
+      "en": "Street name."
+    },
+    "recordInformation.creation.contacts.address.townOrCity": {
+      "label_de": "Stadt oder Ort",
+      "label_en": "Town or city",
+      "used_in_ui": true,
+      "de": "Stadt oder Ort der Anschrift.",
+      "en": "Town or city."
+    },
+    "recordInformation.creation.contacts.address.postcodeOrZipcode": {
+      "label_de": "Postleitzahl",
+      "label_en": "Postcode or zipcode",
+      "used_in_ui": true,
+      "de": "Postleitzahl.",
+      "en": "Postcode or ZIP code."
+    },
+    "recordInformation.creation.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "recordInformation.creation.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "recordInformation.creation.contacts.address.country": {
+      "label_de": "Land",
+      "label_en": "Country",
+      "used_in_ui": true,
+      "de": "Land der Anschrift.",
+      "en": "Country."
+    },
+    "recordInformation.update": {
+      "label_de": "Aktualisierung",
+      "label_en": "Update",
+      "used_in_ui": false,
+      "de": "Das Datum der letzten Aktualisierung des Datensatzes und durch wen.",
+      "en": "The date of the last update to the record and by whom."
+    },
+    "recordInformation.update.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": false,
+      "de": "Datum der letzten Aktualisierung dieses Datensatzes.",
+      "en": "Date of the last update to this record."
+    },
+    "recordInformation.update.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Vorname(n) und Nachname der Person, die die letzte Aktualisierung dieses Datensatzes vorgenommen hat.",
+      "en": "First and last name of the person who made the most recent update to this record."
+    },
+    "recordInformation.update.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Die spezielle Rolle, die die Person oder Organisation spielt",
+      "en": "The particular role played by the person or organization"
+    },
+    "recordInformation.update.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "recordInformation.update.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "recordInformation.update.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "recordInformation.update.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "recordInformation.language": {
+      "label_de": "Sprache (Metadaten)",
+      "label_en": "Language (Metadata)",
+      "used_in_ui": false,
+      "de": "Sprache(n), in der/denen die Metadaten dieses Digitalisats verfasst sind.",
+      "en": "Language(s) in which the metadata for this digital resource is written."
+    },
+    "recordInformation.metadataRights": {
+      "label_de": "Metadatenrechte",
+      "label_en": "Metadata Rights",
+      "used_in_ui": false,
+      "de": "Lizenz für die Nutzung dieser Metadaten – nicht für die digitale Ressource selbst (siehe \\'Rechte\\' weiter unten).",
+      "en": "Licence for the use of these metadata – not for the digital resource itself (see \\'Rights\\' below)."
+    },
+    "appellation": {
+      "label_de": "Bezeichnung",
+      "label_en": "Appellation",
+      "used_in_ui": true,
+      "de": "Titel/Dateiname und eindeutige Kennung (z. B. DOI) der digitalen Datei.",
+      "en": "Title/filename and unique identifier (e.g. DOI) of the digital file."
+    },
+    "appellation.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Aussagekräftiger Name der digitalen Datei (z. B. „3D-Modell Sitzstatue ÄM 12345 (Master)“).",
+      "en": "Descriptive name of the digital file (e.g. '3D Model Seated Statue ÄM 12345 (Master)')."
+    },
+    "appellation.id": {
+      "label_de": "Ressourcen-ID / DOI",
+      "label_en": "Resource ID / DOI",
+      "used_in_ui": true,
+      "de": "Eindeutige Kennung oder persistente URI (z. B. DOI) der digitalen Ressource.",
+      "en": "Unique identifier or persistent URI (e.g. DOI) of the digital resource."
+    },
+    "description": {
+      "label_de": "Beschreibung",
+      "label_en": "Description",
+      "used_in_ui": true,
+      "de": "Kurze Beschreibung des Digitalisats (z. B. Ansicht, Auflösungsstufe, Zweck als Master oder Web-Ansicht).",
+      "en": "Brief description of the digital resource (e.g. view shown, resolution tier, master vs. web derivative)."
+    },
+    "note": {
+      "label_de": "Anmerkung",
+      "label_en": "Note",
+      "used_in_ui": false,
+      "de": "Optionale interne Hinweise oder Besonderheiten zu dieser Datei.",
+      "en": "Optional internal notes or remarks about this file."
+    },
+    "actors": {
+      "label_de": "Akteure",
+      "label_en": "Actors",
+      "used_in_ui": false,
+      "de": "Die an der Erstellung einer digitalen Ressource beteiligten Akteure",
+      "en": "The actors involved in the creation of a digital resource"
+    },
+    "actors.id": {
+      "label_de": "ID",
+      "label_en": "ID",
+      "used_in_ui": true,
+      "de": "ORCID-, GND- oder Wikidata-ID der Person/Einrichtung, die das Digitalisat erstellt hat (optional).",
+      "en": "ORCID, GND, or Wikidata ID of the person/organisation who created the digital resource (optional)."
+    },
+    "actors.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Name der Person oder Einrichtung, die dieses Digitalisat (z. B. 3D-Scan oder Foto) erstellt hat.",
+      "en": "Name of the person or organisation that created this digital resource (e.g. 3D scan or photo)."
+    },
+    "actors.actorType": {
+      "label_de": "Akteurtyp",
+      "label_en": "Actor Type",
+      "used_in_ui": true,
+      "de": "Handelt es sich um eine Einzelperson oder eine Organisation/Firma?",
+      "en": "Is this an individual person or an organisation/company?"
+    },
+    "actors.roles": {
+      "label_de": "Rollen",
+      "label_en": "Roles",
+      "used_in_ui": true,
+      "de": "Aufgabe bei der Erstellung (z. B. 3D-Scan, Nachbearbeitung, Fotografie, Veröffentlichung).",
+      "en": "Role in creating the resource (e.g. 3D Scanning, Post-processing, Photography, Publishing)."
+    },
+    "actors.contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Kontaktinformationen, falls bekannt",
+      "en": "Contact information if known"
+    },
+    "actors.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Titel, Vorname, Nachname, sonstiger Name",
+      "en": "Title, first name, last name, other name"
+    },
+    "actors.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Die spezielle Rolle, die die Person oder Organisation spielt",
+      "en": "The particular role played by the person or organization"
+    },
+    "actors.contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": false,
+      "de": "Organisation, der die beteiligte Person angehört.",
+      "en": "Organisation to which the involved person belongs."
+    },
+    "actors.contacts.email": {
+      "label_de": "E-Mail",
+      "label_en": "Email",
+      "used_in_ui": false,
+      "de": "E-Mail-Adresse der beteiligten Person.",
+      "en": "Email address of the involved person."
+    },
+    "actors.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "actors.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "House Number",
+      "used_in_ui": false,
+      "de": "Hausnummer der Adresse des Akteurs.",
+      "en": "House number of the actor\\'s address."
+    },
+    "actors.contacts.address.roadName": {
+      "label_de": "Straße",
+      "label_en": "Street",
+      "used_in_ui": false,
+      "de": "Straßenname der Adresse des Akteurs.",
+      "en": "Street name of the actor\\'s address."
+    },
+    "actors.contacts.address.townOrCity": {
+      "label_de": "Ort",
+      "label_en": "City",
+      "used_in_ui": false,
+      "de": "Ort der Adresse des Akteurs.",
+      "en": "City of the actor\\'s address."
+    },
+    "actors.contacts.address.postcodeOrZipcode": {
+      "label_de": "Postleitzahl",
+      "label_en": "Postcode",
+      "used_in_ui": false,
+      "de": "Postleitzahl der Adresse des Akteurs.",
+      "en": "Postcode of the actor\\'s address."
+    },
+    "actors.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "actors.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "actors.contacts.address.country": {
+      "label_de": "Land (Adresse)",
+      "label_en": "Country (Address)",
+      "used_in_ui": false,
+      "de": "Land der Adresse des Akteurs.",
+      "en": "Country of the actor\\'s address."
+    },
+    "actors.vitalDates": {
+      "label_de": "Lebensdaten",
+      "label_en": "Vital dates",
+      "used_in_ui": false,
+      "de": "Geburtsdatum, Todesdatum falls bekannt.",
+      "en": "Date of birth, date of death if known."
+    },
+    "actors.vitalDates.dateOfBirth": {
+      "label_de": "Geburtsdatum",
+      "label_en": "Date of birth",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "actors.vitalDates.dateOfDeath": {
+      "label_de": "Todesdatum",
+      "label_en": "Date of death",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "actors.vitalDates.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "actors.placeOfBirth": {
+      "label_de": "Geburtsort",
+      "label_en": "Place of birth",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.placeOfDeath": {
+      "label_de": "Sterbeort",
+      "label_en": "Place of death",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.placeOfActivity": {
+      "label_de": "Ort der Tätigkeit",
+      "label_en": "Place of activity",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.bibliographicalNote": {
+      "label_de": "Bibliografische Notiz",
+      "label_en": "Bibliographical note",
+      "used_in_ui": false,
+      "de": "Das Element kann unter Verwendung des XML:lang-Attributs wiederholt werden, wenn der Elementwert in alternativen Sprachen verfügbar ist. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "type": {
+      "label_de": "Typ",
+      "label_en": "Type",
+      "used_in_ui": false,
+      "de": "Medientyp der Datei (z. B. 3D-Modell, Bild, Video, Ton, Text).",
+      "en": "Media type of the file (e.g. 3D model, Image, Movie, Sound, Text)."
+    },
+    "format": {
+      "label_de": "Format",
+      "label_en": "Format",
+      "used_in_ui": false,
+      "de": "Dateiformat der digitalen Ressource. Empfehlung: kontrolliertes Vokabular verwenden, z.B. MIME-Typen.",
+      "en": "The file format of the resource. Recommendation: use a controlled vocabulary, such as Internet Media Types (MIME)."
+    },
+    "formatDetails": {
+      "label_de": "Formatdetails",
+      "label_en": "Format Details",
+      "used_in_ui": false,
+      "de": "Zusätzliche technische Informationen zur Datei oder ihrer Erstellung, die bei der Wahl eines geeigneten Viewers helfen können.",
+      "en": "Additional information about the file or its production that could help in selecting an appropriate viewer."
+    },
+    "extent": {
+      "label_de": "Ausmaß",
+      "label_en": "Extent",
+      "used_in_ui": false,
+      "de": "Größe bzw. Umfang der Ressource inklusive Maßeinheit.",
+      "en": "The size or extent of the resource, including the unit of measurement."
+    },
+    "publicationStatement": {
+      "label_de": "Publikationsangabe",
+      "label_en": "Publication statement",
+      "used_in_ui": true,
+      "de": "Wo und wann wurde diese digitale Datei veröffentlicht oder im Repositorium abgelegt?",
+      "en": "Where and when was this digital file published or deposited in a repository?"
+    },
+    "publicationStatement.publisher": {
+      "label_de": "Herausgeber",
+      "label_en": "Publisher",
+      "used_in_ui": true,
+      "de": "Einrichtung oder Repositorium, das die Datei bereitstellt (z. B. BonnData, Zenodo, Museum).",
+      "en": "Institution or repository making the file available (e.g. BonnData, Zenodo, Museum)."
+    },
+    "publicationStatement.place": {
+      "label_de": "Ort",
+      "label_en": "Place",
+      "used_in_ui": true,
+      "de": "Ort der Veröffentlichung (z. B. Bonn).",
+      "en": "Place of publication (e.g. Bonn)."
+    },
+    "publicationStatement.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": true,
+      "de": "Datum der Veröffentlichung.",
+      "en": "Date of publication."
+    },
+    "created": {
+      "label_de": "Erstellt",
+      "label_en": "Created",
+      "used_in_ui": true,
+      "de": "Datum, an dem die digitale Datei selbst erzeugt wurde (z. B. Exportdatum des 3D-Modells).",
+      "en": "Date when the digital file itself was created (e.g. export date of the 3D model)."
+    },
+    "language": {
+      "label_de": "Sprache (Ressource)",
+      "label_en": "Language (Resource)",
+      "used_in_ui": false,
+      "de": "Sprache der digitalen Ressource selbst. Pflicht bei textbasierten Ressourcen.",
+      "en": "Language of the digital resource itself. Mandatory for text-type resources."
+    },
+    "link": {
+      "label_de": "Link",
+      "label_en": "Link",
+      "used_in_ui": true,
+      "de": "Direkter Link (URL) zur eigentlichen Datei (z. B. GLB/OBJ/TIFF) in höchster Qualität – nicht zur Webseite.",
+      "en": "Direct link (URL) to the actual file (e.g. GLB/OBJ/TIFF) in best quality – not to the webpage."
+    },
+    "object": {
+      "label_de": "Vorschaubild",
+      "label_en": "Object (Thumbnail)",
+      "used_in_ui": true,
+      "de": "Link (URL) zu einem Vorschaubild (Thumbnail) dieses Digitalisats.",
+      "en": "Link (URL) to a preview image (thumbnail) of this digital resource."
+    },
+    "isShownAt": {
+      "label_de": "Wird Gezeigt Bei",
+      "label_en": "Is Shown At",
+      "used_in_ui": true,
+      "de": "Link (URL) zur Webseite oder Repositoriums-Seite, auf der das Objekt im Gesamtkontext angezeigt wird.",
+      "en": "Link (URL) to the webpage or repository landing page showing the object in full context."
+    },
+    "rights": {
+      "label_de": "Rechte",
+      "label_en": "Rights",
+      "used_in_ui": false,
+      "de": "Datenanbietern wird dringend empfohlen, dieses Element auszufüllen.",
+      "en": "Content providers are strongly recommended to complete this element."
+    },
+    "rights.copyrightCreditLine": {
+      "label_de": "Urheberrechtsvermerk",
+      "label_en": "Copyright Credit Line",
+      "used_in_ui": false,
+      "de": "Aussage über den Rechteinhaber und das Rechtsdatum für diese digitale Ressource.",
+      "en": "A statement about the rights holder and rights dates for this digital resource."
+    },
+    "rights.accessRights": {
+      "label_de": "Zugriffsrechte",
+      "label_en": "Access Rights",
+      "used_in_ui": false,
+      "de": "Aussage über die Zugänglichkeit dieser digitalen Ressource.",
+      "en": "A statement about the access rights to this digital resource."
+    },
+    "rights.reproductionRights": {
+      "label_de": "Reproduktionsrechte",
+      "label_en": "Reproduction Rights",
+      "used_in_ui": false,
+      "de": "Aussage über die Reproduktionsrechte an dieser digitalen Ressource, einschließlich Kontaktinformationen.",
+      "en": "A statement about the reproduction rights for this digital resource, including contact information."
+    },
+    "rights.licence": {
+      "label_de": "Lizenz",
+      "label_en": "Licence",
+      "used_in_ui": false,
+      "de": "URI, die eine Lizenz oder Nutzungsbedingungen für diese digitale Ressource angibt.",
+      "en": "A URI indicating a licence or conditions for the use of this digital resource."
+    },
+    "rights.europeanaRights": {
+      "label_de": "Europeana-Rechte",
+      "label_en": "Europeana rights",
+      "used_in_ui": false,
+      "de": "Europeana-Rechte – eine der 12 Rechte-Erklärungen, die Europeana in ihrem Portal verwendet. Erforderlich für Inhalte, die Europeana bereitgestellt werden.",
+      "en": "Europeana Rights – one of the 12 rights statements used by Europeana in its portal.  See: http://pro.europeana.eu/page/available-rights-statements.  Required for content being provided to Europeana."
+    },
+    "isRepresentationOf": {
+      "label_de": "Ist Darstellung Von",
+      "label_en": "Is Representation Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und dem Kulturgut, das sie darstellt.",
+      "en": "The relation between this digital resource and the heritage asset that it represents."
+    },
+    "hasPart": {
+      "label_de": "Hat Teil",
+      "label_en": "Has Part",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und anderen digitalen Ressourcen, die sie enthält.",
+      "en": "The relation between this digital resource and other digital resources which it contains."
+    },
+    "isPartOf": {
+      "label_de": "Ist Teil Von",
+      "label_en": "Is Part Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und den digitalen Ressourcen, zu denen sie gehört.",
+      "en": "The relation between this digital resource and the digital resources of which it forms part."
+    },
+    "nextInSequence": {
+      "label_de": "Nächstes In Der Sequenz",
+      "label_en": "Next In Sequence",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und der nächsten in einer Sequenz.",
+      "en": "The relation between this digital resource and the next digital resource in the sequence."
+    },
+    "isPreviousInSequence": {
+      "label_de": "Ist Vorheriges In Der Sequenz",
+      "label_en": "Is Previous In Sequence",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und der vorherigen in einer Sequenz.",
+      "en": "The relation between this digital resource and the previous digital resource in the sequence."
+    },
+    "isDerivativeOf": {
+      "label_de": "Ist Ableitung Von",
+      "label_en": "Is Derivative Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und der digitalen Ressource, von der sie ein Derivat ist.",
+      "en": "The relation between this digital resource and the digital resource which it is a derivative of."
+    },
+    "hasDerivative": {
+      "label_de": "Hat Ableitung",
+      "label_en": "Has Derivative",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser digitalen Ressource und einem Derivat davon.",
+      "en": "The relation between this digital resource and a derivative of it."
+    },
+    "createdDerivative": {
+      "label_de": "Erstelltes Derivat",
+      "label_en": "Created Derivative",
+      "used_in_ui": false,
+      "de": "Beziehung, die die Weiterverwendung dieser digitalen Ressource zur Erstellung von Derivaten beschreibt. Spezialisierung von \\'Ist Ableitung Von\\'.",
+      "en": "The relation which defines the reuse of this digital resource to create derivatives. A specialisation of \\'Is Derivative Of\\'."
+    },
+    "dcRelation": {
+      "label_de": "DC-Beziehung",
+      "label_en": "DC Relation",
+      "used_in_ui": false,
+      "de": "Für allgemeine Beziehungen ausgehend von dieser digitalen Ressource.",
+      "en": "For general relations from this digital resource."
+    },
+    "digitalResource": {
+      "label_de": "Digitale Ressource",
+      "label_en": "Digital Resource",
+      "used_in_ui": false,
+      "de": "Digitale Dateien zum Objekt (z. B. 3D-Master, Web-3D-Derivat, Fotos, Pläne).",
+      "en": "Digital files representing the object (e.g. 3D master, web 3D derivative, photos, drawings)."
+    }
+  },
+  "Activity": {
+    "recordInformation": {
+      "label_de": "Datensatzinformationen",
+      "label_en": "Record information",
+      "used_in_ui": true,
+      "de": "Verwaltungsdaten zu diesem Aktivitäts-Eintrag (interne ID, Einrichtung, Anlegedatum).",
+      "en": "Administrative metadata for this activity record (internal ID, institution, creation date)."
+    },
+    "recordInformation.id": {
+      "label_de": "Aktivitäts-Datensatz-ID (intern)",
+      "label_en": "Activity Record ID",
+      "used_in_ui": true,
+      "de": "Interne System-ID dieser Aktivität (muss innerhalb der Sammlung eindeutig sein).",
+      "en": "Internal system ID of this activity record (must be unique within the collection)."
+    },
+    "recordInformation.source": {
+      "label_de": "Quelle",
+      "label_en": "Source",
+      "used_in_ui": true,
+      "de": "Einrichtung oder Team, das diesen Eintrag zur Aktivität pflegt.",
+      "en": "Institution or team maintaining this activity record."
+    },
+    "recordInformation.country": {
+      "label_de": "Land",
+      "label_en": "Country",
+      "used_in_ui": false,
+      "de": "Land, in dem die Organisation mit der Hauptverantwortung für diesen Datensatz ansässig ist.",
+      "en": "Country in which the head office of the organisation that maintains this record is based."
+    },
+    "recordInformation.creation": {
+      "label_de": "Erstellung",
+      "label_en": "Creation",
+      "used_in_ui": false,
+      "de": "Wann und von wem dieser Aktivitäts-Eintrag angelegt wurde.",
+      "en": "When and by whom this activity record was created."
+    },
+    "recordInformation.creation.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": true,
+      "de": "Anlegedatum dieses Eintrags im System (nicht das Datum, an dem z. B. gescannt oder gegraben wurde).",
+      "en": "Date when this record was created in the system (not when the scan or excavation took place)."
+    },
+    "recordInformation.creation.contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Ansprechperson für Rückfragen zu dieser Aktivität.",
+      "en": "Contact person for questions about this activity."
+    },
+    "recordInformation.creation.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Vor- und Nachname der Person, die diese Aktivität dokumentiert hat.",
+      "en": "First and last name of the person who documented this activity."
+    },
+    "recordInformation.creation.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": true,
+      "de": "Funktion der Person im Projekt oder Museum.",
+      "en": "Role of the person in the project or museum."
+    },
+    "recordInformation.creation.contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": true,
+      "de": "Einrichtung, zu der die Kontaktperson gehört.",
+      "en": "Institution to which the contact person belongs."
+    },
+    "recordInformation.creation.contacts.email": {
+      "label_de": "E-Mail",
+      "label_en": "Email",
+      "used_in_ui": true,
+      "de": "E-Mail-Adresse der Kontaktperson.",
+      "en": "Email address of the contact person."
+    },
+    "recordInformation.creation.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": true,
+      "de": "Postanschrift der Kontaktperson oder Einrichtung (optional).",
+      "en": "Postal address of the contact person or institution (optional)."
+    },
+    "recordInformation.creation.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "recordInformation.creation.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "recordInformation.creation.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "recordInformation.update": {
+      "label_de": "Aktualisierung",
+      "label_en": "Update",
+      "used_in_ui": false,
+      "de": "Das Datum der letzten Aktualisierung des Datensatzes und durch wen.",
+      "en": "The date of the last update to the record and by whom."
+    },
+    "recordInformation.update.date": {
+      "label_de": "Datum",
+      "label_en": "Date",
+      "used_in_ui": false,
+      "de": "Datum der letzten Aktualisierung dieses Datensatzes.",
+      "en": "Date of the last update to this record."
+    },
+    "recordInformation.update.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Vorname(n) und Nachname der Person, die die letzte Aktualisierung dieses Datensatzes vorgenommen hat.",
+      "en": "First and last name of the person who made the most recent update to this record."
+    },
+    "recordInformation.update.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Die spezielle Rolle, die die Person oder Organisation spielt",
+      "en": "The particular role played by the person or organization"
+    },
+    "recordInformation.update.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "recordInformation.update.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "recordInformation.update.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "recordInformation.update.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "recordInformation.language": {
+      "label_de": "Sprache (Metadaten)",
+      "label_en": "Language (Metadata)",
+      "used_in_ui": false,
+      "de": "Standardsprache der Metadaten dieses Datensatzes. ISO 639-1 zweistelliger Code.",
+      "en": "Default language of the metadata in this record. ISO 639-1 two-letter code."
+    },
+    "recordInformation.metadataRights": {
+      "label_de": "Metadatenrechte",
+      "label_en": "Metadata Rights",
+      "used_in_ui": false,
+      "de": "Lizenz für die Nutzung dieser Metadaten zur Aktivität.",
+      "en": "Licence for the use of these metadata about the activity."
+    },
+    "appellation": {
+      "label_de": "Bezeichnung",
+      "label_en": "Appellation",
+      "used_in_ui": true,
+      "de": "Name und Kennung dieser Aktivität (z. B. „3D-Digitalisierung Grabstele ÄM 12345“).",
+      "en": "Name and identifier of this activity (e.g. '3D Digitisation Funerary Stele ÄM 12345')."
+    },
+    "appellation.name": {
+      "label_de": "Titel",
+      "label_en": "Title",
+      "used_in_ui": true,
+      "de": "Verständlicher Titel der Maßnahme oder des Projekts (z. B. „Streifenlichtscan im Depot“).",
+      "en": "Clear title of the activity or project (e.g. 'Structured-light scan in storage')."
+    },
+    "appellation.id": {
+      "label_de": "Aktivitäts-ID",
+      "label_en": "Activity ID",
+      "used_in_ui": true,
+      "de": "Eindeutige Kennung dieser Aktivität (z. B. Projekt- oder Kampagnen-ID).",
+      "en": "Unique identifier of this activity (e.g. project or campaign ID)."
+    },
+    "description": {
+      "label_de": "Beschreibung",
+      "label_en": "Description",
+      "used_in_ui": true,
+      "de": "Kurze Zusammenfassung, was bei dieser Aktivität gemacht wurde und was das Ziel war.",
+      "en": "Brief summary of what was done during this activity and what its goal was."
+    },
+    "hasGeneralPurpose": {
+      "label_de": "Übergeordneter Zweck",
+      "label_en": "Has General Purpose",
+      "used_in_ui": true,
+      "de": "Übergeordneter Zweck der Maßnahme (z. B. Forschung, Dokumentation, Restaurierung, Ausstellungsvorbereitung).",
+      "en": "Overall purpose of the activity (e.g. research, documentation, conservation, exhibition preparation)."
+    },
+    "eventType": {
+      "label_de": "Ereignistyp",
+      "label_en": "Event Type",
+      "used_in_ui": true,
+      "de": "Art der Aktivität (z. B. Digitalisierung, Ausgrabung, Restaurierung, Vermessung). Genau eine Auswahl pro Aktivität.",
+      "en": "Type of activity (e.g. Digitisation, Archaeological Excavation, Conservation, Survey). One selection per activity."
+    },
+    "actors": {
+      "label_de": "Akteure",
+      "label_en": "Actors",
+      "used_in_ui": false,
+      "de": "Personen, Teams oder Firmen, die diese Aktivität durchgeführt haben.",
+      "en": "People, teams, or companies who carried out this activity."
+    },
+    "actors.id": {
+      "label_de": "ID",
+      "label_en": "ID",
+      "used_in_ui": true,
+      "de": "ORCID-, GND- oder Wikidata-ID der beteiligten Person/Organisation (optional).",
+      "en": "ORCID, GND, or Wikidata ID of the involved person/organisation (optional)."
+    },
+    "actors.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": true,
+      "de": "Name der beteiligten Person, Firma oder Einrichtung.",
+      "en": "Name of the involved person, company, or institution."
+    },
+    "actors.actorType": {
+      "label_de": "Akteurtyp",
+      "label_en": "Actor Type",
+      "used_in_ui": true,
+      "de": "Einzelperson, Gruppe oder Organisation?",
+      "en": "Individual person, group, or organisation?"
+    },
+    "actors.roles": {
+      "label_de": "Rollen",
+      "label_en": "Roles",
+      "used_in_ui": true,
+      "de": "Rolle bei dieser Aktivität (z. B. Projektleitung, Scan-Operator, Restaurator:in).",
+      "en": "Role in this activity (e.g. Project Lead, Scan Operator, Conservator)."
+    },
+    "actors.contacts": {
+      "label_de": "Kontakte",
+      "label_en": "Contacts",
+      "used_in_ui": false,
+      "de": "Kontaktinformationen, falls bekannt",
+      "en": "Contact information if known"
+    },
+    "actors.contacts.name": {
+      "label_de": "Name",
+      "label_en": "Name",
+      "used_in_ui": false,
+      "de": "Titel, Vorname, Nachname, sonstiger Name",
+      "en": "Title, first name, last name, other name"
+    },
+    "actors.contacts.role": {
+      "label_de": "Rolle",
+      "label_en": "Role",
+      "used_in_ui": false,
+      "de": "Die spezielle Rolle, die die Person oder Organisation spielt",
+      "en": "The particular role played by the person or organization"
+    },
+    "actors.contacts.organization": {
+      "label_de": "Organisation",
+      "label_en": "Organisation",
+      "used_in_ui": false,
+      "de": "Organisation, der die beteiligte Person angehört.",
+      "en": "Organisation to which the involved person belongs."
+    },
+    "actors.contacts.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift der Person oder Organisation",
+      "en": "The postal address of the person or organization"
+    },
+    "actors.contacts.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "actors.contacts.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "actors.contacts.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "actors.vitalDates": {
+      "label_de": "Lebensdaten",
+      "label_en": "Vital dates",
+      "used_in_ui": false,
+      "de": "Geburtsdatum, Todesdatum falls bekannt.",
+      "en": "Date of birth, date of death if known."
+    },
+    "actors.vitalDates.dateOfBirth": {
+      "label_de": "Geburtsdatum",
+      "label_en": "Date of birth",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "actors.vitalDates.dateOfDeath": {
+      "label_de": "Todesdatum",
+      "label_en": "Date of death",
+      "used_in_ui": false,
+      "de": "Wenn es sich um ein prähistorisches Datum handelt, verwenden Sie das Minuszeichen (-), um dies zu kennzeichnen.",
+      "en": "If this is a prehistoric date use the minus (-) sign to denote it."
+    },
+    "actors.vitalDates.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "Ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut sollte verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "A free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute should be used to indicate which value is preferred."
+    },
+    "actors.placeOfBirth": {
+      "label_de": "Geburtsort",
+      "label_en": "Place of birth",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.placeOfDeath": {
+      "label_de": "Sterbeort",
+      "label_en": "Place of death",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.placeOfActivity": {
+      "label_de": "Ort der Tätigkeit",
+      "label_en": "Place of activity",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wie http://www.geonames.org/ wird empfohlen, und das verwendete Vokabular kann mit einem Attribut angegeben werden.",
+      "en": "Use of a controlled vocabulary such as http://www.geonames.org/ is recommended, and the vocabulary used may be indicated with an attribute."
+    },
+    "actors.bibliographicalNote": {
+      "label_de": "Bibliografische Notiz",
+      "label_en": "Bibliographical note",
+      "used_in_ui": false,
+      "de": "Das Element kann unter Verwendung des XML:lang-Attributs wiederholt werden, wenn der Elementwert in alternativen Sprachen verfügbar ist. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "temporal": {
+      "label_de": "Zeitlich",
+      "label_en": "Temporal",
+      "used_in_ui": true,
+      "de": "Das Datum oder die Zeitspanne des Ereignisses.",
+      "en": "The date or time span of the event."
+    },
+    "temporal.timeSpan": {
+      "label_de": "Zeitspanne",
+      "label_en": "Time span",
+      "used_in_ui": true,
+      "de": "Zeitraum, in dem die Aktivität stattgefunden hat.",
+      "en": "Time span during which the activity took place."
+    },
+    "temporal.timeSpan.startDate": {
+      "label_de": "Startdatum",
+      "label_en": "Start Date",
+      "used_in_ui": true,
+      "de": "Beginn der Aktivität (Format: JJJJ-MM-TT).",
+      "en": "Start date of the activity (Format: YYYY-MM-DD)."
+    },
+    "temporal.timeSpan.endDate": {
+      "label_de": "Enddatum",
+      "label_en": "End Date",
+      "used_in_ui": true,
+      "de": "Ende der Aktivität (Format: JJJJ-MM-TT).",
+      "en": "End date of the activity (Format: YYYY-MM-DD)."
+    },
+    "temporal.timeSpan.dateRangeQualifier": {
+      "label_de": "Datumsbereichs-Qualifikator",
+      "label_en": "Date range qualifier",
+      "used_in_ui": false,
+      "de": "die Art der angegebenen Zeitspanne (z.B. durchgehend, zu einem bestimmten Zeitpunkt während usw.). Die Verwendung eines kontrollierten Vokabulars wird empfohlen.",
+      "en": "the nature of the time span given (e.g. throughout, at some time during, etc.) Use of a controlled vocabulary is recommended."
+    },
+    "temporal.periodName": {
+      "label_de": "Zeitraum der Maßnahme",
+      "label_en": "Project period name",
+      "used_in_ui": true,
+      "de": "Name der Projektphase oder Grabungskampagne (z. B. „Kampagne Herbst 2026“).",
+      "en": "Name of the project phase or excavation campaign (e.g. 'Autumn 2026 Campaign')."
+    },
+    "temporal.displayDate": {
+      "label_de": "Anzeigedatum",
+      "label_en": "Display date",
+      "used_in_ui": false,
+      "de": "ein Freitextfeld, das zur Anzeige des Datums oder der Epoche für Benutzer verwendet wird. Ein bevorzugt/alternativ-Attribut kann verwendet werden, um anzuzeigen, welcher Wert bevorzugt wird.",
+      "en": "a free text field used to display the date or period for users (e.g. early 19th century, 1950s). The element may be repeated using the XML:lang attribute if the element value is available in alternate languages. A preferred/alternate attribute may be used to indicate which value is preferred."
+    },
+    "temporal.scientificDate": {
+      "label_de": "Wissenschaftliches Datum",
+      "label_en": "Scientific date",
+      "used_in_ui": false,
+      "de": "Datum nach wissenschaftlichen Datierungsmethoden, z.B. \\'1250 bp +/-30 PBN-1675\\', genau so erfasst, wie vom Spezialisten erhalten.",
+      "en": "date according to scientific dating methods, e.g. ‘1250 bp +/-30 PBN-1675’, recorded precisely as received from the specialist."
+    },
+    "temporal.scientificDateMethod": {
+      "label_de": "Wissenschaftliche Datierungsmethode",
+      "label_en": "Scientific date method",
+      "used_in_ui": false,
+      "de": "z.B. \\'Radiokarbon-Datierung\\'. Die Verwendung eines kontrollierten Vokabulars wird empfohlen.",
+      "en": "e.g. ‘radiocarbon dating’. Use of a controlled vocabulary is recommended; the vocabulary used should be indicated using an attribute. No particular common vocabulary is recommended for use."
+    },
+    "spatial": {
+      "label_de": "Räumlich",
+      "label_en": "Spatial",
+      "used_in_ui": true,
+      "de": "Ort, an dem die Aktivität stattgefunden hat (z. B. Museumslabor, Depot, Grabungsfläche).",
+      "en": "Place where the activity took place (e.g. museum lab, storage, excavation trench)."
+    },
+    "spatial.locationSet.namedLocation": {
+      "label_de": "Benannter Ort",
+      "label_en": "Named Location",
+      "used_in_ui": false,
+      "de": "Name des Ortes oder Standorts, an dem diese Aktivität stattfand.",
+      "en": "Name of the place or location where this activity took place."
+    },
+    "spatial.locationSet.address": {
+      "label_de": "Adresse",
+      "label_en": "Address",
+      "used_in_ui": false,
+      "de": "Die Postanschrift",
+      "en": "The postal address"
+    },
+    "spatial.locationSet.address.numberInRoad": {
+      "label_de": "Hausnummer",
+      "label_en": "Number in road",
+      "used_in_ui": false,
+      "de": "Die Hausnummer in einer Straße zur Identifizierung eines Grundstücks",
+      "en": "The number in a road or street used to identify a property"
+    },
+    "spatial.locationSet.address.locality": {
+      "label_de": "Örtlichkeit",
+      "label_en": "Locality",
+      "used_in_ui": false,
+      "de": "Ein benanntes Gebiet, in dem ein Denkmal oder Gebäude liegt",
+      "en": "A named area within which a monument or building lies"
+    },
+    "spatial.locationSet.address.adminArea": {
+      "label_de": "Verwaltungsbezirk",
+      "label_en": "Admin area",
+      "used_in_ui": false,
+      "de": "Der Name, unter dem ein Verwaltungsgebiet bekannt ist, z.B. Shropshire",
+      "en": "The name by which an administrative area is known, e.g. Shropshire"
+    },
+    "spatial.locationSet.geopoliticalArea": {
+      "label_de": "Geopolitisches Gebiet",
+      "label_en": "Geopolitical Area",
+      "used_in_ui": false,
+      "de": "Übergeordnete geopolitische Einheit (Land, Region, Stadt), in der diese Aktivität stattfand.",
+      "en": "Higher-level geopolitical unit (country, region, city) in which this activity took place."
+    },
+    "spatial.locationSet.geopoliticalAreaType": {
+      "label_de": "Typ Des Geopolitischen Gebiets",
+      "label_en": "Geopolitical Area Type",
+      "used_in_ui": false,
+      "de": "Klassifikation des geopolitischen Gebiets.",
+      "en": "Classification of the geopolitical area."
+    },
+    "spatial.locationSet.historicalName": {
+      "label_de": "Historischer Name",
+      "label_en": "Historical Name",
+      "used_in_ui": false,
+      "de": "Historischer Name des Ortes, falls dieser sich vom heutigen Namen unterscheidet.",
+      "en": "Historical name of the place, if it differs from the current name."
+    },
+    "spatial.geometry.spatialReferenceSystem": {
+      "label_de": "Räumliches Referenzsystem",
+      "label_en": "Spatial reference system",
+      "used_in_ui": false,
+      "de": "Die Verwendung eines kontrollierten Vokabulars wird empfohlen. Die räumliche Koordinatenreferenz ESPG wird zur Verwendung empfohlen. (Obligatorisch, wenn Koordinaten bereitgestellt werden)",
+      "en": "Use of a controlled vocabulary is recommended, and the vocabulary used may be indicated using an attribute (e.g. WGS84). The ESPG spatial coordinate reference is recommended for use. (Mandatory where coordinates are provided)"
+    },
+    "spatial.geometry.quickpoint": {
+      "label_de": "Quickpoint",
+      "label_en": "Quickpoint",
+      "used_in_ui": false,
+      "de": "dies ist der Mittelpunkt",
+      "en": "this is the centre point"
+    },
+    "spatial.geometry.quickpoint.x": {
+      "label_de": "X",
+      "label_en": "X",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.quickpoint.y": {
+      "label_de": "Y",
+      "label_en": "Y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.quickpoint.z": {
+      "label_de": "Z",
+      "label_en": "Z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.boundingBox.minX": {
+      "label_de": "Min x",
+      "label_en": "Min x",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.maxX": {
+      "label_de": "Max x",
+      "label_en": "Max x",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.minY": {
+      "label_de": "Min y",
+      "label_en": "Min y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.maxY": {
+      "label_de": "Max y",
+      "label_en": "Max y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.boundingBox.minZ": {
+      "label_de": "Min z",
+      "label_en": "Min z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.boundingBox.maxZ": {
+      "label_de": "Max z",
+      "label_en": "Max z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.otherGeometries": {
+      "label_de": "Andere Geometrien",
+      "label_en": "Other geometries",
+      "used_in_ui": false,
+      "de": "Bezugssystem, Einheiten",
+      "en": "Datum, units"
+    },
+    "spatial.geometry.otherGeometries.type": {
+      "label_de": "Typ",
+      "label_en": "Type",
+      "used_in_ui": false,
+      "de": "(Punkt, Linie, Polygon) (wiederholende Gruppe, um die Aufzeichnung einer Reihe von Punkten zu ermöglichen)",
+      "en": "(Point, Line, Polygon) (repeating group to allow a series of points to be recorded)"
+    },
+    "spatial.geometry.otherGeometries.type.x": {
+      "label_de": "X",
+      "label_en": "X",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.otherGeometries.type.y": {
+      "label_de": "Y",
+      "label_en": "Y",
+      "used_in_ui": false,
+      "de": "gemäß dem verwendeten räumlichen Koordinatensystem",
+      "en": "according to the spatial coordinate system in use"
+    },
+    "spatial.geometry.otherGeometries.type.z": {
+      "label_de": "Z",
+      "label_en": "Z",
+      "used_in_ui": false,
+      "de": "Höhe",
+      "en": "height"
+    },
+    "spatial.geometry.otherGeometries.accuracy": {
+      "label_de": "Genauigkeit",
+      "label_en": "Accuracy",
+      "used_in_ui": false,
+      "de": "Freitext, die Genauigkeit des Punktes in Metern.",
+      "en": "free-text, the accuracy of the point in metres."
+    },
+    "spatial.geometry.entity": {
+      "label_de": "Entität",
+      "label_en": "Entity",
+      "used_in_ui": false,
+      "de": "GML, Well-known text (WKT).",
+      "en": "GML, Well-known text (WKT)."
+    },
+    "spatial.geometry.storedPrecision": {
+      "label_de": "Gespeicherte Genauigkeit",
+      "label_en": "Stored precision",
+      "used_in_ui": false,
+      "de": "Die Genauigkeit einer Koordinate, wie sie im System gespeichert und an die Benutzer geliefert wird.",
+      "en": "The precision of a coordinate as stored in the system and as delivered to the users."
+    },
+    "spatial.geometry.area": {
+      "label_de": "Fläche",
+      "label_en": "Area",
+      "used_in_ui": false,
+      "de": "Einheiten",
+      "en": "Units"
+    },
+    "spatial.representations": {
+      "label_de": "Darstellungen",
+      "label_en": "Representations",
+      "used_in_ui": false,
+      "de": "Wie ein Merkmal auf einer Karte dargestellt wird",
+      "en": "How a feature is represented on a map"
+    },
+    "spatial.cartesianCoordinates3D": {
+      "label_de": "Kartesische Koordinaten 3D",
+      "label_en": "Cartesian coordinates3d",
+      "used_in_ui": false,
+      "de": "wird für die lokalen Koordinaten innerhalb eines 3D-Modells verwendet",
+      "en": "use for the local coordinates within a 3D model"
+    },
+    "spatial.cartesianCoordinates3D.cartesianCoordinatesSystem": {
+      "label_de": "Kartesisches Koordinatensystem",
+      "label_en": "Cartesian coordinates system",
+      "used_in_ui": false,
+      "de": "dies ist das lokale Koordinatensystem, das innerhalb der jeweiligen Software verwendet wird",
+      "en": "this is the local coordinate system in use within the particular software"
+    },
+    "spatial.cartesianCoordinates3D.viewpoints": {
+      "label_de": "Blickwinkel",
+      "label_en": "Viewpoints",
+      "used_in_ui": false,
+      "de": "ein Blickwinkel innerhalb des 3D-Modells, d.h. wo die Kamera im Digitalisierungsprozess positioniert ist",
+      "en": "a viewpoint within the 3D model, i.e. where the camera is positioned in the digitisation process"
+    },
+    "consistsOf": {
+      "label_de": "Besteht aus",
+      "label_en": "Consists of",
+      "used_in_ui": false,
+      "de": "dies ist eine sich wiederholende Gruppe von Elementen, die es ermöglicht, die spezifische Aktivität (oder Aktivitäten) zu beschreiben, die während des Gesamtereignisses stattfand(en).",
+      "en": "this is a repeating group of elements which allows the specific activity (or activities) that took place during the overall Event to be described."
+    },
+    "consistsOf.hadSpecificPurpose": {
+      "label_de": "Hatte Bestimmten Zweck",
+      "label_en": "Had Specific Purpose",
+      "used_in_ui": true,
+      "de": "Konkretes Ziel dieses Arbeitsschritts (z. B. „Rohdaten-Aufnahme“ oder „Textur-Berechnung“).",
+      "en": "Specific goal of this work step (e.g. 'Raw data capture' or 'Texture generation')."
+    },
+    "consistsOf.startDate": {
+      "label_de": "Startdatum",
+      "label_en": "Start Date",
+      "used_in_ui": true,
+      "de": "Beginn dieses einzelnen Arbeitsschritts (JJJJ-MM-TT).",
+      "en": "Start date of this specific work step (YYYY-MM-DD)."
+    },
+    "consistsOf.endDate": {
+      "label_de": "Enddatum",
+      "label_en": "End Date",
+      "used_in_ui": true,
+      "de": "Ende dieses einzelnen Arbeitsschritts (JJJJ-MM-TT).",
+      "en": "End date of this specific work step (YYYY-MM-DD)."
+    },
+    "consistsOf.methods": {
+      "label_de": "Methoden",
+      "label_en": "Methods",
+      "used_in_ui": true,
+      "de": "Angewendetes Verfahren bzw. Methode (z. B. Streifenlichtscan, Photogrammetrie, Laser-Scan, Restaurierung).",
+      "en": "Method applied (e.g. structured-light scanning, photogrammetry, laser scanning, conservation)."
+    },
+    "consistsOf.techniques": {
+      "label_de": "Techniken",
+      "label_en": "Techniques",
+      "used_in_ui": true,
+      "de": "Spezielle Technik oder Aufnahmestrategie (z. B. Kreuzpolarisation, Dreh-Teller-Aufnahme).",
+      "en": "Specific technique or capture strategy (e.g. cross-polarisation, turntable capture)."
+    },
+    "consistsOf.materials": {
+      "label_de": "Materialien",
+      "label_en": "Materials",
+      "used_in_ui": true,
+      "de": "Hilfs- oder Verbrauchsmaterialien, die bei diesem Schritt verwendet wurden (z. B. Referenztargets, Festigungsmittel).",
+      "en": "Materials used during this step (e.g. calibration targets, consolidants)."
+    },
+    "consistsOf.equipment": {
+      "label_de": "Ausrüstung",
+      "label_en": "Equipment",
+      "used_in_ui": true,
+      "de": "Eingesetzte Geräte und Software (z. B. Scanner-Modell, Kamera, Objektiv, Verarbeitungssoftware).",
+      "en": "Hardware and software used (e.g. scanner model, camera, lens, processing software)."
+    },
+    "assessments": {
+      "label_de": "Bewertungen",
+      "label_en": "Assessments",
+      "used_in_ui": false,
+      "de": "Während des Ereignisses vorgenommene Bewertungen des Denkmals – z.B. zum Zustand.",
+      "en": "Assessments made of the monument during the event, e.g. of the condition of the monument."
+    },
+    "occurredAt": {
+      "label_de": "Fand Statt Bei",
+      "label_en": "Occurred At",
+      "used_in_ui": false,
+      "de": "Verknüpft diese Aktivität mit einem Zeitraum, der sich mit dem Vorkommen dieser Aktivität überschneidet.",
+      "en": "Can be used to associate this activity to the time span that overlaps with the occurrence of that activity."
+    },
+    "happenedAt": {
+      "label_de": "Fand Statt In",
+      "label_en": "Happened At",
+      "used_in_ui": false,
+      "de": "Verknüpft dieses Ereignis mit dem Ort, an dem es stattfand (als institutioneller Identifier, z.B. GND).",
+      "en": "Can be used to relate this event to the place where it happened (as an institutional identifier, e.g. GND)."
+    },
+    "wasPresentAt": {
+      "label_de": "War Anwesend Bei",
+      "label_en": "Was Present At",
+      "used_in_ui": false,
+      "de": "Verknüpft diese Aktivität mit den Akteuren, die anwesend waren.",
+      "en": "Can be used to relate this activity to the actors who were present."
+    },
+    "hasPart": {
+      "label_de": "Hat Teil",
+      "label_en": "Has Part",
+      "used_in_ui": false,
+      "de": "Diese Aktivität ist ein übergeordnetes Ereignis, das aus mehreren kleineren, eigenständigen Teil-Aktivitäts-Datensätzen besteht.",
+      "en": "This activity is an overarching event composed of several smaller, standalone sub-activity records."
+    },
+    "isPartOf": {
+      "label_de": "Ist Teil Von",
+      "label_en": "Is Part Of",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser Aktivität und der übergeordneten Aktivität, von der sie ein Teil ist.",
+      "en": "This is the relation between an activity and the general activity of which it forms a part."
+    },
+    "hasCreated": {
+      "label_de": "Hat Erstellt",
+      "label_en": "Has Created",
+      "used_in_ui": false,
+      "de": "Beziehung zwischen dieser Aktivität und einer digitalen Ressource oder Datei, die durch sie erstellt wurde.",
+      "en": "This is the relation between an activity and a digital resource or digital file that it created."
+    },
+    "dcRelation": {
+      "label_de": "DC-Beziehung",
+      "label_en": "DC Relation",
+      "used_in_ui": false,
+      "de": "Für allgemeine Beziehungen ausgehend von dieser Aktivität – z.B. zu Publikationen.",
+      "en": "This is for general relations from this activity, e.g. to publications."
+    }
+  },
+  "Components": {
+    "3d.technicalMetadata": {
+      "label_de": "Technische 3D-Metadaten (Header)",
+      "label_en": "3D Technical Metadata (Header)",
+      "used_in_ui": true,
+      "de": "Technische Eigenschaften der gelieferten 3D-Datei (Format, Polygonzahl, Texturen, Genauigkeit, Dateigröße). Scanner, Kameras und Software werden im Modul Aktivitäten dokumentiert.",
+      "en": "Technical properties of the delivered 3D file (format, polygon count, textures, accuracy, file size). Scanners, cameras, and software belong in the Activities module."
+    },
+    "3d.fileSize": {
+      "label_de": "Dateigröße (3D-Datei)",
+      "label_en": "File Size (3D file)",
+      "used_in_ui": true,
+      "de": "Dateigröße der gelieferten 3D-Datei. Verwendete Aufnahmegeräte und Software gehören ins Modul Aktivitäten.",
+      "en": "File size of the delivered 3D file. Acquisition hardware and software belong in the Activities module."
+    }
+  }
+}

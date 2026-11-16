@@ -23,11 +23,7 @@
             }}</span>
             <span
               class="tooltip tooltip-accent tooltip-bottom cursor-help text-base-content/60 hover:text-primary"
-              :data-tip="
-                currentLocale === 'de'
-                  ? 'Hier dokumentieren Sie die technischen Eigenschaften der gelieferten 3D-Datei (Dateiformat, Polygone, Texturen, Genauigkeit, Dateigröße). Aufnahmeverfahren, Kameras, Scanner und Software werden im Bereich Aktivitäten erfasst.'
-                  : 'Document the technical properties of the delivered 3D file here (file format, polygons, textures, accuracy, file size). Acquisition methods, cameras, scanners, and software are recorded in the Activities module.'
-              "
+              :data-tip="getTooltipText('Components', '3d.technicalMetadata', currentLocale)"
             >
               ℹ️
             </span>
@@ -1866,11 +1862,7 @@
               <span class="text-accent font-black">*</span>
               <span
                 class="tooltip tooltip-accent tooltip-right cursor-help font-normal normal-case"
-                :data-tip="
-                  currentLocale === 'de'
-                    ? 'Dateigröße der gelieferten 3D-Datei. Eingesetzte Verarbeitungssoftware und Aufnahme-Equipment werden nicht hier, sondern im Modul Aktivitäten dokumentiert.'
-                    : 'File size of the delivered 3D file. Processing software and acquisition hardware belong to the Activities module, not here.'
-                "
+                :data-tip="getTooltipText('Components', '3d.fileSize', currentLocale)"
               >
                 ℹ️
               </span>
@@ -1983,6 +1975,7 @@
 </template>
 
 <script setup>
+import { getTooltipText } from "../utils/tooltips.js";
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import SoftwarePickerModal from "./SoftwarePickerModal.vue";
 import EquipmentPickerModal from "./EquipmentPickerModal.vue";

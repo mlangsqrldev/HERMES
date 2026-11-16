@@ -195,3 +195,12 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - `Dimensions`- und `References`-Seitenmenüs in zentrierte Modals (`max-w-2xl`) überführt.
   - `Repository Location`: unnötiges Sprach-Dropdown sowie doppelten `Pick Organizations`-Button entfernt; `Open Pool` in `Pick Organizations` (`Organisation wählen`) umbenannt.
   - Sticky-Leiste gestrafft (`+ New Record`, `+ Save & Add Next Part`, `Save Draft` entfernt); `Cancel` löscht nun stets den aktuellen Eintrag aus Formular und Live-XML.
+
+
+---
+
+## 15. Nachtrag `v0.1.23` (16.11.2026) – Zentrale, museumstaugliche Tooltips (DE & EN)
+
+- **Zentrale Tooltip-Verwaltung (`tooltips_uebersetzung.json`, `tooltips_uebersicht.md`, `src/utils/tooltips.js`):**
+  - Alle 450 Tooltip-Einträge (inkl. aller 132 im UI aktiven `ⓘ`-Tooltips) wurden zentral in `tooltips_uebersetzung.json` gebündelt und über `getTooltipText(...)` in `CollectionInformationCrud.vue`, `HeritageAssetIdentificationCrud.vue`, `DigitalResourceCrud.vue`, `ActivityCrud.vue` sowie `DigitalResource3DMetadata.vue` eingebunden.
+  - Alle 47 bisher fehlenden deutschen Tooltips wurden ergänzt und sperrige CARARE-Schema-Texte durch leicht verständliche, praxisnahe Formulierungen mit konkreten Beispielen für Museumsmitarbeiter:innen ersetzt.

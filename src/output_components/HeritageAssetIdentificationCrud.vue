@@ -6575,6 +6575,7 @@
 
 <script setup>
 const emit = defineEmits(["create-digital-resource"]);
+import { getTooltipText } from "../utils/tooltips.js";
 import {
   ref,
   reactive,
@@ -10215,7 +10216,11 @@ const getLabel = (path, fallback, type = "name") => {
   const lang = currentLocale.value === "de" ? "de" : "en";
 
   if (type === "doc") {
-    return fieldLabels[path]?.[lang === "de" ? "docDe" : "docEn"] || fallback;
+    return (
+      getTooltipText("HeritageAsset", path, lang) ||
+      fieldLabels[path]?.[lang === "de" ? "docDe" : "docEn"] ||
+      fallback
+    );
   }
 
   if (type === "plac") {

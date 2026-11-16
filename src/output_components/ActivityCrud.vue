@@ -3662,6 +3662,7 @@
 </template>
 
 <script setup>
+import { getTooltipText } from "../utils/tooltips.js";
 import {
   ref,
   reactive,
@@ -5150,7 +5151,11 @@ const t = (key) =>
 const getLabel = (path, fallback, type = "name") => {
   const lang = currentLocale.value === "de" ? "de" : "en";
   if (type === "doc") {
-    return fieldLabels[path]?.[lang === "de" ? "docDe" : "docEn"] || fallback;
+    return (
+      getTooltipText("Activity", path, lang) ||
+      fieldLabels[path]?.[lang === "de" ? "docDe" : "docEn"] ||
+      fallback
+    );
   }
   if (type === "plac") {
     return fieldLabels[path]?.[lang === "de" ? "placDe" : "placEn"] || fallback;

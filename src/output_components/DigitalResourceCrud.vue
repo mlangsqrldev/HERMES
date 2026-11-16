@@ -4097,6 +4097,7 @@
 </template>
 
 <script setup>
+import { getTooltipText } from "../utils/tooltips.js";
 import { ref, reactive, inject, shallowRef, onMounted, watch } from "vue";
 import { load } from "@tauri-apps/plugin-store";
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
@@ -5292,7 +5293,11 @@ const t = (key) =>
 const getLabel = (path, fallback, type = "name") => {
   const lang = currentLocale.value === "de" ? "de" : "en";
   if (type === "doc") {
-    return fieldLabels[path]?.[lang === "de" ? "docDe" : "docEn"] || fallback;
+    return (
+      getTooltipText("DigitalResource", path, lang) ||
+      fieldLabels[path]?.[lang === "de" ? "docDe" : "docEn"] ||
+      fallback
+    );
   }
   if (type === "plac") {
     return fieldLabels[path]?.[lang === "de" ? "placDe" : "placEn"] || fallback;
