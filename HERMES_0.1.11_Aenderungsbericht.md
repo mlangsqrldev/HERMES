@@ -142,3 +142,11 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - **Ziel-Collection & Sprachprüfung:** Schnellwahl für `3D` und `bcdh` (oder eigener Alias) inkl. automatischer Live-Abfrage von `GET /api/dataverses/{alias}/allowedMetadataLanguages`.
   - **Dateien direkt mit hochladen:** Drag & Drop / Dateiauswahl für 3D-Modelle, Texturen und PDFs sowie optionale Mitgabe von `carare.xml` und `HERMES_Archivbericht.md`.
   - **Direkt-Upload + Fallback:** Legt das Dataset per `POST /api/dataverses/{alias}/datasets` an, lädt alle Dateien per `POST /api/datasets/:persistentId/add` hoch und zeigt die erzeugte DOI verlinkt an (alternativ weiterhin **„Nur JSON speichern“**).
+
+---
+
+## 11. Nachtrag `v0.1.19` (16.11.2026) – Sprachauswahl-Dropdown-Fix & Portable-Only-Paket
+
+- **Sprachauswahl-Dropdown (`src/components/LanguageBadgePicker.vue`):**
+  - `.menu { max-width: 100% }` aus `src/style.css` hatte das Sprach-Dropdown auf die Breite des kleinen `EN ▼`-Buttons gestaucht, sodass Texte und das aktive blaue Badge rechts überliefen. Durch `flex flex-col` mit `w-44 min-w-[11rem] max-w-none` sitzt das Dropdown jetzt sauber und bündig.
+- **Release-Paket:** Bereitgestellt als einzelne datierte portable Anwendung `HERMES_v0.1.19_2026-11-16.exe`.

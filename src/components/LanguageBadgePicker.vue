@@ -14,15 +14,15 @@
     </div>
     <ul
       tabindex="0"
-      class="dropdown-content menu menu-xs p-1.5 shadow-2xl bg-base-100 rounded-xl w-36 z-[120] border border-base-300 mt-1"
+      class="dropdown-content flex flex-col gap-0.5 p-1.5 shadow-2xl bg-base-100 rounded-xl w-44 min-w-[11rem] max-w-none z-[120] border border-base-300 mt-1"
     >
-      <li v-for="lang in availableLanguages" :key="lang.code">
+      <li v-for="lang in availableLanguages" :key="lang.code" class="w-full">
         <a
-          class="flex items-center justify-between py-1 px-2 rounded-lg cursor-pointer"
+          class="flex items-center justify-between w-full py-1.5 px-2.5 rounded-lg cursor-pointer whitespace-nowrap"
           :class="
             activeLang === lang.code
-              ? 'active font-bold bg-primary text-primary-content'
-              : 'hover:bg-base-200'
+              ? 'font-bold bg-primary text-primary-content'
+              : 'hover:bg-base-200 text-base-content'
           "
           @click.prevent="selectLang(lang.code)"
         >
