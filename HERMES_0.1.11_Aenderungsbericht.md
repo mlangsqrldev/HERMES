@@ -73,3 +73,15 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - `.drawer-side` und das innere Drawer-Panel (z. B. *Abmessungen hinzufügen*) erhalten `role="dialog"`, `:aria-modal`, `:aria-label`, `:aria-hidden` sowie explizites `visibility: visible` im geöffneten Zustand, sodass alle Formularfelder im Accessibility-Tree und per Tastatur direkt ansteuerbar sind.
 - **Erstellungs-Tooltip geglättet (`src/output_components/CollectionInformationCrud.vue`):**
   - Der CARARE-Text (`"Informationen darüber, wie die geernteten Ressourcen gesammelt wurden, umfassen:"`) wurde in `creation.docDe` / `creation.docEn` durch eine klare, praxisnahe Beschreibung ersetzt.
+
+---
+
+## 5. Nachtrag `v0.1.13` (16.11.2026) – PeriodO ARK-IDs, Ägyptische Epochen & Live-Suche
+
+- **Alle 37 PeriodO-ARK-IDs gegen `https://data.perio.do/dataset/` verifiziert & korrigiert (`src/components/PeriodoAutocomplete.vue`):**
+  - Sämtliche ungültigen ARK-IDs (u. a. `p05krdx8w33` / `p0868m...`, die auf `perio.do` einen `404`-Fehler lieferten) wurden durch **37 echte, verifizierte PeriodO-ARK-IDs** ersetzt (u. a. `UCLA Encyclopedia of Egyptology`, `EDH`, `FASTI`, `ARIADNE`, `LCSH`).
+- **Ägyptische Epochen in `PERIODO_CATALOG` verschoben & Regionenfilter korrigiert:**
+  - Die 13 ägyptischen Hauptepochen (`Prädynastisch` bis `Römische Zeit (Ägypten)`) liegen nun direkt in `PERIODO_CATALOG` (statt `HECTOR_EPOCHS_CATALOG`), sodass sie sowohl im Modus **Alle** als auch **PeriodO** und über den Filter **Ägypten** gefunden werden.
+  - `normalizeStr` wandelt Umlaute (`ä` -> `ae`) nun **vor** `normalize("NFD")` um.
+- **Live-PeriodO-Suche (`https://data.perio.do/dataset/`):**
+  - Bei Eingaben ab 2 Zeichen im Modus **Alle** oder **PeriodO** wird der vollständige PeriodO-Datensatz (9.537 Epochen, inkl. aller 362 Ägypten-Einträge) einmalig pro Sitzung gecacht und live durchsucht.

@@ -443,6 +443,54 @@ const highlightedIndex = ref(-1);
 const selectedPeriod = ref(null);
 const isLiveSearching = ref(false);
 const liveSkosmosResults = ref([]);
+const livePeriodoResults = ref([]);
+
+let livePeriodoCache = null;
+let livePeriodoPromise = null;
+async function ensureLivePeriodoCache() {
+  if (livePeriodoCache) return livePeriodoCache;
+  if (livePeriodoPromise) return livePeriodoPromise;
+  livePeriodoPromise = fetch("https://data.perio.do/dataset/", {
+    headers: { Accept: "application/json" },
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data?.authorities) return [];
+      const list = [];
+      for (const auth of Object.values(data.authorities)) {
+        const authTitle = auth.source?.title || "PeriodO";
+        for (const [pId, p] of Object.entries(auth.periods || {})) {
+          const start = p.start?.in?.year || p.start?.in?.earliestYear || "";
+          const stop = p.stop?.in?.year || p.stop?.in?.latestYear || "";
+          if (!p.label || (!start && !stop)) continue;
+          const spatial =
+            p.spatialCoverageDescription ||
+            (p.spatialCoverage || []).map((s) => s.label).join(", ") ||
+            "";
+          list.push({
+            id: `http://n2t.net/ark:/99152/${pId}`,
+            uri: `http://n2t.net/ark:/99152/${pId}`,
+            label: p.label,
+            labelDe: p.label,
+            start: String(start),
+            stop: String(stop),
+            region: spatial || "PeriodO",
+            source: `PeriodO (${String(authTitle).slice(0, 28)})`,
+            authority: "PeriodO",
+            aliases: [spatial].filter(Boolean),
+          });
+        }
+      }
+      livePeriodoCache = list;
+      return list;
+    })
+    .catch((e) => {
+      console.warn("Live PeriodO dataset fetch failed:", e);
+      livePeriodoPromise = null;
+      return [];
+    });
+  return livePeriodoPromise;
+}
 
 const setProviderMode = (mode) => {
   providerMode.value = mode;
@@ -466,139 +514,6 @@ const computedPlaceholder = computed(() => {
 
 // Curated canonical HECTOR epochs dataset from vocabs.bcdh.uni-bonn.de/hector_epochs/
 const HECTOR_EPOCHS_CATALOG = [
-  // --- Ägyptische Epochen (PeriodO / Ägyptologie) ---
-  {
-    id: "http://n2t.net/ark:/99152/p0868m22b8s",
-    uri: "http://n2t.net/ark:/99152/p0868m22b8s",
-    label: "Predynastic Period (Egypt)",
-    labelDe: "Prädynastische Zeit (Ägypten)",
-    start: "-5300",
-    stop: "-3000",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "prädynastisch", "predynastic", "naqada"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m28f7b",
-    uri: "http://n2t.net/ark:/99152/p0868m28f7b",
-    label: "Early Dynastic Period (Egypt)",
-    labelDe: "Frühdynastische Zeit (Ägypten)",
-    start: "-3000",
-    stop: "-2686",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "frühdynastisch", "early dynastic", "thinite"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2f7h3",
-    uri: "http://n2t.net/ark:/99152/p0868m2f7h3",
-    label: "Old Kingdom (Egypt)",
-    labelDe: "Altes Reich (Ägypten)",
-    start: "-2686",
-    stop: "-2160",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "altes reich", "old kingdom", "pyramidenzeit"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2g9c4",
-    uri: "http://n2t.net/ark:/99152/p0868m2g9c4",
-    label: "First Intermediate Period (Egypt)",
-    labelDe: "Erste Zwischenzeit (Ägypten)",
-    start: "-2160",
-    stop: "-2055",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "erste zwischenzeit", "first intermediate"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2n2p9",
-    uri: "http://n2t.net/ark:/99152/p0868m2n2p9",
-    label: "Middle Kingdom (Egypt)",
-    labelDe: "Mittleres Reich (Ägypten)",
-    start: "-2055",
-    stop: "-1650",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "mittleres reich", "middle kingdom"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2r6q1",
-    uri: "http://n2t.net/ark:/99152/p0868m2r6q1",
-    label: "Second Intermediate Period (Egypt)",
-    labelDe: "Zweite Zwischenzeit (Ägypten)",
-    start: "-1650",
-    stop: "-1550",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "zweite zwischenzeit", "second intermediate", "hyksos"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2w4v7",
-    uri: "http://n2t.net/ark:/99152/p0868m2w4v7",
-    label: "New Kingdom (Egypt)",
-    labelDe: "Neues Reich (Ägypten)",
-    start: "-1550",
-    stop: "-1069",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "neues reich", "new kingdom", "amarna", "ramessidisch"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2x8z2",
-    uri: "http://n2t.net/ark:/99152/p0868m2x8z2",
-    label: "Third Intermediate Period (Egypt)",
-    labelDe: "Dritte Zwischenzeit (Ägypten)",
-    start: "-1069",
-    stop: "-0664",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "dritte zwischenzeit", "third intermediate"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m2z1k5",
-    uri: "http://n2t.net/ark:/99152/p0868m2z1k5",
-    label: "Late Period (Egypt)",
-    labelDe: "Spätzeit (Ägypten)",
-    start: "-0664",
-    stop: "-0332",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "spätzeit", "spaetzeit", "late period", "saitisch"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m33m8p",
-    uri: "http://n2t.net/ark:/99152/p0868m33m8p",
-    label: "Ptolemaic Period (Egypt)",
-    labelDe: "Ptolemäische Zeit (Ägypten)",
-    start: "-0332",
-    stop: "-0030",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "ptolemäisch", "ptolemaic", "hellenistisch ägypten"],
-  },
-  {
-    id: "http://n2t.net/ark:/99152/p0868m37r4w",
-    uri: "http://n2t.net/ark:/99152/p0868m37r4w",
-    label: "Roman Period (Egypt)",
-    labelDe: "Römische Zeit (Ägypten)",
-    start: "-0030",
-    stop: "0395",
-    region: "Ägypten",
-    source: "PeriodO",
-    authority: "PeriodO",
-    aliases: ["ägypten", "aegypten", "egypt", "römische zeit ägypten", "roman egypt", "koptisch"],
-  },
   {
     id: "http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_e4a9851a",
     uri: "http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_e4a9851a",
@@ -843,16 +758,16 @@ const HECTOR_EPOCHS_CATALOG = [
   },
 ];
 
-// Curated canonical PeriodO dataset with high-value archaeological & historical epochs
+// Curated canonical PeriodO dataset with verified ARK identifiers from data.perio.do
 const PERIODO_CATALOG = [
   {
-    id: "http://n2t.net/ark:/99152/p05krdxf39m",
-    label: "Augustan Period",
+    id: "http://n2t.net/ark:/99152/p0jrrjb7g67",
+    label: "Augustan Age",
     labelDe: "Augusteische Zeit (Augustus)",
-    start: "-0027",
+    start: "-0026",
     stop: "0014",
     region: "Römisches Reich",
-    source: "Pleiades / DAI / PeriodO",
+    source: "PeriodO (EDH)",
     authority: "PeriodO",
     aliases: [
       "augustus",
@@ -865,257 +780,401 @@ const PERIODO_CATALOG = [
     ],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx8w33",
-    label: "Tiberian Period (Reign of Tiberius)",
+    id: "http://n2t.net/ark:/99152/p06c6g34dd8",
+    label: "Tiberius, 14-37",
     labelDe: "Tiberische Zeit (Kaiser Tiberius)",
     start: "0014",
     stop: "0037",
     region: "Römisches Reich",
-    source: "Pleiades / DAI / PeriodO",
+    source: "PeriodO (LCSH)",
     authority: "PeriodO",
     aliases: ["tiberius", "tiberisch", "kaiser tiberius", "frühe kaiserzeit"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx762k",
-    label: "Claudian Period (Reign of Claudius)",
+    id: "http://n2t.net/ark:/99152/p06c6g3w825",
+    label: "Claudius, 41-54",
     labelDe: "Claudische Zeit (Kaiser Claudius)",
     start: "0041",
     stop: "0054",
     region: "Römisches Reich",
-    source: "Pleiades / PeriodO",
+    source: "PeriodO (LCSH)",
     authority: "PeriodO",
     aliases: ["claudius", "claudisch", "kaiser claudius"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx442m",
-    label: "Neronian Period (Reign of Nero)",
+    id: "http://n2t.net/ark:/99152/p0jrrjbr7m9",
+    label: "Neronian",
     labelDe: "Neronische Zeit (Kaiser Nero)",
     start: "0054",
     stop: "0068",
     region: "Römisches Reich",
-    source: "Pleiades / PeriodO",
+    source: "PeriodO (EDH)",
     authority: "PeriodO",
     aliases: ["nero", "neronisch", "kaiser nero"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx559q",
-    label: "Trajanic Period (Reign of Trajan)",
+    id: "http://n2t.net/ark:/99152/p0jrrjbj7h3",
+    label: "Trajanic",
     labelDe: "Trajanische Zeit (Kaiser Trajan)",
     start: "0098",
     stop: "0117",
     region: "Römisches Reich",
-    source: "Pleiades / PeriodO",
+    source: "PeriodO (EDH)",
     authority: "PeriodO",
     aliases: ["trajan", "trajanisch", "kaiser trajan"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx671t",
-    label: "Hadrianic Period (Reign of Hadrian)",
+    id: "http://n2t.net/ark:/99152/p077pzfwxfr",
+    label: "Hadrianic",
     labelDe: "Hadrianische Zeit (Kaiser Hadrian)",
     start: "0117",
     stop: "0138",
     region: "Römisches Reich",
-    source: "Pleiades / PeriodO",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["hadrian", "hadrianisch", "kaiser hadrian"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx7g6n",
-    label: "Early Roman Empire (Early Imperial)",
+    id: "http://n2t.net/ark:/99152/p06v8w498hd",
+    label: "Early Imperial",
     labelDe: "Frühe Römische Kaiserzeit",
-    start: "-0027",
-    stop: "0096",
+    start: "0001",
+    stop: "0100",
     region: "Römisches Reich",
-    source: "Pleiades / DAI / PeriodO",
+    source: "PeriodO (FASTI)",
     authority: "PeriodO",
     aliases: ["frühe kaiserzeit", "fruehe kaiserzeit", "early imperial"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx922z",
-    label: "Middle Roman Empire (Nerva-Antonine)",
-    labelDe: "Mittlere Römische Kaiserzeit (Adoptivkaiser)",
-    start: "0096",
-    stop: "0192",
+    id: "http://n2t.net/ark:/99152/p0qhb66dt5q",
+    label: "Roman Imperial",
+    labelDe: "Römische Kaiserzeit",
+    start: "-0030",
+    stop: "0399",
     region: "Römisches Reich",
-    source: "Pleiades / DAI / PeriodO",
+    source: "PeriodO (ARIADNE)",
     authority: "PeriodO",
-    aliases: ["mittlere kaiserzeit", "adoptivkaiser", "trajan", "hadrian"],
+    aliases: ["römische kaiserzeit", "kaiserzeit", "roman imperial"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdxm56c",
-    label: "Severan Dynasty",
+    id: "http://n2t.net/ark:/99152/p077pzfr5f7",
+    label: "Severan",
     labelDe: "Severische Dynastie (Severerzeit)",
     start: "0193",
     stop: "0235",
     region: "Römisches Reich",
-    source: "Pleiades / PeriodO",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["severer", "severan", "septimius severus"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdxqf86",
-    label: "Roman Republic",
+    id: "http://n2t.net/ark:/99152/p06v8w4k77h",
+    label: "Roman Republican",
     labelDe: "Römische Republik",
-    start: "-0509",
-    stop: "-0027",
+    start: "-0349",
+    stop: "0029",
     region: "Rom & Italien",
-    source: "Pleiades / DAI",
+    source: "PeriodO (FASTI)",
     authority: "PeriodO",
-    aliases: ["republik", "caesar", "cicero"],
+    aliases: ["republik", "caesar", "cicero", "roman republic"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx9c4f",
+    id: "http://n2t.net/ark:/99152/p0z5nvh5rr9",
     label: "Late Classical Period",
     labelDe: "Spätklassische Periode (Spätklassik)",
-    start: "-0400",
-    stop: "-0323",
+    start: "-0399",
+    stop: "-0322",
     region: "Griechenland & Attika",
-    source: "DAI / BCDH / PeriodO",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["spätklassik", "spätklassisch", "late classical", "nikarete"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx4a57",
-    label: "High Classical Period",
+    id: "http://n2t.net/ark:/99152/p083p5rbj32",
+    label: "High Classical",
     labelDe: "Hochklassik (Perikleische Zeit)",
-    start: "-0450",
-    stop: "-0400",
+    start: "-0449",
+    stop: "-0399",
     region: "Griechenland & Ägäis",
-    source: "DAI / Pleiades",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["hochklassik", "perikles", "parthenon"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx0846",
-    label: "Early Classical (Severe Style)",
+    id: "http://n2t.net/ark:/99152/p083p5rb9mx",
+    label: "Early Classical",
     labelDe: "Frühklassik (Strenger Stil)",
-    start: "-0480",
-    stop: "-0450",
+    start: "-0479",
+    stop: "-0449",
     region: "Griechenland & Ägäis",
-    source: "DAI / Pleiades",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["frühklassik", "strenger stil"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx38c2",
-    label: "Classical Greece",
+    id: "http://n2t.net/ark:/99152/p0mn2ndtsjq",
+    label: "Classical Period",
     labelDe: "Klassische Zeit (Klassik)",
     start: "-0480",
-    stop: "-0323",
+    stop: "-0324",
     region: "Griechenland & Mittelmeer",
-    source: "Pleiades / DAI",
+    source: "PeriodO",
     authority: "PeriodO",
-    aliases: ["klassik", "klassisch", "athen"],
+    aliases: ["klassik", "klassisch", "athen", "classical greece"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdxzsqb",
+    id: "http://n2t.net/ark:/99152/p0mn2ndq6bv",
     label: "Hellenistic Period",
     labelDe: "Hellenismus (Hellenistische Zeit)",
     start: "-0323",
-    stop: "-0031",
+    stop: "-0101",
     region: "Östlicher Mittelmeerraum",
-    source: "Pleiades / DAI",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["hellenistisch", "hellenismus", "alexander"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx8qsf",
+    id: "http://n2t.net/ark:/99152/p0mn2nddc8k",
     label: "Archaic Period",
     labelDe: "Archaische Zeit (Archaik)",
     start: "-0700",
-    stop: "-0480",
+    stop: "-0481",
     region: "Griechenland & Ägäis",
-    source: "Pleiades / DAI",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["archaisch", "archaik"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdx5s4c",
+    id: "http://n2t.net/ark:/99152/p05krdx2khc",
     label: "Geometric Period",
     labelDe: "Geometrische Zeit",
-    start: "-0900",
-    stop: "-0700",
+    start: "-0899",
+    stop: "-0699",
     region: "Griechenland",
-    source: "Pleiades",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["geometrisch", "dipylon"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p0qhb66c77k",
-    label: "Bronze Age",
+    id: "http://n2t.net/ark:/99152/p0mn2ndq6m8",
+    label: "Bronze Age Period",
     labelDe: "Bronzezeit",
-    start: "-02200",
-    stop: "-00800",
-    region: "Mitteleuropa",
-    source: "ChronOntology",
+    start: "-3100",
+    stop: "-1051",
+    region: "Mittelmeerraum & Ägäis",
+    source: "PeriodO",
     authority: "PeriodO",
-    aliases: ["bronzezeit", "hügelgräber", "urnenfelder"],
+    aliases: ["bronzezeit", "bronze age", "ägäis"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p0qhb66x22n",
-    label: "Hallstatt Culture (Early Iron Age)",
+    id: "http://n2t.net/ark:/99152/p0hrtx5dm4p",
+    label: "Cultura de Hallstatt",
     labelDe: "Hallstattzeit (Frühe Eisenzeit)",
-    start: "-00800",
-    stop: "-00450",
+    start: "-0599",
+    stop: "-0449",
     region: "Mitteleuropa",
-    source: "ChronOntology",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["hallstatt", "frühe eisenzeit", "kelten"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p0qhb66b11m",
-    label: "La Tène Culture (Late Iron Age)",
+    id: "http://n2t.net/ark:/99152/p0ctc359kcx",
+    label: "La Tene",
     labelDe: "Latènezeit (Späte Eisenzeit)",
-    start: "-00450",
-    stop: "-0015",
+    start: "-0449",
+    stop: "-0054",
     region: "Mitteleuropa",
-    source: "ChronOntology",
+    source: "PeriodO",
     authority: "PeriodO",
-    aliases: ["latène", "späte eisenzeit", "kelten"],
+    aliases: ["latène", "la tene", "späte eisenzeit", "kelten"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p05krdxbw8s",
+    id: "http://n2t.net/ark:/99152/p0jrrjb67vs",
     label: "Late Antiquity",
     labelDe: "Spätantike",
     start: "0284",
-    stop: "0565",
+    stop: "0476",
     region: "Mittelmeerraum & Europa",
-    source: "Pleiades / DAI",
+    source: "PeriodO (EDH)",
     authority: "PeriodO",
     aliases: ["spätantike", "justinian"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p0qhb66w77z",
+    id: "http://n2t.net/ark:/99152/p0jrrjbbvc7",
     label: "Early Middle Ages",
     labelDe: "Frühmittelalter",
-    start: "0500",
-    stop: "1050",
+    start: "0477",
+    stop: "0830",
     region: "Europa",
-    source: "ChronOntology",
+    source: "PeriodO (EDH)",
     authority: "PeriodO",
     aliases: ["frühmittelalter", "ottonen"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p0qhb66j33a",
-    label: "High Middle Ages",
-    labelDe: "Hochmittelalter",
-    start: "1050",
-    stop: "1250",
+    id: "http://n2t.net/ark:/99152/p0pf7xr2szm",
+    label: "Middle Ages",
+    labelDe: "Mittelalter",
+    start: "0450",
+    stop: "1499",
     region: "Europa",
-    source: "ChronOntology",
+    source: "PeriodO",
     authority: "PeriodO",
-    aliases: ["hochmittelalter", "staufer", "salier", "romanik", "gotik"],
+    aliases: ["mittelalter", "hochmittelalter", "middle ages"],
   },
   {
-    id: "http://n2t.net/ark:/99152/p0qhb66t66f",
+    id: "http://n2t.net/ark:/99152/p0cwscs3p46",
     label: "Late Middle Ages",
     labelDe: "Spätmittelalter",
-    start: "1250",
-    stop: "1500",
+    start: "1100",
+    stop: "1415",
     region: "Europa",
-    source: "ChronOntology",
+    source: "PeriodO",
     authority: "PeriodO",
     aliases: ["spätmittelalter", "gotik"],
+  },
+  // --- Ägyptische Epochen (PeriodO – UCLA Encyclopedia of Egyptology) ---
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zvrnc",
+    label: "Predynastic",
+    labelDe: "Prädynastische Zeit (Ägypten)",
+    start: "-4499",
+    stop: "-2949",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "prädynastisch", "predynastic", "naqada"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zkc72",
+    label: "Early Dynastic",
+    labelDe: "Frühdynastische Zeit (Ägypten)",
+    start: "-2949",
+    stop: "-2669",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "frühdynastisch", "early dynastic", "thinite"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76z92f9",
+    label: "Old Kingdom",
+    labelDe: "Altes Reich (Ägypten)",
+    start: "-2669",
+    stop: "-2167",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "altes reich", "old kingdom", "pyramidenzeit"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zqqr2",
+    label: "First Intermediate Period",
+    labelDe: "Erste Zwischenzeit (Ägypten)",
+    start: "-2167",
+    stop: "-2039",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "erste zwischenzeit", "first intermediate"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zkb23",
+    label: "Middle Kingdom",
+    labelDe: "Mittleres Reich (Ägypten)",
+    start: "-2039",
+    stop: "-1639",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "mittleres reich", "middle kingdom"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zxgwt",
+    label: "Second Intermediate Period",
+    labelDe: "Zweite Zwischenzeit (Ägypten)",
+    start: "-1639",
+    stop: "-1547",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "zweite zwischenzeit", "second intermediate", "hyksos"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zvjkw",
+    label: "New Kingdom",
+    labelDe: "Neues Reich (Ägypten)",
+    start: "-1547",
+    stop: "-1085",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "neues reich", "new kingdom", "amarna", "ramessidisch"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zpmnv",
+    label: "Third Intermediate Period",
+    labelDe: "Dritte Zwischenzeit (Ägypten)",
+    start: "-1085",
+    stop: "-0663",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "dritte zwischenzeit", "third intermediate"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zh6n2",
+    label: "Late Period",
+    labelDe: "Spätzeit (Ägypten)",
+    start: "-0663",
+    stop: "-0331",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "spätzeit", "spaetzeit", "late period", "saitisch"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zgqb7",
+    label: "Persian Period",
+    labelDe: "Perserzeit (Ägypten)",
+    start: "-0524",
+    stop: "-0401",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "perserzeit", "persian period"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76z756b",
+    label: "Macedonian",
+    labelDe: "Makedonische Zeit (Ägypten)",
+    start: "-0331",
+    stop: "-0303",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "makedonisch", "macedonian", "alexander"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zn9c9",
+    label: "Ptolemaic",
+    labelDe: "Ptolemäische Zeit (Ägypten)",
+    start: "-0303",
+    stop: "-0029",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "ptolemäisch", "ptolemaic", "hellenistisch ägypten"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0qk76zbv62",
+    label: "Roman",
+    labelDe: "Römische Zeit (Ägypten)",
+    start: "-0029",
+    stop: "0394",
+    region: "Ägypten",
+    source: "PeriodO (UCLA Egyptology)",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "römische zeit ägypten", "roman egypt", "koptisch"],
   },
 ];
 
@@ -1151,12 +1210,12 @@ const activeQuickEpochs = computed(() => {
 function normalizeStr(str) {
   return String(str || "")
     .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
     .replace(/ä/g, "ae")
     .replace(/ö/g, "oe")
     .replace(/ü/g, "ue")
     .replace(/ß/g, "ss")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
 }
 
@@ -1200,12 +1259,13 @@ const displayedPeriods = computed(() => {
   if (providerMode.value === "hector") {
     pool = [...liveSkosmosResults.value, ...HECTOR_EPOCHS_CATALOG];
   } else if (providerMode.value === "periodo") {
-    pool = PERIODO_CATALOG;
+    pool = [...PERIODO_CATALOG, ...livePeriodoResults.value];
   } else {
     pool = [
       ...liveSkosmosResults.value,
       ...HECTOR_EPOCHS_CATALOG,
       ...PERIODO_CATALOG,
+      ...livePeriodoResults.value,
     ];
   }
 
@@ -1225,7 +1285,11 @@ const displayedPeriods = computed(() => {
     uniquePool = uniquePool.filter((item) => {
       const reg = normalizeStr(item.region || "");
       if (regionFilter.value === "egypt") {
-        return reg.includes("agypt") || reg.includes("egypt");
+        return (
+          reg.includes("aegypt") ||
+          reg.includes("agypt") ||
+          reg.includes("egypt")
+        );
       }
       if (regionFilter.value === "mediterranean") {
         return (
@@ -1278,7 +1342,7 @@ const onSearchInput = () => {
   highlightedIndex.value = -1;
 
   const query = searchQuery.value.trim();
-  if (!query || query.length < 2 || providerMode.value === "periodo") {
+  if (!query || query.length < 2) {
     return;
   }
 
@@ -1286,29 +1350,48 @@ const onSearchInput = () => {
   liveSearchTimer = setTimeout(async () => {
     try {
       isLiveSearching.value = true;
-      const lang = props.currentLocale === "de" ? "de" : "en";
-      const res = await fetch(
-        `https://vocabs.bcdh.uni-bonn.de/rest/v1/hector_epochs/search?query=${encodeURIComponent(query)}*&lang=${lang}`,
-      );
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data.results)) {
-          liveSkosmosResults.value = data.results.map((r) => ({
-            id: r.uri,
-            uri: r.uri,
-            label: r.prefLabel || query,
-            labelDe: r.prefLabel || query,
-            start: "",
-            stop: "",
-            region: "HECTOR",
-            source: "HECTOR Skosmos (Live)",
-            authority: "HECTOR",
-            aliases: [r.prefLabel || ""],
-          }));
-        }
+      const tasks = [];
+      if (providerMode.value !== "periodo") {
+        const lang = props.currentLocale === "de" ? "de" : "en";
+        tasks.push(
+          fetch(
+            `https://vocabs.bcdh.uni-bonn.de/rest/v1/hector_epochs/search?query=${encodeURIComponent(query)}*&lang=${lang}`,
+          )
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => {
+              if (data && Array.isArray(data.results)) {
+                liveSkosmosResults.value = data.results.map((r) => ({
+                  id: r.uri,
+                  uri: r.uri,
+                  label: r.prefLabel || query,
+                  labelDe: r.prefLabel || query,
+                  start: "",
+                  stop: "",
+                  region: "HECTOR",
+                  source: "HECTOR Skosmos (Live)",
+                  authority: "HECTOR",
+                  aliases: [r.prefLabel || ""],
+                }));
+              }
+            })
+            .catch((e) => console.warn("Live Skosmos search failed:", e)),
+        );
       }
-    } catch (e) {
-      console.warn("Live Skosmos search failed:", e);
+      if (providerMode.value !== "hector") {
+        tasks.push(
+          ensureLivePeriodoCache().then((all) => {
+            const qNorm = normalizeStr(query);
+            livePeriodoResults.value = all
+              .filter(
+                (p) =>
+                  normalizeStr(p.label).includes(qNorm) ||
+                  normalizeStr(p.region).includes(qNorm),
+              )
+              .slice(0, 40);
+          }),
+        );
+      }
+      await Promise.all(tasks);
     } finally {
       isLiveSearching.value = false;
     }
