@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.17 · 2026-11-16</span
+              >v0.1.18 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -662,20 +662,20 @@
             }}
           </button>
 
-          <!-- BonnData / Dataverse JSON Export (Test) -->
+          <!-- BonnData / Dataverse Direct Export & JSON -->
           <button
             class="btn btn-sm btn-outline gap-2 justify-start font-medium hover:border-primary hover:text-primary transition-all"
-            @click="exportToBonnDataJson"
+            @click="isBonnDataModalOpen = true"
             :disabled="currentFile != '' && progress != 100"
             :title="
               currentLocale === 'de'
-                ? 'Exportiert die Projektdaten als Dataverse-kompatibles JSON für den Import in bonndata.uni-bonn.de'
-                : 'Export project metadata as Dataverse-compatible JSON for bonndata.uni-bonn.de import'
+                ? 'Direkt nach bonndata.uni-bonn.de hochladen (mit API-Key & Dateien) oder als JSON speichern'
+                : 'Upload directly to bonndata.uni-bonn.de (with API key & files) or save as JSON'
             "
           >
             <span class="text-base">🏛️</span>
             <span>{{
-              currentLocale === "de" ? "BonnData (JSON)" : "BonnData (JSON)"
+              currentLocale === "de" ? "BonnData Export" : "BonnData Export"
             }}</span>
           </button>
 
@@ -1276,6 +1276,17 @@
     :current-locale="currentLocale"
     @close="closeApiSettings"
   />
+
+  <BonnDataExportModal
+    :is-open="isBonnDataModalOpen"
+    :current-locale="currentLocale"
+    :default-metadata-language="defaultMetadataLanguage"
+    :export-data="bonnDataExportPayload"
+    :get-xml-string="getCurrentCarareXmlString"
+    :get-markdown-report="getCurrentMarkdownReport"
+    @close="isBonnDataModalOpen = false"
+    @download-json="(lang) => exportToBonnDataJson(lang)"
+  />
 </template>
 
 <script setup>
@@ -1307,6 +1318,8 @@ import GlobalDefaultsBar from "./components/GlobalDefaultsBar.vue";
 import FlagIcon from "./components/FlagIcon.vue";
 
 import ApiSettingsModal from "./components/ApiSettingsModal.vue";
+
+import BonnDataExportModal from "./components/BonnDataExportModal.vue";
 
 import LiveXmlPreview from "./components/LiveXmlPreview.vue";
 
@@ -7332,7 +7345,31 @@ const exportToCarareXML = async () => {
   }
 };
 
-const exportToBonnDataJson = async () => {
+const isBonnDataModalOpen = ref(false);
+
+const getBonnDataRawSections = () => ({
+  collectionInformation: getChildComp(collectionRef)?.items || [],
+  heritageAssetIdentification: getChildComp(heritageRef)?.items || [],
+  digitalResource: getChildComp(digitalRef)?.items || [],
+  activity: getChildComp(activityRef)?.items || [],
+});
+
+const bonnDataExportPayload = computed(() => ({
+  collectionForm: getChildComp(collectionRef)?.form || {},
+  heritageItems: getChildComp(heritageRef)?.items || [],
+  digitalItems: getChildComp(digitalRef)?.items || [],
+  activityItems: getChildComp(activityRef)?.items || [],
+  globalRights,
+  defaultMetadataLanguage: defaultMetadataLanguage.value || "de",
+}));
+
+const getCurrentCarareXmlString = () =>
+  buildXmlString("carare", getBonnDataRawSections());
+
+const getCurrentMarkdownReport = () =>
+  generateMarkdownReport(getBonnDataRawSections(), currentLocale.value);
+
+const exportToBonnDataJson = async (metadataLanguageOverride = "") => {
   isExporting.value = true;
   exportStatus.value = null;
   errorMessage.value = "";
@@ -7345,6 +7382,10 @@ const exportToBonnDataJson = async () => {
       activityItems: getChildComp(activityRef)?.items || [],
       globalRights,
       defaultMetadataLanguage: defaultMetadataLanguage.value || "de",
+      metadataLanguage:
+        typeof metadataLanguageOverride === "string"
+          ? metadataLanguageOverride
+          : "",
     });
 
     const jsonString = JSON.stringify(payload, null, 2);

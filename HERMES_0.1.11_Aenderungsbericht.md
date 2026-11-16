@@ -132,3 +132,13 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 - **Feinschliff aus dem QA-Lauf:**
   - `CollectionInformationCrud.vue`: `Sammlungs-Identifikator` auf `Sammlungs-ID` vereinheitlicht.
   - `DigitalResourceCrud.vue`: Animation-Hinweis im `Ressourcentyp`-Tooltip (`type`) auch im Template-Fallback ergänzt.
+
+---
+
+## 10. Nachtrag `v0.1.18` (16.11.2026) – Direkt-Upload-Interface für BonnData
+
+- **Neues Modal `src/components/BonnDataExportModal.vue` (`BonnData Export`):**
+  - **API-Token (`X-Dataverse-key`):** Eingabe mit Ein-/Ausblenden (`👁️`) und lokaler Speicherung (`localStorage`).
+  - **Ziel-Collection & Sprachprüfung:** Schnellwahl für `3D` und `bcdh` (oder eigener Alias) inkl. automatischer Live-Abfrage von `GET /api/dataverses/{alias}/allowedMetadataLanguages`.
+  - **Dateien direkt mit hochladen:** Drag & Drop / Dateiauswahl für 3D-Modelle, Texturen und PDFs sowie optionale Mitgabe von `carare.xml` und `HERMES_Archivbericht.md`.
+  - **Direkt-Upload + Fallback:** Legt das Dataset per `POST /api/dataverses/{alias}/datasets` an, lädt alle Dateien per `POST /api/datasets/:persistentId/add` hoch und zeigt die erzeugte DOI verlinkt an (alternativ weiterhin **„Nur JSON speichern“**).
