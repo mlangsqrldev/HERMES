@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.20 · 2026-11-16</span
+              >v0.1.21 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -514,7 +514,7 @@
 
           <button
             type="button"
-            class="btn btn-sm btn-primary gap-2 justify-start font-bold shadow-md shadow-primary/20 hover:scale-[1.02] transition-all"
+            class="btn btn-sm btn-outline border-base-300 gap-2 justify-start font-semibold hover:border-primary hover:text-primary transition-all"
             @click="triggerImport"
             :title="
               currentLocale === 'de'

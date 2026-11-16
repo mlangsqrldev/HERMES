@@ -159,3 +159,18 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - Doppelte Überschrift `Erstellung` über `Erstellt am` entfernt; nur noch ein kompaktes Datumsfeld `Erstellt am` (`Created On`).
 - **Kulturgut (`src/output_components/HeritageAssetIdentificationCrud.vue`):**
   - Redundanten `Bezeichnung / Titel & IDs`-Header sowie verschachtelte innere Karten-Rahmen und übergroße Abstände bei `Inventar- / Objekt-ID`, `Name` und `Beschreibung` deutlich kompakter gestaltet.
+
+---
+
+## 13. Nachtrag `v0.1.21` (16.11.2026) – UX-/UI-Design-Review & Politur
+
+- **Einheitliches `Erstellung`-Datumsfeld in allen 4 Modulen (`ActivityCrud.vue`, `DigitalResourceCrud.vue`, `HeritageAssetIdentificationCrud.vue`, `CollectionInformationCrud.vue`):**
+  - Doppelte `Date` / `Erstellt am`-Unterüberschriften entfernt; alle 4 Module zeigen nun einheitlich nur ein kompaktes `Erstellung` / `Creation`-Datumsfeld.
+- **Tabelle `Gespeicherte Digitale Ressource` repariert (`src/output_components/DigitalResourceCrud.vue`):**
+  - Zeigt nun den echten Ressourcennamen statt `"1 Elemente"`, `★`/`—` statt `"true"`, gekürzte IDs mit Tooltip sowie kompakte Aktionsbuttons ohne horizontales Abschneiden von `Löschen`.
+  - Verschachtelte innere `Name*`-Karte ebenfalls gestrafft.
+- **Doppelte Banner in Modul 4 entfernt (`src/output_components/ActivityCrud.vue`):**
+  - Der zweifach duplizierte Hinweis-Banner `Übergeordnete Aktivität` innerhalb des Formulars wurde entfernt (bleibt nur noch einmal oben unter dem Modul-Header).
+- **Dark-Mode- & Chip-Kontrast sowie Sidebar-Hierarchie (`src/style.css`, `src/App.vue`):**
+  - Helleres Blau (`#60a5fa`) für Outline-Buttons und Links im Dark Mode sowie gut lesbare deaktivierte HECTOR-Chips (`opacity: 0.78`, gestrichelter Rahmen).
+  - `CARARE / BagIt laden` in der Sidebar als sekundärer Outline-Button gestylt, damit `CARARE 2.0.6 XML` klar als primärer Export-CTA hervorsticht.

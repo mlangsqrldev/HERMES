@@ -638,7 +638,7 @@
                     <div class="flex flex-row items-center">
                       <label class="label"
                         ><span class="label-text font-bold">{{
-                          getLabel("creation.createdOn", "createdOn")
+                          getLabel("creation", "Creation")
                         }}</span
                         ><span class="text-warning font-black">~</span></label
                       >
