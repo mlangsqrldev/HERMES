@@ -252,67 +252,90 @@ export function parseCarareXml(xmlString) {
 
     const covEl = getDirectChild(col, "coverage");
     if (covEl) {
-      const tempEl = getDirectChild(covEl, "temporal");
-      if (tempEl) {
-        const tsEl = getDirectChild(tempEl, "timeSpan");
-        if (tsEl) {
-          colRecord["coverage.temporal.timeSpan.startDate"] = getText(
-            tsEl,
-            "startDate",
-          );
-          colRecord["coverage.temporal.timeSpan.endDate"] = getText(
-            tsEl,
-            "endDate",
-          );
-          colRecord["coverage.temporal.timeSpan.dateRangeQualifier"] = getText(
-            tsEl,
-            "dateRangeQualifier",
-          );
-        }
-        colRecord["coverage.temporal.periodName"] = getText(
-          tempEl,
-          "periodName",
-        );
-        colRecord["coverage.temporal.periodName#lang"] = getLang(
-          getDirectChild(tempEl, "periodName"),
-          "de",
-        );
-        colRecord["coverage.temporal.periodName#preferred"] = getPreferred(
-          getDirectChild(tempEl, "periodName"),
-        );
-        colRecord["coverage.temporal.displayDate"] = getText(
-          tempEl,
-          "displayDate",
-        );
-        colRecord["coverage.temporal.scientificDate"] = getText(
-          tempEl,
-          "scientificDate",
-        );
-        colRecord["coverage.temporal.scientificDateMethod"] = getText(
-          tempEl,
-          "scientificDateMethod",
-        );
-      }
-      const spatEl = getDirectChild(covEl, "spatial");
-      if (spatEl) {
-        const locSet = getDirectChild(spatEl, "locationSet");
-        if (locSet) {
-          colRecord["coverage.spatial.locationSet.namedLocation"] =
-            getDirectChildren(locSet, "namedLocation").map((n) =>
-              n.textContent.trim(),
-            );
-          colRecord["coverage.spatial.locationSet.geopoliticalArea"] = getText(
-            locSet,
-            "geopoliticalArea",
-          );
-          colRecord["coverage.spatial.locationSet.geopoliticalArea#lang"] =
-            getLang(getDirectChild(locSet, "geopoliticalArea"), "de");
-          colRecord["coverage.spatial.locationSet.geopoliticalAreaType"] =
-            getText(locSet, "geopoliticalAreaType");
-          colRecord["coverage.spatial.locationSet.cadastralReference"] =
-            getText(locSet, "cadastralReference");
-        }
-      }
+      colRecord["coverage.temporal"] = getDirectChildren(covEl, "temporal").map(
+        (tempEl) => {
+          const tsEl = getDirectChild(tempEl, "timeSpan");
+          const pName = getText(tempEl, "periodName");
+          const dDate = getText(tempEl, "displayDate") || pName;
+          return {
+            "timeSpan.startDate": tsEl ? getText(tsEl, "startDate") : "",
+            "timeSpan.endDate": tsEl ? getText(tsEl, "endDate") : "",
+            "timeSpan.dateRangeQualifier": tsEl
+              ? getText(tsEl, "dateRangeQualifier")
+              : "",
+            periodName: pName,
+            "periodName#lang": getLang(getDirectChild(tempEl, "periodName"), "de"),
+            "periodName#preferred": getPreferred(
+              getDirectChild(tempEl, "periodName"),
+            ),
+            displayDate: dDate,
+            scientificDate: getText(tempEl, "scientificDate"),
+            scientificDateMethod: getText(tempEl, "scientificDateMethod"),
+          };
+        },
+      );
+
+      colRecord["coverage.spatial"] = getDirectChildren(covEl, "spatial").map(
+        (spatEl) => {
+          const locSet = getDirectChild(spatEl, "locationSet");
+          const addr = locSet ? getDirectChild(locSet, "address") : null;
+          const geom = getDirectChild(spatEl, "geometry");
+          const qp = geom
+            ? getDirectChild(geom, "quickpoint") || getDirectChild(geom, "point")
+            : null;
+          let qpX = qp ? getText(qp, "x") : "";
+          let qpY = qp ? getText(qp, "y") : "";
+          if (!qpX && geom) {
+            const coords = getDirectChild(geom, "coordinates");
+            if (coords) {
+              qpX = getText(coords, "x") || getText(coords, "longitude");
+              qpY = getText(coords, "y") || getText(coords, "latitude");
+            }
+          }
+          const histNames = locSet
+            ? getDirectChildren(locSet, "historicalName")
+                .map((hn) => hn.textContent.trim())
+                .filter(Boolean)
+            : [];
+          return {
+            "locationSet.namedLocation": locSet
+              ? getDirectChildren(locSet, "namedLocation")
+                  .map((n) => n.textContent.trim())
+                  .filter(Boolean)
+                  .join(", ")
+              : "",
+            "locationSet.geopoliticalArea": locSet
+              ? getText(locSet, "geopoliticalArea")
+              : "",
+            "locationSet.geopoliticalArea#lang": locSet
+              ? getLang(getDirectChild(locSet, "geopoliticalArea"), "de")
+              : "de",
+            "locationSet.geopoliticalAreaType": locSet
+              ? getText(locSet, "geopoliticalAreaType")
+              : "",
+            "locationSet.cadastralReference": locSet
+              ? getText(locSet, "cadastralReference")
+              : "",
+            "locationSet.historicalName": histNames.join(", "),
+            "locationSet.address.buildingName": addr
+              ? getText(addr, "buildingName")
+              : "",
+            "locationSet.address.roadName": addr ? getText(addr, "roadName") : "",
+            "locationSet.address.numberInRoad": addr
+              ? getText(addr, "numberInRoad")
+              : "",
+            "locationSet.address.townOrCity": addr
+              ? getText(addr, "townOrCity")
+              : "",
+            "locationSet.address.postcodeOrZipcode": addr
+              ? getText(addr, "postcodeOrZipcode")
+              : "",
+            "locationSet.address.country": addr ? getText(addr, "country") : "",
+            "geometry.quickpoint.x": qpX,
+            "geometry.quickpoint.y": qpY,
+          };
+        },
+      );
     }
 
     result.Collection.push(colRecord);

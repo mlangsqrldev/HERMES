@@ -3111,10 +3111,90 @@ const save = () => {
   }, 3000);
 };
 
+const normalizeLegacyCoverageArrays = () => {
+  if (
+    (!Array.isArray(form["coverage.temporal"]) ||
+      form["coverage.temporal"].length === 0) &&
+    (form["coverage.temporal.periodName"] ||
+      form["coverage.temporal.timeSpan.startDate"] ||
+      form["coverage.temporal.timeSpan.endDate"] ||
+      form["coverage.temporal.displayDate"])
+  ) {
+    form["coverage.temporal"] = [
+      {
+        "timeSpan.startDate": form["coverage.temporal.timeSpan.startDate"] || "",
+        "timeSpan.endDate": form["coverage.temporal.timeSpan.endDate"] || "",
+        "timeSpan.dateRangeQualifier":
+          form["coverage.temporal.timeSpan.dateRangeQualifier"] || "",
+        periodName: form["coverage.temporal.periodName"] || "",
+        displayDate:
+          form["coverage.temporal.displayDate"] ||
+          form["coverage.temporal.periodName"] ||
+          "",
+        scientificDate: form["coverage.temporal.scientificDate"] || "",
+        scientificDateMethod:
+          form["coverage.temporal.scientificDateMethod"] || "",
+      },
+    ];
+  }
+
+  const hasFlatNamed = Array.isArray(
+    form["coverage.spatial.locationSet.namedLocation"],
+  )
+    ? form["coverage.spatial.locationSet.namedLocation"].length > 0
+    : Boolean(form["coverage.spatial.locationSet.namedLocation"]);
+  if (
+    (!Array.isArray(form["coverage.spatial"]) ||
+      form["coverage.spatial"].length === 0) &&
+    (hasFlatNamed ||
+      form["coverage.spatial.locationSet.geopoliticalArea"] ||
+      form["coverage.spatial.locationSet.address.townOrCity"] ||
+      (Array.isArray(form["coverage.spatial.locationSet.historicalName"]) &&
+        form["coverage.spatial.locationSet.historicalName"].length > 0))
+  ) {
+    const namedLoc = Array.isArray(
+      form["coverage.spatial.locationSet.namedLocation"],
+    )
+      ? form["coverage.spatial.locationSet.namedLocation"]
+          .filter(Boolean)
+          .join(", ")
+      : form["coverage.spatial.locationSet.namedLocation"] || "";
+    const histName = Array.isArray(
+      form["coverage.spatial.locationSet.historicalName"],
+    )
+      ? form["coverage.spatial.locationSet.historicalName"]
+          .map((h) => (typeof h === "object" && h !== null ? h._value || "" : h))
+          .filter(Boolean)
+          .join(", ")
+      : form["coverage.spatial.locationSet.historicalName"] || "";
+    form["coverage.spatial"] = [
+      {
+        "locationSet.namedLocation": namedLoc,
+        "locationSet.geopoliticalArea":
+          form["coverage.spatial.locationSet.geopoliticalArea"] || "",
+        "locationSet.historicalName": histName,
+        "locationSet.address.buildingName":
+          form["coverage.spatial.locationSet.address.buildingName"] || "",
+        "locationSet.address.roadName":
+          form["coverage.spatial.locationSet.address.roadName"] || "",
+        "locationSet.address.numberInRoad":
+          form["coverage.spatial.locationSet.address.numberInRoad"] || "",
+        "locationSet.address.postcodeOrZipcode":
+          form["coverage.spatial.locationSet.address.postcodeOrZipcode"] || "",
+        "locationSet.address.townOrCity":
+          form["coverage.spatial.locationSet.address.townOrCity"] || "",
+        "locationSet.address.country":
+          form["coverage.spatial.locationSet.address.country"] || "",
+      },
+    ];
+  }
+};
+
 const edit = (index) => {
   isEditing.value = true;
   editIndex.value = index;
   Object.assign(form, JSON.parse(JSON.stringify(items.value[index])));
+  normalizeLegacyCoverageArrays();
   // Populate preferred languages
   Object.keys(form).forEach((k) => {
     if (k.endsWith("language") && Array.isArray(form[k])) {

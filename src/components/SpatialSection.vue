@@ -64,12 +64,12 @@
           <tr v-for="(item, idx) in items" :key="idx" class="hover">
             <td class="font-bold text-sm">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span v-if="item['locationSet.historicalName']" class="badge badge-warning badge-xs">
+                <span v-if="formatNamedLoc(item['locationSet.historicalName'])" class="badge badge-warning badge-xs">
                   🏛️ {{ currentLocale === "de" ? "Historisch" : "Historical" }}
                 </span>
                 <span>
                   {{
-                    item["locationSet.historicalName"] ||
+                    formatNamedLoc(item["locationSet.historicalName"]) ||
                     formatNamedLoc(item["locationSet.namedLocation"]) ||
                     "–"
                   }}
@@ -464,8 +464,17 @@ const resetDraft = () => {
 };
 
 const formatNamedLoc = (val) => {
-  if (Array.isArray(val)) return val.filter(Boolean).join(", ");
-  return val || "";
+  if (!val) return "";
+  if (Array.isArray(val)) {
+    return val
+      .map((v) => (typeof v === "object" && v !== null ? v._value || v.label || "" : v))
+      .filter(Boolean)
+      .join(", ");
+  }
+  if (typeof val === "object") {
+    return val._value || val.label || "";
+  }
+  return String(val);
 };
 
 const formatAddress = (item) => {

@@ -204,3 +204,13 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 - **Zentrale Tooltip-Verwaltung (`tooltips_uebersetzung.json`, `tooltips_uebersicht.md`, `src/utils/tooltips.js`):**
   - Alle 450 Tooltip-Einträge (inkl. aller 132 im UI aktiven `ⓘ`-Tooltips) wurden zentral in `tooltips_uebersetzung.json` gebündelt und über `getTooltipText(...)` in `CollectionInformationCrud.vue`, `HeritageAssetIdentificationCrud.vue`, `DigitalResourceCrud.vue`, `ActivityCrud.vue` sowie `DigitalResource3DMetadata.vue` eingebunden.
   - Alle 47 bisher fehlenden deutschen Tooltips wurden ergänzt und sperrige CARARE-Schema-Texte durch leicht verständliche, praxisnahe Formulierungen mit konkreten Beispielen für Museumsmitarbeiter:innen ersetzt.
+
+
+---
+
+## 16. Nachtrag `v0.1.24` (16.11.2026) – Collection Coverage Anzeige wie Heritage Asset
+
+- **`carareXmlParser.js`, `SpatialSection.vue`, `CollectionInformationCrud.vue`:**
+  - `carareXmlParser.js` parst `<coverage><temporal>` und `<coverage><spatial>` der Collection nun direkt in die strukturierten Array-Formate `coverage.temporal` und `coverage.spatial` (inkl. Epoche, Zeitspanne, historischer Name, Adresse, Koordinaten) – identisch zu `HeritageAsset`.
+  - `SpatialSection.vue` formatiert `locationSet.historicalName` und `locationSet.namedLocation` sauber als Text statt roher Objekt-/Array-Darstellung.
+  - `CollectionInformationCrud.vue` konvertiert beim Laden/Bearbeiten älterer Datensätze automatisch flache `coverage.temporal.*`-/`coverage.spatial.*`-Felder in die Tabellenstruktur von `TemporalSection` und `SpatialSection`.
