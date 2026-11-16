@@ -125,7 +125,7 @@
                 <div class="flex flex-row items-center justify-between">
                   <div class="flex flex-row items-center">
                     <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
+                      ><span class="label-text font-bold">{{
                         getLabel("id", "id")
                       }}</span
                       ><span class="text-accent font-black">*</span></label
@@ -181,7 +181,12 @@
                         : 'Apply institution GND ID as record ID'
                     "
                   >
-                    🏛️ GND-ID: {{ detectedGndId }} als ID übernehmen
+                    🏛️
+                    {{
+                      currentLocale === "de"
+                        ? `GND-ID: ${detectedGndId} als ID übernehmen`
+                        : `Use GND ID: ${detectedGndId} as Identifier`
+                    }}
                   </button>
                 </div>
                 <input
@@ -192,7 +197,9 @@
                   :placeholder="
                     getLabel(
                       'id',
-                      'z.B. DE-MUS-814111_Collection oder 5035657-4',
+                      currentLocale === 'de'
+                        ? 'z.B. DE-MUS-814111_Collection oder 5035657-4'
+                        : 'e.g. DE-MUS-814111_Collection or 5035657-4',
                       'plac',
                     )
                   "
@@ -505,7 +512,7 @@
                 <div class="flex flex-row items-center justify-between">
                   <div class="flex flex-row items-center">
                     <label class="label"
-                      ><span class="label-text font-bold capitalize"
+                      ><span class="label-text font-bold"
                         >{{ getLabel("source", "source") }} ({{
                           currentLocale === "de"
                             ? "Name der Einrichtung"
@@ -566,7 +573,7 @@
                     {{
                       currentLocale === "de"
                         ? "Organisation wählen"
-                        : "Pick Organizations"
+                        : "Pick Organization"
                     }}
                   </button>
                 </div>
@@ -579,7 +586,9 @@
                   :placeholder="
                     getLabel(
                       'source',
-                      'z.B. Staatliche Museen zu Berlin, Antikensammlung (GND-Suche)',
+                      currentLocale === 'de'
+                        ? 'z.B. Staatliche Museen zu Berlin, Antikensammlung (GND-Suche)'
+                        : 'e.g. Staatliche Museen zu Berlin, Collection of Classical Antiquities (GND search)',
                       'plac',
                     )
                   "
@@ -674,7 +683,7 @@
                   <div class="form-control w-full mb-4">
                     <div class="flex flex-row items-center">
                       <label class="label"
-                        ><span class="label-text font-bold capitalize">{{
+                        ><span class="label-text font-bold">{{
                           getLabel("creation.createdOn", "createdOn")
                         }}</span
                         ><span class="text-warning font-black">~</span></label
@@ -873,9 +882,12 @@
               >
                 {{ t("cancel") }}
               </button>
-              <button type="submit" class="btn btn-primary capitalize">
-                {{ t("save") }}
-                {{ getLabel("collectionInformation", "collectionInformation") }}
+              <button type="submit" class="btn btn-primary">
+                {{
+                  currentLocale === "de"
+                    ? "Sammlungsinformationen speichern"
+                    : "Save Collection Information"
+                }}
               </button>
             </div>
           </form>

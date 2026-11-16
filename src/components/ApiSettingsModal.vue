@@ -1,7 +1,9 @@
 <template>
   <Teleport to="body">
-    <dialog
+    <div
       v-if="isOpen"
+      role="dialog"
+      aria-modal="true"
       class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
     >
     <div
@@ -298,7 +300,7 @@
         class="modal-backdrop bg-black/50 backdrop-blur-sm"
         @click="$emit('close')"
       ></div>
-    </dialog>
+    </div>
   </Teleport>
 </template>
 

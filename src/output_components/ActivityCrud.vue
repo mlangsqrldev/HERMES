@@ -1442,8 +1442,12 @@
               >
                 {{ t("cancel") }}
               </button>
-              <button type="submit" class="btn btn-primary capitalize">
-                {{ t("save") }} {{ getLabel("activity", "activity") }}
+              <button type="submit" class="btn btn-primary">
+                {{
+                  currentLocale === "de"
+                    ? "Aktivität speichern"
+                    : "Save Activity"
+                }}
               </button>
             </div>
           </form>

@@ -430,6 +430,17 @@ const closeModal = () => {
   editingIndex.value = null;
 };
 
+const formatDisplayYear = (yr, locale) => {
+  const s = String(yr || "").trim();
+  if (!s) return "";
+  const num = parseInt(s, 10);
+  if (!Number.isNaN(num) && num < 0) {
+    const abs = Math.abs(num);
+    return locale === "de" ? `${abs} v. Chr.` : `${abs} BCE`;
+  }
+  return s;
+};
+
 const handlePeriodoSelect = (data) => {
   if (!data) return;
   const name = data.periodName || data.label || "";
@@ -453,9 +464,16 @@ const handlePeriodoSelect = (data) => {
   if (data.displayDate) {
     draft.displayDate = data.displayDate;
   } else if (start && stop) {
-    draft.displayDate = `${start} – ${stop}`;
+    const sNum = parseInt(start, 10);
+    const eNum = parseInt(stop, 10);
+    if (!Number.isNaN(sNum) && sNum < 0 && !Number.isNaN(eNum) && eNum < 0) {
+      const suffix = props.currentLocale === "de" ? "v. Chr." : "BCE";
+      draft.displayDate = `${Math.abs(sNum)} – ${Math.abs(eNum)} ${suffix}`;
+    } else {
+      draft.displayDate = `${formatDisplayYear(start, props.currentLocale)} – ${formatDisplayYear(stop, props.currentLocale)}`;
+    }
   } else if (start || stop) {
-    draft.displayDate = start || stop;
+    draft.displayDate = formatDisplayYear(start || stop, props.currentLocale);
   }
   if (uri) {
     draft["timeSpan.dateRangeQualifier"] = uri;

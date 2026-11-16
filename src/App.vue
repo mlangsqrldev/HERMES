@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.9 · 2026-11-16</span
+              >v0.1.10 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -2673,7 +2673,17 @@ const filledStatus = computed(() => {
         const firstLevelVal = dataObj[firstLevel];
 
         if (Array.isArray(firstLevelVal)) {
-          return firstLevelVal.length > 0;
+          return firstLevelVal.some((item) => {
+            if (item === null || item === undefined) return false;
+            if (typeof item === "string") return item.trim() !== "";
+            if (typeof item === "object") {
+              return Object.entries(item).some(([k, v]) => {
+                if (k.includes("#")) return false;
+                return String(v ?? "").trim() !== "";
+              });
+            }
+            return Boolean(item);
+          });
         }
 
         return levelData.fields.every((field) => {
@@ -5686,7 +5696,10 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
         locSet = spat.addChild("locationSet");
       }
       let namedLoc = locSet.children.find((c) => c.name === "namedLocation");
-      if (!namedLoc || !namedLoc.text || !String(namedLoc.text).trim()) {
+      let histLoc = locSet.children.find((c) => c.name === "historicalName");
+      const hasNamed = Boolean(namedLoc && namedLoc.text && String(namedLoc.text).trim());
+      const hasHist = Boolean(histLoc && histLoc.text && String(histLoc.text).trim());
+      if (!hasNamed && !hasHist) {
         if (!namedLoc) namedLoc = locSet.addChild("namedLocation");
         namedLoc.text = "Bonn, Deutschland";
         namedLoc.attributes["lang"] = fallbackLang;

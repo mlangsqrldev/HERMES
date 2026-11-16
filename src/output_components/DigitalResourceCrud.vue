@@ -1631,9 +1631,12 @@
               >
                 {{ t("cancel") }}
               </button>
-              <button type="submit" class="btn btn-primary capitalize">
-                {{ t("save") }}
-                {{ getLabel("digitalResource", "digitalResource") }}
+              <button type="submit" class="btn btn-primary">
+                {{
+                  currentLocale === "de"
+                    ? "Digitalisat speichern"
+                    : "Save Digital Resource"
+                }}
               </button>
             </div>
           </form>

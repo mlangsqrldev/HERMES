@@ -372,9 +372,13 @@
           <label class="label py-1">
             <span class="label-text font-semibold">
               {{
-                currentLocale === "de"
-                  ? "Rollen in dieser Aktivität (Mehrfachauswahl möglich)"
-                  : "Roles in this Activity (multiple allowed)"
+                mode === "historical"
+                  ? currentLocale === "de"
+                    ? "Rollen am Kulturgut (Mehrfachauswahl möglich)"
+                    : "Roles for this heritage asset (multiple allowed)"
+                  : currentLocale === "de"
+                    ? "Rollen in dieser Aktivität (Mehrfachauswahl möglich)"
+                    : "Roles in this Activity (multiple allowed)"
               }}
             </span>
           </label>

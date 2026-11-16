@@ -2958,13 +2958,11 @@
                   }}
                 </button>
 
-                <button type="submit" class="btn btn-primary capitalize">
-                  {{ t("save") }}
+                <button type="submit" class="btn btn-primary">
                   {{
-                    getLabel(
-                      "heritageAssetIdentification",
-                      "heritageAssetIdentification",
-                    )
+                    currentLocale === "de"
+                      ? "Kulturgut speichern"
+                      : "Save Heritage Asset"
                   }}
                 </button>
               </div>
