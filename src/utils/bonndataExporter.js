@@ -124,8 +124,24 @@ export function buildBonnDataJson({
   activityItems = [],
   globalRights = {},
   defaultMetadataLanguage = "de",
+  metadataLanguage = "",
 }) {
   const citationFields = [];
+
+  const collectionSource = String(
+    collectionForm["recordInformation.source"] || collectionForm.source || "",
+  ).trim();
+  const collectionCreationDate = normalizeDate(
+    collectionForm["recordInformation.creation.date"] ||
+      collectionForm.createdOn ||
+      "",
+  );
+  const collectionContacts = [
+    ...(Array.isArray(collectionForm.contacts) ? collectionForm.contacts : []),
+    ...(Array.isArray(collectionForm["recordInformation.creation.contacts"])
+      ? collectionForm["recordInformation.creation.contacts"]
+      : []),
+  ];
 
   // 1. Title & Alternative Titles
   const collectionTitle = extractLocalizedText(collectionForm.title);
@@ -149,6 +165,10 @@ export function buildBonnDataJson({
     ...digitalItems.flatMap((d) => extractAllTexts(d["appellation.name"])),
   ]);
   altTitles.delete(mainTitle);
+  const subtitleText = String(collectionForm.subtitle || "").trim();
+  if (subtitleText) {
+    citationFields.push(primitive("subtitle", subtitleText));
+  }
   if (altTitles.size > 0) {
     citationFields.push({
       typeName: "alternativeTitle",
@@ -156,6 +176,14 @@ export function buildBonnDataJson({
       multiple: true,
       value: [...altTitles],
     });
+  }
+
+  // 1b. Alternative URL (from Digital Resource isShownAt / link)
+  const firstAltUrl = digitalItems
+    .map((d) => String(d?.isShownAt || d?.link || "").trim())
+    .find((u) => /^https?:\/\//i.test(u));
+  if (firstAltUrl) {
+    citationFields.push(primitive("alternativeURL", firstAltUrl));
   }
 
   // 2. Other IDs (Collection ID, Inventory numbers, Record IDs)
@@ -174,7 +202,7 @@ export function buildBonnDataJson({
     otherIds.push(obj);
   };
 
-  pushOtherId(collectionForm.source || "HERMES", collectionForm.id);
+  pushOtherId(collectionSource || "HERMES", collectionForm.id);
   for (const h of heritageItems) {
     pushOtherId("Heritage Asset ID", h["appellation.id"]);
     pushOtherId(
@@ -184,6 +212,12 @@ export function buildBonnDataJson({
   }
   for (const d of digitalItems) {
     pushOtherId("Digital Resource ID", d["recordInformation.id"]);
+    if (d["appellation.id"] && d["appellation.id"] !== d["recordInformation.id"]) {
+      pushOtherId("Digital Resource URI/DOI", d["appellation.id"]);
+    }
+  }
+  for (const act of activityItems) {
+    pushOtherId("Activity ID", act["appellation.id"] || act["recordInformation.id"]);
   }
   if (otherIds.length > 0) {
     citationFields.push(compound("otherId", otherIds));
@@ -214,20 +248,23 @@ export function buildBonnDataJson({
           multiple: false,
           value: scheme,
         };
-        entry.authorIdentifier = primitive("authorIdentifier", idVal);
+        const cleanId = idVal
+          .replace(/^https?:\/\/d-nb\.info\/gnd\//i, "")
+          .replace(/^https?:\/\/orcid\.org\//i, "");
+        entry.authorIdentifier = primitive("authorIdentifier", cleanId);
       }
       authors.push(entry);
     }
   };
 
-  collectActors(collectionForm.contacts);
+  collectActors(collectionContacts);
   for (const a of activityItems) collectActors(a.actors);
   for (const d of digitalItems) collectActors(d.actors);
   for (const h of heritageItems) collectActors(h.actors);
 
-  if (authors.length === 0 && collectionForm.source) {
+  if (authors.length === 0 && collectionSource) {
     authors.push({
-      authorName: primitive("authorName", collectionForm.source),
+      authorName: primitive("authorName", collectionSource),
     });
   }
   if (authors.length > 0) {
@@ -262,14 +299,14 @@ export function buildBonnDataJson({
     }
   };
 
-  collectContacts(collectionForm.contacts);
+  collectContacts(collectionContacts);
   for (const d of digitalItems) collectContacts(d["recordInformation.creation.contacts"]);
   for (const h of heritageItems) collectContacts(h["recordInformation.creation.contacts"]);
   if (contacts.length === 0) {
     contacts.push({
       datasetContactName: primitive(
         "datasetContactName",
-        collectionForm.source || "HERMES Data Provider",
+        collectionSource || "HERMES Data Provider",
       ),
       datasetContactEmail: primitive(
         "datasetContactEmail",
@@ -284,9 +321,13 @@ export function buildBonnDataJson({
   const addDesc = (text) => {
     const clean = String(text || "").trim();
     if (!clean) return;
-    descriptions.push({
+    const entry = {
       dsDescriptionValue: primitive("dsDescriptionValue", clean),
-    });
+    };
+    if (collectionCreationDate) {
+      entry.dsDescriptionDate = primitive("dsDescriptionDate", collectionCreationDate);
+    }
+    descriptions.push(entry);
   };
 
   addDesc(extractLocalizedText(collectionForm.statement));
@@ -321,11 +362,43 @@ export function buildBonnDataJson({
   // 6. Subject (Dataverse controlled vocabulary)
   citationFields.push(vocab("subject", ["Arts and Humanities"]));
 
-  // 7. FreeKeywords (REQUIRED on bonndata.uni-bonn.de) + Controlled Keywords
+  // 7. FreeKeywords (REQUIRED on bonndata.uni-bonn.de) + Controlled Keywords + Topic Classification
   const freeKeywords = [];
   const seenFreeKw = new Set();
   const keywords = [];
   const seenKw = new Set();
+  const topicClassifications = [];
+  const seenTopics = new Set();
+
+  const inferVocabName = (uri, explicit = "") => {
+    if (explicit) return explicit;
+    if (!uri) return "";
+    if (uri.includes("vocabs.bcdh.uni-bonn.de") || uri.includes("hector")) return "HECTOR";
+    if (uri.includes("getty.edu")) return "Getty AAT";
+    if (uri.includes("wikidata.org")) return "Wikidata";
+    if (uri.includes("n2t.net/ark:/99152") || uri.includes("perio.do")) return "PeriodO";
+    if (uri.includes("pleiades.stoa.org")) return "Pleiades";
+    if (uri.includes("geonames.org")) return "GeoNames";
+    if (uri.includes("d-nb.info/gnd")) return "GND";
+    if (uri.includes("orcid.org")) return "ORCID";
+    return "";
+  };
+
+  const pushTopic = (term, vocabName = "", vocabUri = "", key = "") => {
+    const t = String(term || "").trim();
+    const v = String(vocabName || "").trim();
+    const u = String(vocabUri || "").trim();
+    if (!t || (!v && !u)) return;
+    const dedupKey = `${t.toLowerCase()}|${v.toLowerCase()}|${u.toLowerCase()}`;
+    if (seenTopics.has(dedupKey)) return;
+    seenTopics.add(dedupKey);
+    const entry = { topicClassValue: primitive("topicClassValue", t) };
+    if (key) entry.topicClassKey = primitive("topicClassKey", String(key));
+    if (v) entry.topicClassVocab = primitive("topicClassVocab", v);
+    if (u) entry.topicClassVocabURI = primitive("topicClassVocabURI", u);
+    topicClassifications.push(entry);
+  };
+
   const pushKeyword = (val, voc = "", uri = "") => {
     const label =
       typeof val === "string"
@@ -338,16 +411,8 @@ export function buildBonnDataJson({
         freeKeywordValue: primitive("freeKeywordValue", label),
       });
     }
-    const kwUri = String(uri || val?.uri || "").trim();
-    const kwVoc = String(
-      voc ||
-        val?.vocabulary ||
-        (kwUri.includes("getty.edu")
-          ? "Getty AAT"
-          : kwUri.includes("wikidata.org")
-            ? "Wikidata"
-            : ""),
-    ).trim();
+    const kwUri = String(uri || val?.uri || val?.id || "").trim();
+    const kwVoc = inferVocabName(kwUri, String(voc || val?.vocabulary || val?.authority || "").trim());
     if ((kwUri || kwVoc) && !seenKw.has(label.toLowerCase())) {
       seenKw.add(label.toLowerCase());
       const entry = { keywordValue: primitive("keywordValue", label) };
@@ -355,6 +420,7 @@ export function buildBonnDataJson({
       if (kwUri)
         entry.keywordVocabularyURI = primitive("keywordVocabularyURI", kwUri);
       keywords.push(entry);
+      pushTopic(label, kwVoc, kwUri, val?.key || "");
     }
   };
 
@@ -363,10 +429,12 @@ export function buildBonnDataJson({
     ...heritageItems.flatMap((h) => [
       ...(Array.isArray(h.keywords) ? h.keywords : []),
       ...(Array.isArray(h["characters.materials"]) ? h["characters.materials"] : []),
+      ...(Array.isArray(h["characters.heritageAssetType"]) ? h["characters.heritageAssetType"] : []),
       ...(Array.isArray(h["characters.monumentType"]) ? h["characters.monumentType"] : []),
     ]),
   ];
   for (const k of kwSources) pushKeyword(k);
+
   if (freeKeywords.length === 0) {
     freeKeywords.push({
       freeKeywordValue: primitive("freeKeywordValue", "3D Cultural Heritage"),
@@ -375,6 +443,9 @@ export function buildBonnDataJson({
   citationFields.push(compound("freeKeyword", freeKeywords));
   if (keywords.length > 0) {
     citationFields.push(compound("keyword", keywords));
+  }
+  if (topicClassifications.length > 0) {
+    citationFields.push(compound("topicClassification", topicClassifications));
   }
 
   // 7b. Data Type (kindOfData) & Software (from Activity consistsOf)
@@ -389,24 +460,48 @@ export function buildBonnDataJson({
 
   const softwareList = [];
   const seenSw = new Set();
-  for (const act of activityItems) {
-    const steps = Array.isArray(act.consistsOf) ? act.consistsOf : [];
-    for (const st of steps) {
-      const swItems = Array.isArray(st?.software)
-        ? st.software
-        : st?.softwareName
-          ? [{ name: st.softwareName, version: st.softwareVersion }]
-          : [];
-      for (const sw of swItems) {
-        const swName =
-          typeof sw === "string" ? sw.trim() : String(sw?.name || "").trim();
-        const swVer = typeof sw === "object" ? String(sw?.version || "").trim() : "";
+  const pushSoftwareEntry = (rawSw) => {
+    if (!rawSw) return;
+    if (typeof rawSw === "string") {
+      for (const part of rawSw.split(/[;,]/)) {
+        const s = part.trim();
+        if (!s) continue;
+        // Split trailing version like "Artec Studio 19 Pro" or "Blender 4.3 LTS"
+        const m = s.match(/^(.+?)\s+(v?\d+(?:\.\d+)*(?:\s+(?:Pro|LTS|SE|Plus))?)$/i);
+        const swName = m ? m[1].trim() : s;
+        const swVer = m ? m[2].trim() : "";
         const key = `${swName.toLowerCase()}|${swVer.toLowerCase()}`;
-        if (!swName || seenSw.has(key)) continue;
+        if (seenSw.has(key)) continue;
         seenSw.add(key);
         const entry = { softwareName: primitive("softwareName", swName) };
         if (swVer) entry.softwareVersion = primitive("softwareVersion", swVer);
         softwareList.push(entry);
+      }
+      return;
+    }
+    const swName = String(rawSw?.name || rawSw?.softwareName || "").trim();
+    const swVer = String(rawSw?.version || rawSw?.softwareVersion || "").trim();
+    const key = `${swName.toLowerCase()}|${swVer.toLowerCase()}`;
+    if (!swName || seenSw.has(key)) return;
+    seenSw.add(key);
+    const entry = { softwareName: primitive("softwareName", swName) };
+    if (swVer) entry.softwareVersion = primitive("softwareVersion", swVer);
+    softwareList.push(entry);
+  };
+
+  for (const act of activityItems) {
+    if (act.software) {
+      const topSw = Array.isArray(act.software) ? act.software : [act.software];
+      topSw.forEach(pushSoftwareEntry);
+    }
+    const steps = Array.isArray(act.consistsOf) ? act.consistsOf : [];
+    for (const st of steps) {
+      if (Array.isArray(st?.software)) {
+        st.software.forEach(pushSoftwareEntry);
+      } else if (typeof st?.software === "string" && st.software.trim()) {
+        pushSoftwareEntry(st.software);
+      } else if (st?.softwareName) {
+        pushSoftwareEntry({ name: st.softwareName, version: st.softwareVersion });
       }
     }
   }
@@ -450,7 +545,135 @@ export function buildBonnDataJson({
     citationFields.push(compound("timePeriodCovered", timePeriods));
   }
 
-  // 10. Notes (Technical 3D summary)
+  // 10. Producer, Contributors, Depositor, Date of Collection & Data Source fields
+  if (collectionSource) {
+    citationFields.push(
+      compound("producer", [{ producerName: primitive("producerName", collectionSource) }]),
+    );
+  }
+  if (collectionCreationDate) {
+    citationFields.push(primitive("productionDate", collectionCreationDate));
+  }
+
+  const contributors = [];
+  const seenContrib = new Set();
+  const pushContrib = (name, type = "Project Member") => {
+    const n = String(name || "").trim();
+    if (!n || seenContrib.has(`${type}|${n.toLowerCase()}`)) return;
+    seenContrib.add(`${type}|${n.toLowerCase()}`);
+    contributors.push({
+      contributorType: {
+        typeName: "contributorType",
+        typeClass: "controlledVocabulary",
+        multiple: false,
+        value: type,
+      },
+      contributorName: primitive("contributorName", n),
+    });
+  };
+  for (const c of collectionContacts) pushContrib(c?.name || c, "Data Curator");
+  for (const a of activityItems) {
+    for (const actActor of a.actors || []) {
+      pushContrib(actActor?.name || actActor, "Data Collector");
+    }
+  }
+  for (const d of digitalItems) {
+    for (const digActor of d.actors || []) {
+      pushContrib(digActor?.name || digActor, "Researcher");
+    }
+  }
+  if (contributors.length > 0) {
+    citationFields.push(compound("contributor", contributors));
+  }
+
+  const firstContactName = contacts[0]?.datasetContactName?.value;
+  if (firstContactName) {
+    citationFields.push(primitive("depositor", firstContactName));
+  }
+  if (collectionCreationDate) {
+    citationFields.push(primitive("dateOfDeposit", collectionCreationDate));
+  }
+
+  const collectionDates = [];
+  for (const a of activityItems) {
+    for (const t of Array.isArray(a.temporal) ? a.temporal : []) {
+      const start = normalizeDate(t?.startDate || t?.["timeSpan.startDate"]);
+      const end = normalizeDate(t?.endDate || t?.["timeSpan.endDate"]);
+      if (start || end) {
+        const entry = {};
+        if (start) entry.dateOfCollectionStart = primitive("dateOfCollectionStart", start);
+        if (end) entry.dateOfCollectionEnd = primitive("dateOfCollectionEnd", end);
+        collectionDates.push(entry);
+      }
+    }
+  }
+  if (collectionDates.length > 0) {
+    citationFields.push(compound("dateOfCollection", collectionDates));
+  }
+
+  const origins = heritageItems
+    .map((h) => [extractLocalizedText(h.provenance), extractLocalizedText(h.repositoryLocation)].filter(Boolean).join(" | "))
+    .filter(Boolean);
+  if (origins.length > 0) {
+    citationFields.push(primitive("originOfSources", origins.join("; ")));
+  }
+
+  const charParts = heritageItems
+    .map((h) => {
+      const mats = Array.isArray(h["characters.materials"])
+        ? h["characters.materials"].map(extractLocalizedText).filter(Boolean).join(", ")
+        : "";
+      const types = Array.isArray(h["characters.heritageAssetType"])
+        ? h["characters.heritageAssetType"].map(extractLocalizedText).filter(Boolean).join(", ")
+        : "";
+      return [types && `Type: ${types}`, mats && `Materials: ${mats}`].filter(Boolean).join(" | ");
+    })
+    .filter(Boolean);
+  if (charParts.length > 0) {
+    citationFields.push(primitive("characteristicOfSources", charParts.join("; ")));
+  }
+
+  if (firstAltUrl) {
+    citationFields.push(primitive("accessToSources", firstAltUrl));
+  }
+
+  // 10b. Series & Related Publications (from Collection & Heritage Asset References)
+  if (collectionTitle) {
+    const seriesObj = { seriesName: primitive("seriesName", collectionTitle) };
+    if (collectionForm.id) {
+      seriesObj.seriesInformation = primitive(
+        "seriesInformation",
+        `Collection ID: ${collectionForm.id}`,
+      );
+    }
+    citationFields.push(compound("series", [seriesObj]));
+  }
+
+  const publications = [];
+  for (const h of heritageItems) {
+    for (const refItem of Array.isArray(h.references) ? h.references : []) {
+      const cit = String(refItem?.citation || refItem?.title || refItem?.name || refItem || "").trim();
+      if (!cit) continue;
+      const pub = {
+        publicationRelationType: {
+          typeName: "publicationRelationType",
+          typeClass: "controlledVocabulary",
+          multiple: false,
+          value: "References",
+        },
+        publicationCitation: primitive("publicationCitation", cit),
+      };
+      if (refItem?.uri && /^https?:\/\//i.test(refItem.uri)) {
+        pub.publicationURL = primitive("publicationURL", refItem.uri);
+      }
+      publications.push(pub);
+    }
+  }
+  if (publications.length > 0) {
+    citationFields.push(compound("publication", publications));
+  }
+
+  // 10b. Notes (Technical 3D summary)
   const noteParts = [
     `Exported from HERMES (CARARE 2.0.6)`,
     `Heritage Assets: ${heritageItems.length}`,
@@ -476,7 +699,17 @@ export function buildBonnDataJson({
     const city = String(
       sp.city || sp.locality || sp["spatial.locality"] || sp.placeName || "",
     ).trim();
-    const otherGeo = String(sp.locationName || sp.namedPlace || sp.address || "").trim();
+    const baseGeoName = String(
+      sp["locationSet.historicalName"] ||
+        sp["locationSet.namedLocation"] ||
+        sp.locationName ||
+        sp.namedPlace ||
+        sp.address ||
+        "",
+    ).trim();
+    const spUri = String(sp.pleiadesUri || sp.geonamesUri || sp.uri || "").trim();
+    const otherGeo =
+      baseGeoName && spUri ? `${baseGeoName} (${spUri})` : baseGeoName || spUri;
     if (country || city || otherGeo) {
       const entry = {};
       if (country) entry.country = { typeName: "country", typeClass: "controlledVocabulary", multiple: false, value: country };
@@ -513,7 +746,16 @@ export function buildBonnDataJson({
     };
   }
 
+  // Dataverse Native API expects top-level `metadataLanguage` next to `datasetVersion`
+  // (e.g. "en" for collection `3D`, "en" or "de-DE" for `bcdh` via GET /api/dataverses/:alias/allowedMetadataLanguages)
+  const resolvedMetadataLanguage =
+    metadataLanguage ||
+    (String(defaultMetadataLanguage || "en").toLowerCase().startsWith("de")
+      ? "de-DE"
+      : "en");
+
   return {
+    metadataLanguage: resolvedMetadataLanguage,
     datasetVersion: {
       license: mapLicence(globalRights?.licence),
       metadataBlocks,

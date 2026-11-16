@@ -98,3 +98,15 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - Alle laufenden Formulare und gespeicherten Datensätze aller 4 Module werden automatisch in `localStorage` (`hermes_session_draft_v1`) gesichert und beim nächsten Start wiederhergestellt.
 - **Animation-Hinweis (`src/output_components/DigitalResourceCrud.vue`):**
   - Tooltip bei `Ressourcentyp` (`type`) erklärt, dass animierte `.glb`/`.gltf`-Szenen als `3D-Modell` (`3D`) und gerenderte Video-Animationen/Turntables als `Film` (`Movie`) erfasst werden.
+
+---
+
+## 7. Nachtrag `v0.1.15` (16.11.2026) – BonnData Native-API JSON-Mapping & Handbuch-Kapitel 10
+
+- **Top-Level `metadataLanguage` (`src/utils/bonndataExporter.js`):**
+  - Setzt `"metadataLanguage"` direkt neben `datasetVersion` (`"en"` bzw. `"de-DE"`), wie von BonnData (`Chosen at Dataset Creation`) gefordert; live gegen `bonndata.uni-bonn.de` (`3D` & `bcdh`) getestet (`201 Created`).
+- **Vollständiges Citation- & Geospatial-Mapping:**
+  - `recordInformation.source` & `recordInformation.creation.contacts`, `alternativeURL`, `producer`, `productionDate`, `contributor`, `depositor`, `dateOfDeposit`, `dateOfCollection`, `originOfSources`, `characteristicOfSources` (inkl. Fix für Vokabular-Objekte statt `[object Object]`), `accessToSources`, `series`, `publication` (aus `references`), `software` (automatisch in Name & Version aufgetrennt), `topicClassification` (nur echte Sach-/Material-Vokabulare: HECTOR / Getty AAT / Wikidata), bereinigte `authorIdentifier` (GND/ORCID ohne URL-Präfix) sowie `otherGeographicCoverage` inkl. Pleiades-URI.
+  - Künstlicher `subtitle`-Fallback entfernt (da CARARE 2.0.6 nur wiederholbare Titel/`Alternative Title` kennt).
+- **Handbuch erweitert (`public/manual.html`, `HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html`):**
+  - Neues zweisprachiges Kapitel **„10. BonnData / Dataverse-Export & Schema-Mapping“** mit Gegenüberstellung CARARE 2.0.6 ↔ BonnData.

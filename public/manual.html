@@ -5049,6 +5049,83 @@
 
         </div>
       </section>
+
+      <!-- ==========================================================================
+           SECTION 10: BONNDATA / DATAVERSE EXPORT & SCHEMA MAPPING
+           ========================================================================== -->
+      <section class="section" id="bonndata-mapping">
+        <div class="section-header">
+          <h2>
+            <span class="section-num">10</span>
+            <span class="lang-de">BonnData / Dataverse-Export &amp; Schema-Mapping</span>
+            <span class="lang-en">BonnData / Dataverse Export &amp; Schema Mapping</span>
+          </h2>
+        </div>
+
+        <p class="lead-text">
+          <span class="lang-de">
+            HERMES exportiert Projekte neben CARARE 2.0.6 XML auch als direkt importierbares Dataverse Native-API JSON für <strong>BonnData</strong> (<code>bonndata.uni-bonn.de</code>). Nachfolgend sind die technischen Voraussetzungen sowie die vollständige Feldzuordnung zwischen CARARE 2.0.6 und BonnData dokumentiert.
+          </span>
+          <span class="lang-en">
+            In addition to CARARE 2.0.6 XML, HERMES exports projects as Dataverse Native API JSON for <strong>BonnData</strong> (<code>bonndata.uni-bonn.de</code>). Below are the technical requirements and the complete field mapping between CARARE 2.0.6 and BonnData.
+          </span>
+        </p>
+
+        <div class="callout callout-info" style="margin-bottom: 1.5rem;">
+          <strong>
+            <span class="lang-de">Wichtige Hinweise zur BonnData-API (Metadatensprache, Kontakt &amp; Titel):</span>
+            <span class="lang-en">Key Notes on the BonnData API (Metadata Language, Contact &amp; Titles):</span>
+          </strong>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+            <li>
+              <span class="lang-de"><strong>Top-Level <code>metadataLanguage</code>:</strong> Dataverse erwartet <code>"metadataLanguage"</code> auf der obersten JSON-Ebene neben <code>"datasetVersion"</code> (<code>Content-Type: application/json</code>). Zulässige Sprachen je Collection lassen sich über <code>GET /api/dataverses/{alias}/allowedMetadataLanguages</code> abfragen (für Collection <code>3D</code> aktuell nur <code>"en"</code>, für <code>bcdh</code> sowohl <code>"en"</code> als auch <code>"de-DE"</code>).</span>
+              <span class="lang-en"><strong>Top-level <code>metadataLanguage</code>:</strong> Dataverse requires <code>"metadataLanguage"</code> at the top JSON level next to <code>"datasetVersion"</code> (<code>Content-Type: application/json</code>). Allowed languages per collection can be queried via <code>GET /api/dataverses/{alias}/allowedMetadataLanguages</code> (currently only <code>"en"</code> for <code>3D</code>; <code>"en"</code> and <code>"de-DE"</code> for <code>bcdh</code>).</span>
+            </li>
+            <li>
+              <span class="lang-de"><strong>Subtitle vs. Alternative Title:</strong> CARARE 2.0.6 besitzt <strong>kein <code>&lt;subtitle&gt;</code>-Element</strong>, sondern nur wiederholbare <code>&lt;title&gt;</code> / <code>&lt;appellation&gt;&lt;name&gt;</code>. Der bevorzugte Sammlungstitel wird daher auf <code>Title</code> gemappt; alle weiteren Titel und Objektnamen gehen in <code>Alternative Title</code>.</span>
+              <span class="lang-en"><strong>Subtitle vs. Alternative Title:</strong> CARARE 2.0.6 has <strong>no <code>&lt;subtitle&gt;</code> element</strong>, only repeatable <code>&lt;title&gt;</code> / <code>&lt;appellation&gt;&lt;name&gt;</code>. The preferred collection title maps to <code>Title</code>; all additional titles and object names map to <code>Alternative Title</code>.</span>
+            </li>
+            <li>
+              <span class="lang-de"><strong>Point of Contact:</strong> Dataverse verbirgt rohe E-Mail-Adressen auf der öffentlichen Dataset-Seite als Spamschutz (<em>„Use email button above to contact.“</em>) und leitet Nachrichten über den Kontakt-Button an die übermittelte Adresse weiter.</span>
+              <span class="lang-en"><strong>Point of Contact:</strong> Dataverse hides raw email addresses on the public dataset page for anti-spam protection (<em>"Use email button above to contact."</em>) and routes messages through the Contact button.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr>
+                <th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color, #ddd);">CARARE 2.0.6 (HERMES)</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color, #ddd);">BonnData / Dataverse</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color, #ddd);">
+                  <span class="lang-de">Hinweise</span>
+                  <span class="lang-en">Notes</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>xml:lang</code> / Metadatensprache</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>metadataLanguage</code> (Top-Level)</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>"en"</code> (<code>3D</code>/<code>bcdh</code>) oder <code>"de-DE"</code> (<code>bcdh</code>)</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Globale Rechte / Lizenz</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>datasetVersion.license</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">z. B. CC BY 4.0 / CC0 1.0</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>collectionInformation/title</code> (preferred)</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.title</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Haupttitel</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Weitere Titel &amp; <code>appellation/name</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.alternativeTitle</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Kein künstliches <code>subtitle</code></td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>digitalResource/isShownAt</code> / <code>link</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.alternativeURL</code> &amp; <code>accessToSources</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Direktlink zur Ressource</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Sammlungs-, Inventar-, Datensatz- &amp; Aktivitäts-IDs</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.otherId</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">inkl. <code>otherIdAgency</code></td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Kontakte &amp; Akteure (<code>actors</code>)</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.author</code> &amp; <code>citation.contributor</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">GND / ORCID / ROR ohne URL-Präfix</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>creation/contacts</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.datasetContact</code> &amp; <code>depositor</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Name, Organisation, E-Mail</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>statement</code>, <code>description</code>, <code>DAP-1..5</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.dsDescription</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">inkl. <code>dsDescriptionDate</code></td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Schlagwörter, Material, Objekttyp</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.freeKeyword</code>, <code>keyword</code> &amp; <code>topicClassification</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">HECTOR / Getty AAT / Wikidata URIs</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>activity/consistsOf/software</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.software</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Aufgetrennt in Name &amp; Version</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>collectionInformation/source</code> &amp; <code>creation/date</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.producer</code>, <code>productionDate</code> &amp; <code>dateOfDeposit</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Einrichtung &amp; Erstellungsdatum</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>activity/temporal</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.dateOfCollection</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Erhebungszeitraum</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>provenance</code> &amp; <code>repositoryLocation</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.originOfSources</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Herkunft &amp; Aufbewahrungsort</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>heritageAssetType</code> &amp; <code>materials</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.characteristicOfSources</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Objektart &amp; Material</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>heritageAsset/references</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>citation.publication</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">Literaturzitat + URL</td></tr>
+              <tr><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>spatial</code> (Land, Ort, <code>historicalName</code>, Lat/Lon)</td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;"><code>geospatial.geographicCoverage</code> &amp; <code>geographicBoundingBox</code></td><td style="padding: 6px 8px; border-bottom: 1px solid #eee;">inkl. Pleiades-URI</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </main>
   </div>
 
