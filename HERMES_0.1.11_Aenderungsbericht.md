@@ -62,3 +62,14 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 - **Digitalisat (`DigitalResourceCrud.vue`):** `appellation.name`-Objektanzeige repariert (`v0.1.6`), überflüssiges `Note`-Feld und XML-Klammer-Jargon (`<extent>`, `<accuracy>`, `<consistsOf>`) aus den Formularen entfernt (`v0.1.6`, `v0.1.9`), **3D-Datei-Inspektor-Dropzone** (`.glb`, `.gltf`, `.obj`, `.ply`, `.stl`) integriert (`v0.1.6`).
 - **BonnData-JSON-Export (`src/utils/bonndataExporter.js`):** Neuer Export für BonnData neben CARARE 2.0.6 XML (`v0.1.8`).
 - **Workflow-Checkliste & Validierung (`v0.1.6`, `v0.1.10`):** Leere Pflichtfeld-Arrays werden in der Seitenleiste nicht mehr vorab als abgehakt angezeigt; `sticky bottom-0`-Speichern-Leisten, automatisches Aufklappen ungültiger Bereiche beim Speichern und eindeutige DE/EN-Beschriftungen in allen 4 Modulen.
+
+---
+
+## 4. Nachtrag `v0.1.12` (16.11.2026) – Verbleibende QA-Agenten-Befunde behoben
+
+- **Spatial-Übernahme für antike Orte (`src/components/SpatialSection.vue`):**
+  - Ein verbliebener `spatialKind`-Standardwert (`"modern"`) führte in `saveEntry()` dazu, dass `locationSet.historicalName` verworfen wurde, wenn im einseitigen Spatial-Modal ein Pleiades-Ort (z. B. *Memphis*) ausgewählt wurde. `saveEntry()` speichert nun alle ausgefüllten Felder (`locationSet.historicalName`, `namedLocation`, Adress-/Geodaten) einheitlich, wodurch **Räumlich** auch im Kulturgut-Modul korrekt als ausgefüllt markiert wird.
+- **Barrierefreiheit & Tastatur-/Automation-Zugriff für Slide-over-Drawer (`src/output_components/HeritageAssetIdentificationCrud.vue`):**
+  - `.drawer-side` und das innere Drawer-Panel (z. B. *Abmessungen hinzufügen*) erhalten `role="dialog"`, `:aria-modal`, `:aria-label`, `:aria-hidden` sowie explizites `visibility: visible` im geöffneten Zustand, sodass alle Formularfelder im Accessibility-Tree und per Tastatur direkt ansteuerbar sind.
+- **Erstellungs-Tooltip geglättet (`src/output_components/CollectionInformationCrud.vue`):**
+  - Der CARARE-Text (`"Informationen darüber, wie die geernteten Ressourcen gesammelt wurden, umfassen:"`) wurde in `creation.docDe` / `creation.docEn` durch eine klare, praxisnahe Beschreibung ersetzt.

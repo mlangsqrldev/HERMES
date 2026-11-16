@@ -2972,7 +2972,11 @@
       </div>
     </div>
 
-    <div class="drawer-side z-[100]">
+    <div
+      class="drawer-side z-[100]"
+      :aria-hidden="!isDrawerOpen"
+      :style="isDrawerOpen ? { visibility: 'visible' } : undefined"
+    >
       <label
         for="drawer-heritageAssetIdentification"
         aria-label="close sidebar"
@@ -2980,6 +2984,9 @@
       ></label>
 
       <div
+        role="dialog"
+        :aria-modal="isDrawerOpen ? 'true' : undefined"
+        :aria-label="currentLocale === 'de' ? 'Eintrag hinzufügen oder bearbeiten' : 'Add or edit entry'"
         class="w-full max-w-lg h-screen bg-base-100 flex flex-col pointer-events-auto"
       >
         <div class="flex-1 overflow-y-auto p-6">

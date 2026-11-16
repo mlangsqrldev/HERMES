@@ -596,18 +596,10 @@ const handleOrgPicked = (org) => {
 
 const saveEntry = () => {
   const entry = {};
-  if (spatialKind.value === "historical") {
-    if (draft["locationSet.historicalName"].trim()) {
-      entry["locationSet.historicalName"] =
-        draft["locationSet.historicalName"].trim();
-    }
-  } else {
-    Object.keys(draft).forEach((k) => {
-      if (k === "locationSet.historicalName") return;
-      const val = String(draft[k] || "").trim();
-      if (val) entry[k] = val;
-    });
-  }
+  Object.keys(draft).forEach((k) => {
+    const val = String(draft[k] || "").trim();
+    if (val) entry[k] = val;
+  });
 
   if (Object.keys(entry).length === 0) {
     closeModal();

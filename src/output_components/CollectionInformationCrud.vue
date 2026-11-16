@@ -1944,9 +1944,9 @@ const fieldLabels = {
     en: "Creation",
     de: "Erstellung",
     docEn:
-      "Information about how the resources being harvested were collected includes:",
+      "Details on how this data package was created and compiled (creation date and contacts).",
     docDe:
-      "Informationen darüber, wie die geernteten Ressourcen gesammelt wurden, umfassen:",
+      "Angaben zur Entstehung und Zusammenstellung dieses Datenpakets (Erstellungsdatum und Ansprechpersonen).",
     placEn: "",
     placDe: "",
   },
