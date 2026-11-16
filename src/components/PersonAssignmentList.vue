@@ -636,7 +636,7 @@ const items = computed(() =>
 const isMultiRole = computed(() =>
   props.allowMultiRoles !== null
     ? props.allowMultiRoles
-    : props.mode === "activity",
+    : props.mode !== "contact",
 );
 
 const resolvedTitle = computed(() => {

@@ -292,7 +292,9 @@ const computedPlaceholder = computed(() => {
 watch(
   () => props.modelValue,
   (val) => {
-    if (!chosenItem.value && val) query.value = val;
+    if (val !== query.value) {
+      query.value = val || "";
+    }
   },
   { immediate: true },
 );
@@ -555,7 +557,7 @@ const select = (item) => {
   chosenItem.value = item;
   query.value = item.name;
   open.value = false;
-  emit("update:modelValue", item.uri);
+  emit("update:modelValue", item.name || item.uri);
   emit("select", item);
 };
 

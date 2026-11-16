@@ -1,6 +1,6 @@
 [package]
 name = "hermes"
-version = "0.1.8"
+version = "0.1.9"
 description = "HERitage Metadata Entry System"
 authors = ["you"]
 edition = "2021"

@@ -84,12 +84,17 @@ pre,
   max-width: 100%;
 }
 
-/* Prevent CSS Grid / Flex / DaisyUI Menu children from overflowing their container boxes */
+/* Prevent CSS Grid / Flex / DaisyUI Menu / Section children from overflowing into side XML preview */
 .grid > *,
 .form-control,
 .menu,
 .menu li,
-.menu li > * {
+.menu li > *,
+section,
+.collapse,
+.collapse-content,
+.card,
+.card-body {
   min-width: 0;
   max-width: 100%;
 }

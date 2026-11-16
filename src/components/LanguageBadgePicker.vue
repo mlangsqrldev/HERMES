@@ -3,7 +3,7 @@
     <div
       tabindex="0"
       role="button"
-      class="btn btn-xs btn-ghost gap-1.5 px-2 h-7 min-h-0 border border-base-300 hover:border-primary/60 bg-base-200/50 hover:bg-base-200 shadow-2xs rounded-lg transition-all"
+      class="btn btn-xs btn-ghost gap-1.5 px-2 h-7 min-h-0 border border-base-300 hover:border-primary/60 bg-base-200/50 hover:bg-base-200 shadow-2xs rounded-lg transition-all whitespace-nowrap flex-nowrap shrink-0"
       :title="titleText"
     >
       <FlagIcon :code="activeLang" size="xs" />

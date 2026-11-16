@@ -18,41 +18,28 @@
           >
             <span>{{
               currentLocale === "de"
-                ? "Technische Metadaten & 3D-Erfassung"
-                : "Technical Metadata & 3D Acquisition"
+                ? "Technische Metadaten & 3D-Modell"
+                : "Technical Metadata & 3D Model"
             }}</span>
+            <span
+              class="tooltip tooltip-accent tooltip-bottom cursor-help text-base-content/60 hover:text-primary"
+              :data-tip="
+                currentLocale === 'de'
+                  ? 'Hier dokumentieren Sie die technischen Eigenschaften der gelieferten 3D-Datei (Dateiformat, Polygone, Texturen, Genauigkeit, Dateigröße). Aufnahmeverfahren, Kameras, Scanner und Software werden im Bereich Aktivitäten erfasst.'
+                  : 'Document the technical properties of the delivered 3D file here (file format, polygons, textures, accuracy, file size). Acquisition methods, cameras, scanners, and software are recorded in the Activities module.'
+              "
+            >
+              ℹ️
+            </span>
           </h4>
           <p class="text-xs text-base-content/60 mt-0.5">
             {{
               currentLocale === "de"
-                ? "Strikte Unterscheidung der Erfassungsverfahren (Photogrammetrie, Streifenlichtscan, Laserscan) inklusive Rohbild-Dokumentation."
-                : "Strict distinction of acquisition workflows (Photogrammetry, Structured-Light, Laser Scanning) including RAW image documentation."
+                ? "Technische Eigenschaften der digitalen Ressource (Dateiformat, Geometrie, Texturen, Genauigkeit)."
+                : "Technical properties of the digital resource (file format, geometry, textures, accuracy)."
             }}
           </p>
         </div>
-      </div>
-    </div>
-
-    <!-- Schema Info Banner -->
-    <div
-      class="mb-4 p-3.5 bg-primary/5 rounded-xl border border-primary/20 flex items-start gap-3"
-    >
-      <div class="text-xl">ℹ️</div>
-      <div class="text-xs text-base-content/75 space-y-1">
-        <p class="font-bold text-primary">
-          {{
-            currentLocale === "de"
-              ? "Hinweis zum CARARE 2.0 Schema (Methoden & Equipment):"
-              : "CARARE 2.0 Schema Notice (Methods & Equipment):"
-          }}
-        </p>
-        <p>
-          {{
-            currentLocale === "de"
-              ? "Angaben zur Erfassungsmethode (Photogrammetrie, SLS, TLS), zu Kameras, 3D-Scannern und Verarbeitungssoftware gehören schema-konform zur Aktivität (Activity -> consistsOf). Dieses Panel dokumentiert die technischen Eigenschaften der digitalen Ressource selbst (Dateiformat, Polygone, Texturen, Extent)."
-              : "Acquisition methods (Photogrammetry, SLS, TLS), cameras, 3D scanners and software belong schema-conformantly to Activity sub-events (Activity -> consistsOf). This panel documents the technical properties of the digital resource itself (file format, polygons, textures, extent)."
-          }}
-        </p>
       </div>
     </div>
 
@@ -1369,17 +1356,12 @@
                   : "4. Metrology: Accuracy & Resolution"
               }}</span>
             </span>
-            <span
-              class="px-2 py-0.5 rounded-md bg-info/15 text-info font-mono text-[11px] font-semibold"
-            >
-              HERMES-DAP &amp; CARARE &lt;extent&gt;
-            </span>
           </div>
           <p class="text-xs text-base-content/70 leading-relaxed max-w-3xl">
             {{
               currentLocale === "de"
-                ? "Dedizierte Felder für messtechnische Genauigkeit und räumliche/optische Auflösung. Werden im HERMES-DAP XML als &lt;accuracy&gt; und &lt;resolution&gt; sowie im 100% CARARE-konformen XML als wiederholte &lt;extent&gt;- und &lt;note&gt;-Elemente ausgegeben."
-                : "Dedicated fields for metrological accuracy and spatial/optical resolution. Exported as &lt;accuracy&gt; and &lt;resolution&gt; in Extended HERMES-DAP XML, and as repeated &lt;extent&gt; and &lt;note&gt; elements in 100% CARARE-compliant XML."
+                ? "Felder für messtechnische Genauigkeit sowie räumliche und optische Auflösung des 3D-Modells."
+                : "Fields for metrological accuracy as well as spatial and optical resolution of the 3D model."
             }}
           </p>
         </div>
@@ -1399,10 +1381,6 @@
               ? "Genauigkeit – Messtechnische Präzision & Kalibrierung"
               : "Accuracy – Metrological Precision & Calibration"
           }}</span>
-          <code
-            class="text-[11px] font-mono px-2 py-0.5 rounded bg-base-200 text-info"
-            >&lt;accuracy&gt;</code
-          >
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1420,10 +1398,7 @@
                       : "3D Point Accuracy"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0"
-                  >&lt;pointAccuracy&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1480,10 +1455,7 @@
                       : "Registration Error / RMSE"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0"
-                  >&lt;registrationRmse&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1539,10 +1511,7 @@
                       : "Volumetric Accuracy"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0"
-                  >&lt;volumetricAccuracy&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1597,10 +1566,7 @@
                       : "Calibration & Reference Standard"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0"
-                  >&lt;calibrationMethod&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1657,10 +1623,7 @@
               ? "Auflösung – Geometrische & Optische Abtastdichte"
               : "Resolution – Geometric & Optical Sampling Density"
           }}</span>
-          <code
-            class="text-[11px] font-mono px-2 py-0.5 rounded bg-base-200 text-secondary"
-            >&lt;resolution&gt;</code
-          >
+          
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1678,10 +1641,7 @@
                       : "3D Spatial Resolution (Point Spacing)"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0"
-                  >&lt;spatialResolution&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1737,10 +1697,7 @@
                       : "Ground Sampling Distance (GSD)"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0"
-                  >&lt;gsd&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1796,10 +1753,7 @@
                       : "UV Texture Resolution"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0"
-                  >&lt;textureResolution&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1850,10 +1804,7 @@
                       : "Optical Sensor Resolution"
                   }}
                 </span>
-                <code
-                  class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0"
-                  >&lt;sensorResolution&gt;</code
-                >
+                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1894,32 +1845,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- HINWEIS: SOFTWARE & EQUIPMENT GEHÖREN ZUR AKTIVITÄT          -->
-    <!-- ============================================================ -->
-    <div
-      class="p-4 bg-info/10 border border-info/30 rounded-2xl mb-5 flex items-start gap-3"
-    >
-      <span class="text-2xl shrink-0">ℹ️</span>
-      <div class="text-xs space-y-1">
-        <span class="font-bold text-info-content text-sm block">
-          {{
-            currentLocale === "de"
-              ? "Software & Aufnahme-Equipment gehören zur Aktivität (Activity)"
-              : "Software & Acquisition Equipment belong to Activity"
-          }}
-        </span>
-        <p class="text-base-content/75 leading-relaxed">
-          {{
-            currentLocale === "de"
-              ? "Eingesetzte Software (z. B. RealityCapture, Artec Studio, Blender) und Hardware (Kameras, 3D-Scanner) werden nicht beim einzelnen 3D-Modell erfasst, sondern im Modul „Aktivität / Kampagne“. Hier beschreiben Sie ausschließlich das fertige Datenprodukt (Geometrie, Texturen, Genauigkeit, Bounding Box, Dateigröße)."
-              : 'Processing software and hardware equipment do not belong to the Digital Resource, but are documented in the "Activity / Campaign" module. Here you exclusively describe the delivered digital 3D object.'
-          }}
-        </p>
-      </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- SECTION 5: DATEIGRÖSSE & WIEDERHOLTE CARARE <extent>-FELDER  -->
+    <!-- SECTION 5: DATEIGRÖSSE & AUSMASS                             -->
     <!-- ============================================================ -->
     <div
       class="p-3.5 bg-base-200/30 rounded-xl border border-base-200 mb-5"
@@ -1938,6 +1864,16 @@
                   : "File Size (Extent)"
               }}</span>
               <span class="text-accent font-black">*</span>
+              <span
+                class="tooltip tooltip-accent tooltip-right cursor-help font-normal normal-case"
+                :data-tip="
+                  currentLocale === 'de'
+                    ? 'Dateigröße der gelieferten 3D-Datei. Eingesetzte Verarbeitungssoftware und Aufnahme-Equipment werden nicht hier, sondern im Modul Aktivitäten dokumentiert.'
+                    : 'File size of the delivered 3D file. Processing software and acquisition hardware belong to the Activities module, not here.'
+                "
+              >
+                ℹ️
+              </span>
             </span>
           </label>
           <div class="join w-full">
@@ -1971,8 +1907,8 @@
               <span>📐</span>
               <span>{{
                 currentLocale === "de"
-                  ? "Primäres Ausmaß (CARARE &lt;extent&gt;)"
-                  : "Primary Extent (CARARE &lt;extent&gt;)"
+                  ? "Primäres Ausmaß"
+                  : "Primary Extent"
               }}</span>
             </span>
           </label>
@@ -1998,8 +1934,8 @@
           <span>📋</span>
           <span>{{
             currentLocale === "de"
-              ? "Formatdetails (CARARE &lt;formatDetails&gt; XML-Element)"
-              : "Format Details (CARARE &lt;formatDetails&gt;)"
+              ? "Formatdetails"
+              : "Format Details"
           }}</span>
           <span class="text-accent font-black">*</span>
         </label>

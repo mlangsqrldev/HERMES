@@ -77,6 +77,27 @@
       </span>
     </div>
 
+    <!-- Optional Region Filter Chips (Default: All Regions) -->
+    <div class="flex flex-wrap items-center gap-1 mb-1.5">
+      <button
+        v-for="reg in REGION_FILTERS"
+        :key="reg.id"
+        type="button"
+        class="btn btn-xs h-6 min-h-0 px-2 text-[11px]"
+        :class="
+          regionFilter === reg.id
+            ? 'btn-secondary font-bold'
+            : 'btn-ghost border border-base-300 opacity-75 hover:opacity-100'
+        "
+        @click="
+          regionFilter = reg.id;
+          isOpen = true;
+        "
+      >
+        {{ currentLocale === "de" ? reg.de : reg.en }}
+      </button>
+    </div>
+
     <!-- Search Input Bar -->
     <div class="relative flex items-center">
       <div
@@ -150,6 +171,28 @@
           ? "Hinweis: HECTOR liefert Epochen-Konzepte & URIs. Angezeigte Datierungsspannen basieren auf archäologischen Standardwerten."
           : "Note: HECTOR provides epoch concepts & URIs. Year spans are derived from standard archaeological dating."
       }}</span>
+    </div>
+
+    <!-- Last 5 Recently Used Epochs -->
+    <div v-if="recentPeriods.length > 0" class="flex flex-wrap gap-1 mt-1.5 px-0.5">
+      <span
+        class="text-[10px] uppercase font-bold text-primary/80 self-center mr-1"
+      >
+        {{ currentLocale === "de" ? "Zuletzt verwendet:" : "Recently used:" }}
+      </span>
+      <button
+        v-for="rec in recentPeriods"
+        :key="'recent-' + (rec.id || rec.uri || rec.label)"
+        type="button"
+        @click.prevent="selectPeriod(rec)"
+        class="badge badge-sm badge-outline border-primary/40 hover:badge-primary text-[11px] cursor-pointer transition-colors py-0.5 px-2"
+        :title="`${rec.authority || 'PeriodO'}: ${rec.start || '-'} → ${rec.stop || '-'}`"
+      >
+        <span class="mr-0.5 text-[10px]">⏱️</span>
+        <span>{{
+          currentLocale === "de" && rec.labelDe ? rec.labelDe : rec.label
+        }}</span>
+      </button>
     </div>
 
     <!-- Quick Selection Chips based on active catalog mode -->
@@ -359,7 +402,41 @@ const props = defineProps({
 
 const emit = defineEmits(["select", "update:modelValue"]);
 
-const providerMode = ref("hector"); // 'hector' | 'periodo' | 'all'
+const REGION_FILTERS = [
+  { id: "all", de: "Alle Regionen", en: "All Regions" },
+  { id: "egypt", de: "Ägypten", en: "Egypt" },
+  { id: "mediterranean", de: "Mittelmeer & Antike", en: "Mediterranean" },
+  { id: "europe", de: "Europa", en: "Europe" },
+];
+const regionFilter = ref("all");
+
+const RECENT_PERIODS_KEY = "hermes_recent_periods_v1";
+const loadRecentPeriods = () => {
+  try {
+    const raw = localStorage.getItem(RECENT_PERIODS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.slice(0, 5) : [];
+  } catch {
+    return [];
+  }
+};
+const recentPeriods = ref(loadRecentPeriods());
+const recordRecentPeriod = (period) => {
+  if (!period || (!period.label && !period.labelDe)) return;
+  const key = period.id || period.uri || period.label;
+  const next = [
+    period,
+    ...recentPeriods.value.filter((p) => (p.id || p.uri || p.label) !== key),
+  ].slice(0, 5);
+  recentPeriods.value = next;
+  try {
+    localStorage.setItem(RECENT_PERIODS_KEY, JSON.stringify(next));
+  } catch {
+    // ignore storage error
+  }
+};
+
+const providerMode = ref("all"); // 'hector' | 'periodo' | 'all'
 const searchQuery = ref(props.modelValue || "");
 const isOpen = ref(false);
 const highlightedIndex = ref(-1);
@@ -389,6 +466,139 @@ const computedPlaceholder = computed(() => {
 
 // Curated canonical HECTOR epochs dataset from vocabs.bcdh.uni-bonn.de/hector_epochs/
 const HECTOR_EPOCHS_CATALOG = [
+  // --- Ägyptische Epochen (PeriodO / Ägyptologie) ---
+  {
+    id: "http://n2t.net/ark:/99152/p0868m22b8s",
+    uri: "http://n2t.net/ark:/99152/p0868m22b8s",
+    label: "Predynastic Period (Egypt)",
+    labelDe: "Prädynastische Zeit (Ägypten)",
+    start: "-5300",
+    stop: "-3000",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "prädynastisch", "predynastic", "naqada"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m28f7b",
+    uri: "http://n2t.net/ark:/99152/p0868m28f7b",
+    label: "Early Dynastic Period (Egypt)",
+    labelDe: "Frühdynastische Zeit (Ägypten)",
+    start: "-3000",
+    stop: "-2686",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "frühdynastisch", "early dynastic", "thinite"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2f7h3",
+    uri: "http://n2t.net/ark:/99152/p0868m2f7h3",
+    label: "Old Kingdom (Egypt)",
+    labelDe: "Altes Reich (Ägypten)",
+    start: "-2686",
+    stop: "-2160",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "altes reich", "old kingdom", "pyramidenzeit"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2g9c4",
+    uri: "http://n2t.net/ark:/99152/p0868m2g9c4",
+    label: "First Intermediate Period (Egypt)",
+    labelDe: "Erste Zwischenzeit (Ägypten)",
+    start: "-2160",
+    stop: "-2055",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "erste zwischenzeit", "first intermediate"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2n2p9",
+    uri: "http://n2t.net/ark:/99152/p0868m2n2p9",
+    label: "Middle Kingdom (Egypt)",
+    labelDe: "Mittleres Reich (Ägypten)",
+    start: "-2055",
+    stop: "-1650",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "mittleres reich", "middle kingdom"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2r6q1",
+    uri: "http://n2t.net/ark:/99152/p0868m2r6q1",
+    label: "Second Intermediate Period (Egypt)",
+    labelDe: "Zweite Zwischenzeit (Ägypten)",
+    start: "-1650",
+    stop: "-1550",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "zweite zwischenzeit", "second intermediate", "hyksos"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2w4v7",
+    uri: "http://n2t.net/ark:/99152/p0868m2w4v7",
+    label: "New Kingdom (Egypt)",
+    labelDe: "Neues Reich (Ägypten)",
+    start: "-1550",
+    stop: "-1069",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "neues reich", "new kingdom", "amarna", "ramessidisch"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2x8z2",
+    uri: "http://n2t.net/ark:/99152/p0868m2x8z2",
+    label: "Third Intermediate Period (Egypt)",
+    labelDe: "Dritte Zwischenzeit (Ägypten)",
+    start: "-1069",
+    stop: "-0664",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "dritte zwischenzeit", "third intermediate"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m2z1k5",
+    uri: "http://n2t.net/ark:/99152/p0868m2z1k5",
+    label: "Late Period (Egypt)",
+    labelDe: "Spätzeit (Ägypten)",
+    start: "-0664",
+    stop: "-0332",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "spätzeit", "spaetzeit", "late period", "saitisch"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m33m8p",
+    uri: "http://n2t.net/ark:/99152/p0868m33m8p",
+    label: "Ptolemaic Period (Egypt)",
+    labelDe: "Ptolemäische Zeit (Ägypten)",
+    start: "-0332",
+    stop: "-0030",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "ptolemäisch", "ptolemaic", "hellenistisch ägypten"],
+  },
+  {
+    id: "http://n2t.net/ark:/99152/p0868m37r4w",
+    uri: "http://n2t.net/ark:/99152/p0868m37r4w",
+    label: "Roman Period (Egypt)",
+    labelDe: "Römische Zeit (Ägypten)",
+    start: "-0030",
+    stop: "0395",
+    region: "Ägypten",
+    source: "PeriodO",
+    authority: "PeriodO",
+    aliases: ["ägypten", "aegypten", "egypt", "römische zeit ägypten", "roman egypt", "koptisch"],
+  },
   {
     id: "http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_e4a9851a",
     uri: "http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_e4a9851a",
@@ -1001,7 +1211,7 @@ const displayedPeriods = computed(() => {
 
   // Deduplicate by id/uri
   const seen = new Set();
-  const uniquePool = [];
+  let uniquePool = [];
   pool.forEach((item) => {
     const key = item.id || item.uri;
     if (key && !seen.has(key)) {
@@ -1009,6 +1219,29 @@ const displayedPeriods = computed(() => {
       uniquePool.push(item);
     }
   });
+
+  // Optional region filter (Default: 'all')
+  if (regionFilter.value !== "all") {
+    uniquePool = uniquePool.filter((item) => {
+      const reg = normalizeStr(item.region || "");
+      if (regionFilter.value === "egypt") {
+        return reg.includes("agypt") || reg.includes("egypt");
+      }
+      if (regionFilter.value === "mediterranean") {
+        return (
+          reg.includes("griech") ||
+          reg.includes("rom") ||
+          reg.includes("mittelmeer") ||
+          reg.includes("agais") ||
+          reg.includes("mediterranean")
+        );
+      }
+      if (regionFilter.value === "europe") {
+        return reg.includes("europa") || reg.includes("europe");
+      }
+      return true;
+    });
+  }
 
   if (!rawQuery) {
     return uniquePool.slice(0, 14);
@@ -1102,6 +1335,7 @@ function formatYear(yearStr) {
 
 function selectPeriod(period) {
   selectedPeriod.value = period;
+  recordRecentPeriod(period);
   searchQuery.value =
     props.currentLocale === "de" && period.labelDe
       ? period.labelDe

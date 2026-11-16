@@ -78,14 +78,14 @@
       </div>
     </div>
 
-    <!-- 5 Dimensions (All visible in clean stacked cards for fast free-text entry) -->
+    <!-- 5 Dimensions (All visible in clean stacked cards for fast multilingual free-text entry) -->
     <div class="space-y-4">
       <div
         v-for="dim in DAP_DIMENSIONS"
         :key="dim.id"
         class="p-4 rounded-xl border bg-base-200/30 transition-colors"
         :class="
-          dimTexts[dim.id]?.trim()
+          hasDimContent(dim.id)
             ? 'border-success/40 bg-success/5'
             : 'border-base-300'
         "
@@ -102,44 +102,99 @@
               {{ currentLocale === "de" ? dim.titleDe : dim.titleEn }}
             </h5>
           </div>
-          <span
-            class="text-xs font-medium"
-            :class="
-              dimTexts[dim.id]?.trim() ? 'text-success' : 'text-base-content/40'
-            "
-          >
-            {{
-              dimTexts[dim.id]?.trim()
-                ? currentLocale === "de"
-                  ? "✓ Erfasst"
-                  : "✓ Filled"
-                : currentLocale === "de"
-                  ? "Noch leer"
-                  : "Empty"
-            }}
-          </span>
+          <div class="flex items-center gap-2">
+            <span
+              class="text-xs font-medium"
+              :class="hasDimContent(dim.id) ? 'text-success' : 'text-base-content/40'"
+            >
+              {{
+                hasDimContent(dim.id)
+                  ? currentLocale === "de"
+                    ? "✓ Erfasst"
+                    : "✓ Filled"
+                  : currentLocale === "de"
+                    ? "Noch leer"
+                    : "Empty"
+              }}
+            </span>
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-primary gap-1"
+              @click.prevent="addDimLang(dim.id)"
+            >
+              <span>+</span>
+              <span>{{
+                currentLocale === "de" ? "Sprache" : "Add Language"
+              }}</span>
+            </button>
+          </div>
         </div>
 
         <p class="text-xs text-base-content/70 mb-2 leading-relaxed">
           {{ currentLocale === "de" ? dim.hintDe : dim.hintEn }}
         </p>
 
-        <textarea
-          v-model="dimTexts[dim.id]"
-          @input="syncToConsistsOf"
-          rows="3"
-          class="textarea textarea-bordered w-full bg-base-100 text-sm leading-relaxed"
-          :placeholder="
-            currentLocale === 'de' ? dim.placeholderDe : dim.placeholderEn
-          "
-        ></textarea>
+        <div class="space-y-2">
+          <div
+            v-for="(entry, eIdx) in dimTexts[dim.id]"
+            :key="eIdx"
+            class="flex flex-col sm:flex-row items-stretch sm:items-start gap-2"
+          >
+            <textarea
+              v-model="entry._value"
+              @input="syncToConsistsOf"
+              rows="3"
+              class="textarea textarea-bordered w-full flex-1 min-w-0 bg-base-100 text-sm leading-relaxed"
+              :placeholder="
+                currentLocale === 'de' ? dim.placeholderDe : dim.placeholderEn
+              "
+            ></textarea>
+
+            <div class="flex items-center gap-1 shrink-0 sm:pt-1">
+              <LanguageBadgePicker
+                :model-value="entry.lang"
+                @update:model-value="
+                  entry.lang = $event;
+                  syncToConsistsOf();
+                "
+              />
+              <button
+                type="button"
+                class="btn btn-square btn-xs btn-ghost transition-colors"
+                :class="
+                  entry.preferred
+                    ? 'text-warning opacity-100'
+                    : 'text-base-content/35 hover:text-warning'
+                "
+                :title="
+                  currentLocale === 'de'
+                    ? 'Als bevorzugt festlegen'
+                    : 'Set as preferred'
+                "
+                @click.prevent="setDimPreferred(dim.id, eIdx)"
+              >
+                ★
+              </button>
+              <button
+                v-if="dimTexts[dim.id].length > 1"
+                type="button"
+                class="btn btn-square btn-xs btn-ghost text-error hover:bg-error/10"
+                :title="currentLocale === 'de' ? 'Entfernen' : 'Remove'"
+                @click.prevent="removeDimLang(dim.id, eIdx)"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, computed, watch, onMounted } from "vue";
+import { reactive, computed, watch, onMounted, inject, ref } from "vue";
+import LanguageBadgePicker from "./LanguageBadgePicker.vue";
 
 const props = defineProps({
   form: {
@@ -251,18 +306,49 @@ const DAP_DIMENSIONS = [
   },
 ];
 
+const defaultMetadataLanguage = inject("defaultMetadataLanguage", ref("de"));
+const defaultLang = () => defaultMetadataLanguage.value || "de";
+
 const dimTexts = reactive({
-  "DAP-1": "",
-  "DAP-2": "",
-  "DAP-3": "",
-  "DAP-4": "",
-  "DAP-5": "",
+  "DAP-1": [{ _value: "", lang: defaultLang(), preferred: true }],
+  "DAP-2": [{ _value: "", lang: defaultLang(), preferred: true }],
+  "DAP-3": [{ _value: "", lang: defaultLang(), preferred: true }],
+  "DAP-4": [{ _value: "", lang: defaultLang(), preferred: true }],
+  "DAP-5": [{ _value: "", lang: defaultLang(), preferred: true }],
 });
 
+const hasDimContent = (dimId) =>
+  Array.isArray(dimTexts[dimId]) &&
+  dimTexts[dimId].some((e) => Boolean((e?._value || "").trim()));
+
 const completedCount = computed(() => {
-  return DAP_DIMENSIONS.filter((d) => Boolean((dimTexts[d.id] || "").trim()))
-    .length;
+  return DAP_DIMENSIONS.filter((d) => hasDimContent(d.id)).length;
 });
+
+const addDimLang = (dimId) => {
+  const list = dimTexts[dimId] || [];
+  const used = new Set(list.map((e) => e.lang));
+  const nextLang = !used.has("en") ? "en" : !used.has("de") ? "de" : "fr";
+  list.push({ _value: "", lang: nextLang, preferred: list.length === 0 });
+  dimTexts[dimId] = list;
+  syncToConsistsOf();
+};
+
+const setDimPreferred = (dimId, idx) => {
+  (dimTexts[dimId] || []).forEach((e, i) => {
+    e.preferred = i === idx;
+  });
+  syncToConsistsOf();
+};
+
+const removeDimLang = (dimId, idx) => {
+  const list = dimTexts[dimId] || [];
+  if (list.length <= 1) return;
+  const wasPref = list[idx]?.preferred;
+  list.splice(idx, 1);
+  if (wasPref && list.length > 0) list[0].preferred = true;
+  syncToConsistsOf();
+};
 
 const isDapEntry = (item) => {
   if (!item) return false;
@@ -288,18 +374,22 @@ const syncToConsistsOf = () => {
 
   const dapSteps = [];
   DAP_DIMENSIONS.forEach((dim) => {
-    const val = (dimTexts[dim.id] || "").trim();
-    if (val) {
-      dapSteps.push({
-        isDap: true,
-        dapId: dim.id,
-        hadSpecificPurpose: dim.purposeDe,
-        "hadSpecificPurpose#lang": "de",
-        methods: val,
-        "methods#lang": props.currentLocale === "en" ? "en" : "de",
-        "methods#termUID": dim.uri,
-      });
-    }
+    const entries = Array.isArray(dimTexts[dim.id]) ? dimTexts[dim.id] : [];
+    entries.forEach((entry) => {
+      const val = (entry?._value || "").trim();
+      if (val) {
+        dapSteps.push({
+          isDap: true,
+          dapId: dim.id,
+          hadSpecificPurpose: dim.purposeDe,
+          "hadSpecificPurpose#lang": "de",
+          methods: val,
+          "methods#lang": entry.lang || defaultLang(),
+          "methods#preferred": Boolean(entry.preferred),
+          "methods#termUID": dim.uri,
+        });
+      }
+    });
   });
 
   props.form["consistsOf"] = [...regularSteps, ...dapSteps];
@@ -315,7 +405,7 @@ const initFromConsistsOf = () => {
   const list = props.form["consistsOf"];
 
   DAP_DIMENSIONS.forEach((dim) => {
-    const found = list.find((item) => {
+    const matches = list.filter((item) => {
       const p = String(item.hadSpecificPurpose || "");
       const uid = String(item["methods#termUID"] || "");
       const m = Array.isArray(item.methods)
@@ -330,37 +420,73 @@ const initFromConsistsOf = () => {
       );
     });
 
-    if (found) {
-      const methodText = Array.isArray(found.methods)
-        ? found.methods.join("; ")
-        : String(found.methods || "");
-      const techText = Array.isArray(found.techniques)
-        ? found.techniques.join("; ")
-        : String(found.techniques || "");
-      dimTexts[dim.id] = (methodText || techText || "").trim();
+    if (matches.length > 0) {
+      dimTexts[dim.id] = matches.map((found, idx) => {
+        const methodText = Array.isArray(found.methods)
+          ? found.methods.join("; ")
+          : String(found.methods || "");
+        const techText = Array.isArray(found.techniques)
+          ? found.techniques.join("; ")
+          : String(found.techniques || "");
+        return {
+          _value: (methodText || techText || "").trim(),
+          lang: found["methods#lang"] || defaultLang(),
+          preferred: found["methods#preferred"] ?? idx === 0,
+        };
+      });
     } else {
-      dimTexts[dim.id] = "";
+      dimTexts[dim.id] = [{ _value: "", lang: defaultLang(), preferred: true }];
     }
   });
 };
 
 const loadSampleDap = () => {
-  dimTexts["DAP-1"] =
-    "Abgebrochene Partien und Bestoßungen an der Oberfläche, feine Rissbildung sowie historische Restaurierungskittungen dokumentiert.";
-  dimTexts["DAP-2"] =
-    "360°-Rundumerfassung im Museum; Standfläche aus Standsicherheitsgründen ausgespart; tiefer liegende Hohlräume teilweise abgeschattet.";
-  dimTexts["DAP-3"] =
-    "ICP-Ausrichtung der Einzelscans, Entfernung von Messrauschen, plane Schließung der Standfläche und Dezimierung für Web-Derivat.";
-  dimTexts["DAP-4"] =
-    "Farbkalibrierung mittels ColorChecker, Delighting der Texturaufnahmen und Normal-Map-Bake aus dem hochauflösenden Modell.";
-  dimTexts["DAP-5"] =
-    "Alle sichtbaren Oberflächenspuren und Beschädigungen sind maßstabsgetreu abgebildet; lediglich die ausgesparte Standfläche wurde plan geschlossen.";
+  dimTexts["DAP-1"] = [
+    {
+      _value:
+        "Abgebrochene Partien und Bestoßungen an der Oberfläche, feine Rissbildung sowie historische Restaurierungskittungen dokumentiert.",
+      lang: "de",
+      preferred: true,
+    },
+  ];
+  dimTexts["DAP-2"] = [
+    {
+      _value:
+        "360°-Rundumerfassung im Museum; Standfläche aus Standsicherheitsgründen ausgespart; tiefer liegende Hohlräume teilweise abgeschattet.",
+      lang: "de",
+      preferred: true,
+    },
+  ];
+  dimTexts["DAP-3"] = [
+    {
+      _value:
+        "ICP-Ausrichtung der Einzelscans, Entfernung von Messrauschen, plane Schließung der Standfläche und Dezimierung für Web-Derivat.",
+      lang: "de",
+      preferred: true,
+    },
+  ];
+  dimTexts["DAP-4"] = [
+    {
+      _value:
+        "Farbkalibrierung mittels ColorChecker, Delighting der Texturaufnahmen und Normal-Map-Bake aus dem hochauflösenden Modell.",
+      lang: "de",
+      preferred: true,
+    },
+  ];
+  dimTexts["DAP-5"] = [
+    {
+      _value:
+        "Alle sichtbaren Oberflächenspuren und Beschädigungen sind maßstabsgetreu abgebildet; lediglich die ausgesparte Standfläche wurde plan geschlossen.",
+      lang: "de",
+      preferred: true,
+    },
+  ];
   syncToConsistsOf();
 };
 
 const clearAllDap = () => {
   DAP_DIMENSIONS.forEach((dim) => {
-    dimTexts[dim.id] = "";
+    dimTexts[dim.id] = [{ _value: "", lang: defaultLang(), preferred: true }];
   });
   syncToConsistsOf();
 };
