@@ -554,7 +554,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, inject } from "vue";
+import { ref, reactive, computed, inject, onMounted, onBeforeUnmount } from "vue";
 import {
   savedPersons,
   addOrUpdatePerson,
@@ -759,4 +759,13 @@ const emitClose = () => {
   resetFormData();
   emit("close");
 };
+
+const handleModalEscape = (e) => {
+  if (e.key === "Escape" && props.isOpen) {
+    e.preventDefault();
+    emitClose();
+  }
+};
+onMounted(() => window.addEventListener("keydown", handleModalEscape));
+onBeforeUnmount(() => window.removeEventListener("keydown", handleModalEscape));
 </script>

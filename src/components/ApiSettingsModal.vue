@@ -305,7 +305,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue";
 import { apiCredentials, saveApiCredentials } from "../utils/sharedState.js";
 
 const props = defineProps({
@@ -314,6 +314,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close"]);
+
+const handleModalEscape = (e) => {
+  if (e.key === "Escape" && props.isOpen) {
+    e.preventDefault();
+    emit("close");
+  }
+};
+onMounted(() => window.addEventListener("keydown", handleModalEscape));
+onBeforeUnmount(() => window.removeEventListener("keydown", handleModalEscape));
 const saved = ref(false);
 
 const form = reactive({

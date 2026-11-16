@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.10 · 2026-11-16</span
+              >v0.1.11 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -5687,7 +5687,18 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       if (!cov) {
         cov = node.addChild("coverage");
       }
-      let spat = cov.children.find((c) => c.name === "spatial");
+      const allSpatials = cov.children.filter((c) => c.name === "spatial");
+      const anySpatialHasPlace = allSpatials.some((sp) => {
+        const ls = sp.children.find((c) => c.name === "locationSet");
+        if (!ls) return false;
+        const nl = ls.children.find((c) => c.name === "namedLocation");
+        const hl = ls.children.find((c) => c.name === "historicalName");
+        return (
+          Boolean(nl && nl.text && String(nl.text).trim()) ||
+          Boolean(hl && hl.text && String(hl.text).trim())
+        );
+      });
+      let spat = allSpatials[0];
       if (!spat) {
         spat = cov.addChild("spatial");
       }
@@ -5695,11 +5706,8 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       if (!locSet) {
         locSet = spat.addChild("locationSet");
       }
-      let namedLoc = locSet.children.find((c) => c.name === "namedLocation");
-      let histLoc = locSet.children.find((c) => c.name === "historicalName");
-      const hasNamed = Boolean(namedLoc && namedLoc.text && String(namedLoc.text).trim());
-      const hasHist = Boolean(histLoc && histLoc.text && String(histLoc.text).trim());
-      if (!hasNamed && !hasHist) {
+      if (!anySpatialHasPlace) {
+        let namedLoc = locSet.children.find((c) => c.name === "namedLocation");
         if (!namedLoc) namedLoc = locSet.addChild("namedLocation");
         namedLoc.text = "Bonn, Deutschland";
         namedLoc.attributes["lang"] = fallbackLang;

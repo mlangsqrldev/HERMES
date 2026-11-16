@@ -3162,8 +3162,10 @@ const save = () => {
     resolveLicenceUri(globalRights?.licence, currentLocale.value) ||
     "";
 
-  // Ensure country is always populated from organisation into metadata
-  if (!form["coverage.spatial.locationSet.address.country"]) {
+  // Ensure country is always populated from organisation into metadata (unless explicit spatial entries exist)
+  const hasSpatialArr =
+    Array.isArray(form["coverage.spatial"]) && form["coverage.spatial"].length > 0;
+  if (!hasSpatialArr && !form["coverage.spatial.locationSet.address.country"]) {
     const matchedOrg =
       (savedOrganizations.value || []).find((o) => o.name === form["source"]) ||
       savedOrganizations.value?.[0];

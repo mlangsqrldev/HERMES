@@ -649,7 +649,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, inject } from "vue";
+import { ref, computed, reactive, inject, onMounted, onBeforeUnmount } from "vue";
 import {
   savedOrganizations,
   recentOrganizations,
@@ -854,4 +854,13 @@ const emitClose = () => {
   searchQuery.value = "";
   emit("close");
 };
+
+const handleModalEscape = (e) => {
+  if (e.key === "Escape" && props.isOpen) {
+    e.preventDefault();
+    emitClose();
+  }
+};
+onMounted(() => window.addEventListener("keydown", handleModalEscape));
+onBeforeUnmount(() => window.removeEventListener("keydown", handleModalEscape));
 </script>
