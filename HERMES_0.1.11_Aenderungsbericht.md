@@ -174,3 +174,24 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 - **Dark-Mode- & Chip-Kontrast sowie Sidebar-Hierarchie (`src/style.css`, `src/App.vue`):**
   - Helleres Blau (`#60a5fa`) für Outline-Buttons und Links im Dark Mode sowie gut lesbare deaktivierte HECTOR-Chips (`opacity: 0.78`, gestrichelter Rahmen).
   - `CARARE / BagIt laden` in der Sidebar als sekundärer Outline-Button gestylt, damit `CARARE 2.0.6 XML` klar als primärer Export-CTA hervorsticht.
+
+
+---
+
+## 14. Nachtrag `v0.1.22` (16.11.2026) – Feedbackloop `v0.1.18` (Sammlung & Kulturgut)
+
+- **Sammlungsinformationen (`CollectionInformationCrud.vue`, `App.vue`, `TemporalSection.vue`, `SpatialSection.vue`):**
+  - Entfernte veraltete Collection-Pool-Buttons (`From Collection Pool`, `Save to Pool`, `Reset`) sowie `+ New Record`; Template-Speichermodal besitzt nun einen `Abbrechen`/`Cancel`-Button.
+  - `Cancel` leert nun sowohl das Formular als auch die gespeicherten Sammlungsdaten und die Live-XML-Vorschau.
+  - `coverage.spatial.locationSet.namedLocation` wird nicht mehr automatisch aus `Source` oder der ersten Organisation vorbefüllt.
+  - Globales `Auf alle anwenden` (`Apply to all`) aktualisiert nun auch `statement` (`lang=`) und `description` (`lang=`).
+  - `Temporal`- und `Spatial`-Modals um ca. 30 % verbreitert (`max-w-5xl`).
+- **HECTOR-Vokabular & XML-Attribute (`HectorKeywordInput.vue`, `HectorMaterialInput.vue`, `HectorMonumentTypeInput.vue`, `App.vue`):**
+  - `Keywords` und `Material` speichern nun strukturierte Objekte mit `lang=`, `term=`, `namespace=` und `termUID=` analog zu `Monument Type` (und emittieren keine `<materials>Begriff <URI></materials>`-Strings mehr).
+  - Eigene Begriffe ohne HECTOR-URI (z. B. `Haus12`) werden als `Eigener Begriff` / `Custom term` markiert, erhalten keine HECTOR-`term`/`namespace`-Attribute im XML und werden nicht mehr in die HECTOR-Vorschlags-/Popular-Listen aufgenommen.
+  - Alle HECTOR-Links im UI einheitlich als `HECTOR` benannt; fehlenden `HECTOR`-Link (`architecture_and_urbanism`) bei `Keywords` ergänzt.
+- **Kulturgut (`HeritageAssetIdentificationCrud.vue`):**
+  - `+ New Asset` in `+ Add Asset` (`+ Kulturgut hinzufügen`) umbenannt und deaktiviert, solange noch kein Kulturgut gespeichert wurde.
+  - `Dimensions`- und `References`-Seitenmenüs in zentrierte Modals (`max-w-2xl`) überführt.
+  - `Repository Location`: unnötiges Sprach-Dropdown sowie doppelten `Pick Organizations`-Button entfernt; `Open Pool` in `Pick Organizations` (`Organisation wählen`) umbenannt.
+  - Sticky-Leiste gestrafft (`+ New Record`, `+ Save & Add Next Part`, `Save Draft` entfernt); `Cancel` löscht nun stets den aktuellen Eintrag aus Formular und Live-XML.

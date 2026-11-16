@@ -23,48 +23,6 @@
                 }}
               </h3>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                class="btn btn-sm btn-outline btn-secondary gap-1.5"
-                @click.prevent="isCollectionPickerOpen = true"
-                :title="
-                  currentLocale === 'de'
-                    ? 'Aus kuratiertem Sammlungs-Pool laden'
-                    : 'Load from Collection Pool'
-                "
-              >
-                📂
-                {{
-                  currentLocale === "de"
-                    ? "Aus Sammlungs-Pool laden"
-                    : "From Collection Pool"
-                }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-ghost border border-base-300 gap-1.5 hover:bg-base-200"
-                @click.prevent="saveCurrentToPool"
-                :title="
-                  currentLocale === 'de'
-                    ? 'Aktuelle Formulardaten als Vorlage im Sammlungs-Pool speichern'
-                    : 'Save current form to collection pool'
-                "
-              >
-                💾
-                {{ currentLocale === "de" ? "Im Pool merken" : "Save to Pool" }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-ghost border border-base-300 gap-1 text-base-content/70 hover:text-error"
-                @click.prevent="resetForm(true)"
-                :title="
-                  currentLocale === 'de' ? 'Formular leeren' : 'Reset Form'
-                "
-              >
-                🗑️ {{ currentLocale === "de" ? "Leeren" : "Reset" }}
-              </button>
-            </div>
           </div>
           <!-- CARARE 2.0.6 Single Collection Status Banner -->
           <div
@@ -807,32 +765,12 @@
                 {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
               </span>
               <button
-                v-if="isEditing"
-                type="button"
-                class="btn btn-outline btn-sm gap-1"
-                @click="resetForm()"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                {{ currentLocale === "de" ? "Neuer Datensatz" : "New Record" }}
-              </button>
-              <button
-                v-if="isEditing"
                 type="button"
                 class="btn btn-ghost"
-                @click="resetForm()"
+                @click="
+                  items = [];
+                  resetForm(true);
+                "
               >
                 {{ t("cancel") }}
               </button>
@@ -1539,10 +1477,17 @@
           class="input input-bordered w-full"
         />
         <div class="modal-action mt-2 w-full">
-          <form method="dialog" class="w-full">
+          <form method="dialog" class="w-full flex gap-2">
             <button
               type="button"
-              class="btn btn-primary w-full"
+              class="btn btn-ghost flex-1"
+              @click="addTemplateModal?.close()"
+            >
+              {{ t("cancel") }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary flex-1"
               @click="addTemplate()"
               :disabled="!newTemplateName"
             >

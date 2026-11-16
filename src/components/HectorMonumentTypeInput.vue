@@ -35,7 +35,7 @@
           rel="noopener"
           class="text-xs link link-hover text-primary flex items-center gap-1 opacity-80 hover:opacity-100"
         >
-          HECTOR Kulturgut
+          HECTOR
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-3"
@@ -268,20 +268,23 @@ const addValue = (entry) => {
     return l === label.toLowerCase();
   });
   if (!exists) {
+    const isHector = Boolean(uri && uri.trim());
     // Add structured object compatible with CARARE heritageAssetType schema
     const itemObj = {
       _value: label,
-      "#term": label,
-      "#namespace": uri
+      "#term": isHector ? label : "",
+      "#namespace": isHector
         ? "http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/"
         : "",
-      "#termUID": uri,
+      "#termUID": isHector ? uri.trim() : "",
       "#lang": defaultMetadataLanguage.value || "de",
     };
     current.push(itemObj);
     emit("update:modelValue", current);
   }
-  recordRecentVocabTerm("monument_type", { label, uri, facet });
+  if (uri && uri.trim()) {
+    recordRecentVocabTerm("monument_type", { label, uri: uri.trim(), facet });
+  }
 };
 
 const addRecentTerm = (chip) => {

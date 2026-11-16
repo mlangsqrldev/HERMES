@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.21 · 2026-11-16</span
+              >v0.1.22 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -1585,6 +1585,18 @@ const applyGlobalLanguageToAll = (lang) => {
           if (n && typeof n === "object") n["title#lang"] = lang;
         });
       }
+
+      if (Array.isArray(comp.form["statement"])) {
+        comp.form["statement"].forEach((n) => {
+          if (n && typeof n === "object") n["statement#lang"] = lang;
+        });
+      }
+
+      if (Array.isArray(comp.form["description"])) {
+        comp.form["description"].forEach((n) => {
+          if (n && typeof n === "object") n["description#lang"] = lang;
+        });
+      }
     }
 
     if (Array.isArray(comp.items)) {
@@ -1596,6 +1608,24 @@ const applyGlobalLanguageToAll = (lang) => {
         if (Array.isArray(item["appellation.name"])) {
           item["appellation.name"].forEach((n) => {
             if (n && typeof n === "object") n["appellation.name#lang"] = lang;
+          });
+        }
+
+        if (Array.isArray(item["title"])) {
+          item["title"].forEach((n) => {
+            if (n && typeof n === "object") n["title#lang"] = lang;
+          });
+        }
+
+        if (Array.isArray(item["statement"])) {
+          item["statement"].forEach((n) => {
+            if (n && typeof n === "object") n["statement#lang"] = lang;
+          });
+        }
+
+        if (Array.isArray(item["description"])) {
+          item["description"].forEach((n) => {
+            if (n && typeof n === "object") n["description#lang"] = lang;
           });
         }
       });
@@ -5838,45 +5868,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
     // Ensure WrapCollection (collectionInformation) always has valid <coverage><spatial><locationSet>
     if (node.name === "collectionInformation") {
-      let cov = node.children.find((c) => c.name === "coverage");
-      if (!cov) {
-        cov = node.addChild("coverage");
-      }
-      const allSpatials = cov.children.filter((c) => c.name === "spatial");
-      const anySpatialHasPlace = allSpatials.some((sp) => {
-        const ls = sp.children.find((c) => c.name === "locationSet");
-        if (!ls) return false;
-        const nl = ls.children.find((c) => c.name === "namedLocation");
-        const hl = ls.children.find((c) => c.name === "historicalName");
-        return (
-          Boolean(nl && nl.text && String(nl.text).trim()) ||
-          Boolean(hl && hl.text && String(hl.text).trim())
-        );
-      });
-      let spat = allSpatials[0];
-      if (!spat) {
-        spat = cov.addChild("spatial");
-      }
-      let locSet = spat.children.find((c) => c.name === "locationSet");
-      if (!locSet) {
-        locSet = spat.addChild("locationSet");
-      }
-      if (!anySpatialHasPlace) {
-        let namedLoc = locSet.children.find((c) => c.name === "namedLocation");
-        if (!namedLoc) namedLoc = locSet.addChild("namedLocation");
-        namedLoc.text = "Bonn, Deutschland";
-        namedLoc.attributes["lang"] = fallbackLang;
-        namedLoc.attributes["preferred"] = "true";
-      }
-      let addr = locSet.children.find((c) => c.name === "address");
-      if (!addr) {
-        addr = locSet.addChild("address");
-      }
-      let country = addr.children.find((c) => c.name === "country");
-      if (!country || !country.text || !String(country.text).trim()) {
-        if (!country) country = addr.addChild("country");
-        country.text = "DE";
-      }
+      // Do not auto-inject default spatial/namedLocation when none was entered
     }
 
     if (
@@ -6289,7 +6281,6 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
           "conditionDate",
 
           "provenance",
-          "materials",
           "repositoryLocation",
           "note",
           "format",
@@ -6333,7 +6324,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       }
 
       if (
-        ["keywords", "dateRangeQualifier", "geopoliticalAreaType"].includes(
+        ["dateRangeQualifier", "geopoliticalAreaType"].includes(
           elName,
         )
       )
@@ -6352,6 +6343,8 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       if (
         [
           "heritageAssetType",
+          "keywords",
+          "materials",
           "eventType",
           "assessments",
           "roles",
@@ -6522,30 +6515,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
     rec["rights.licence"] = rec["rights.licence"] || globalRights.licence || "";
 
-    const hasSpatialArr =
-      Array.isArray(rec["coverage.spatial"]) && rec["coverage.spatial"].length > 0;
-    const matchedOrg =
-      (savedOrganizations.value || []).find((o) => o.name === rec["source"]) ||
-      savedOrganizations.value?.[0];
-    if (!hasSpatialArr && !rec["coverage.spatial.locationSet.address.country"]) {
-      rec["coverage.spatial.locationSet.address.country"] = (
-        matchedOrg?.country || "DE"
-      ).toUpperCase();
-    }
-    if (
-      !hasSpatialArr &&
-      (!rec["coverage.spatial.locationSet.namedLocation"] ||
-        (Array.isArray(rec["coverage.spatial.locationSet.namedLocation"]) &&
-          rec["coverage.spatial.locationSet.namedLocation"].length === 0))
-    ) {
-      const loc = matchedOrg
-        ? matchedOrg.city
-          ? `${matchedOrg.city}, ${matchedOrg.name}`
-          : matchedOrg.name
-        : rec["source"] || "Bonn, Deutschland";
-      rec["coverage.spatial.locationSet.namedLocation"] = [loc];
-    }
-
+    // Do not auto-populate coverage.spatial from savedOrganizations or source
     return rec;
   };
 

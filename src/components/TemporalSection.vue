@@ -174,7 +174,7 @@
         class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
       >
       <div
-        class="modal-box max-w-2xl w-11/12 bg-base-100 border border-base-300 shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]"
+        class="modal-box max-w-5xl w-11/12 bg-base-100 border border-base-300 shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh]"
       >
         <!-- Modal Header -->
         <div

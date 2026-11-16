@@ -45,17 +45,18 @@
               <button
                 type="button"
                 class="btn btn-xs btn-outline btn-success gap-1"
+                :disabled="!items || items.length === 0"
                 @click="addNewHeritageAsset"
                 :title="
                   currentLocale === 'de'
-                    ? 'Neues Kulturgut anlegen'
-                    : 'Create new heritage asset'
+                    ? 'Weiteres Kulturgut hinzufügen'
+                    : 'Add heritage asset'
                 "
               >
                 <span>➕</span>
 
                 <span>{{
-                  currentLocale === "de" ? "Neues Kulturgut" : "New Asset"
+                  currentLocale === "de" ? "Kulturgut hinzufügen" : "Add Asset"
                 }}</span>
               </button>
             </div>
@@ -2481,28 +2482,7 @@
                     </div>
                   </div>
 
-                  <div class="flex items-center gap-2">
-                    <LanguageBadgePicker
-                      v-model="form['repositoryLocation#lang']"
-                    />
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-outline btn-primary gap-1 font-semibold"
-                      @click.prevent="openOrgPickerForRepo"
-                      :title="
-                        currentLocale === 'de'
-                          ? 'Organisation aus dem Pool auswählen'
-                          : 'Pick organization from pool'
-                      "
-                    >
-                      🏛️
-                      {{
-                        currentLocale === "de"
-                          ? "Organisation wählen"
-                          : "Pick Organizations"
-                      }}
-                    </button>
-                  </div>
+                  <div class="flex items-center gap-2"></div>
                 </div>
 
                 <!-- Selected Repository Location Display Badge -->
@@ -2558,7 +2538,11 @@
                     @click.prevent="openOrgPickerForRepo"
                   >
                     🏛️
-                    {{ currentLocale === "de" ? "Pool öffnen" : "Open Pool" }}
+                    {{
+                      currentLocale === "de"
+                        ? "Organisation wählen"
+                        : "Pick Organizations"
+                    }}
                   </button>
                 </div>
 
@@ -2781,10 +2765,9 @@
             >
               <div>
                 <button
-                  v-if="isEditing"
                   type="button"
-                  class="btn btn-ghost"
-                  @click="resetForm()"
+                  class="btn btn-ghost text-error hover:bg-error/10"
+                  @click="cancelCurrentAsset()"
                 >
                   {{ t("cancel") }}
                 </button>
@@ -2797,63 +2780,6 @@
                 >
                   ✓ {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
                 </span>
-
-                <button
-                  v-if="isEditing"
-                  type="button"
-                  class="btn btn-outline"
-                  @click="resetForm()"
-                >
-                  +
-                  {{
-                    currentLocale === "de" ? "Neuer Datensatz" : "New Record"
-                  }}
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-outline btn-secondary flex items-center gap-2"
-                  @click="saveAndContinueNextPart"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="size-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-
-                  {{
-                    currentLocale === "de"
-                      ? "Speichern & Nächstes Teil anlegen"
-                      : "Save & Add Next Part"
-                  }}
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-outline btn-sm gap-1"
-                  @click="saveDraft()"
-                  :title="
-                    currentLocale === 'de'
-                      ? 'Unfertigen Datensatz ohne Pflichtfeld-Prüfung zwischenspeichern'
-                      : 'Save incomplete record as draft without required-field check'
-                  "
-                >
-                  💾
-                  {{
-                    currentLocale === "de"
-                      ? "Als Entwurf zwischenspeichern"
-                      : "Save Draft"
-                  }}
-                </button>
 
                 <button type="submit" class="btn btn-primary">
                   {{
@@ -2872,14 +2798,14 @@
     <Teleport to="body">
       <div
         v-if="isDrawerOpen"
-        class="fixed inset-0 z-[9999] flex justify-end bg-black/50 backdrop-blur-xs"
+        class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
         @click.self="closeDrawer()"
       >
         <div
           role="dialog"
           aria-modal="true"
           :aria-label="currentLocale === 'de' ? 'Eintrag hinzufügen oder bearbeiten' : 'Add or edit entry'"
-          class="w-full max-w-lg h-screen bg-base-100 flex flex-col pointer-events-auto shadow-2xl"
+          class="w-full max-w-2xl max-h-[90vh] bg-base-100 rounded-2xl flex flex-col pointer-events-auto shadow-2xl overflow-hidden"
         >
         <div class="flex-1 overflow-y-auto p-6">
           <div
@@ -12156,6 +12082,18 @@ const applyGlobalRightsToForm = () => {
     ) || "";
   form["rights.reproductionRights"] =
     globalRights.haReproductionRights || globalRights.reproductionRights || "";
+};
+
+const cancelCurrentAsset = () => {
+  if (
+    isEditing.value &&
+    editIndex.value !== null &&
+    editIndex.value >= 0 &&
+    editIndex.value < items.value.length
+  ) {
+    items.value.splice(editIndex.value, 1);
+  }
+  resetForm(true);
 };
 
 const resetForm = (force = false) => {

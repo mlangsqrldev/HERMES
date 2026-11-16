@@ -35,7 +35,7 @@
           rel="noopener"
           class="text-xs link link-hover text-primary flex items-center gap-1 opacity-80 hover:opacity-100"
         >
-          HECTOR Skosmos
+          HECTOR
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-3"
@@ -83,9 +83,15 @@
         :key="idx"
         class="badge badge-primary gap-1.5 py-3 px-3 shadow-xs text-xs font-medium"
       >
-        <span class="truncate max-w-[280px]" :title="item">{{
+        <span class="truncate max-w-[280px]" :title="getDisplayLabel(item)">{{
           getDisplayLabel(item)
         }}</span>
+        <span
+          v-if="!getItemUri(item)"
+          class="opacity-75 text-[10px] font-normal"
+        >
+          ({{ currentLocale === "de" ? "Eigener Begriff" : "Custom term" }})
+        </span>
         <button
           type="button"
           class="hover:opacity-75 transition-opacity"
@@ -162,7 +168,13 @@
                   }}</span>
                   <span
                     class="badge badge-ghost badge-xs text-[10px] opacity-70"
-                    >HECTOR</span
+                    >{{
+                      suggestion.uri
+                        ? "HECTOR"
+                        : currentLocale === "de"
+                          ? "Eigener Begriff"
+                          : "Custom term"
+                    }}</span
                   >
                 </div>
                 <span
@@ -184,6 +196,7 @@ import {
   getRecentVocabList,
   recordRecentVocabTerm,
 } from "../utils/vocabHistory.js";
+import { defaultMetadataLanguage } from "../utils/sharedState.js";
 
 const props = defineProps({
   modelValue: {
@@ -224,6 +237,18 @@ const getDisplayLabel = (item) => {
   return match ? match[1] : item;
 };
 
+const getItemUri = (item) => {
+  if (!item) return "";
+  if (typeof item === "object") {
+    return item["#termUID"] || item.uri || "";
+  }
+  if (typeof item === "string") {
+    const match = item.match(/<(https?:\/\/[^>]+)>/);
+    return match ? match[1] : "";
+  }
+  return "";
+};
+
 const isAlreadySelected = (chip) => {
   const current = props.modelValue || [];
   const chipLabel = (chip.label || chip.prefLabel || "").toLowerCase();
@@ -244,19 +269,50 @@ const isAlreadySelected = (chip) => {
   });
 };
 
-const addValue = (valueStr, rawItem = null) => {
-  if (!valueStr) return;
+const addValue = (entry, rawItem = null) => {
+  if (!entry) return;
+  const label =
+    typeof entry === "object"
+      ? (
+          entry._value ||
+          entry.prefLabel ||
+          entry.label ||
+          entry["#term"] ||
+          ""
+        ).trim()
+      : getDisplayLabel(entry).trim();
+  if (!label) return;
+
+  const uri = (
+    (typeof entry === "object"
+      ? entry["#termUID"] || entry.uri || ""
+      : getItemUri(entry)) ||
+    rawItem?.uri ||
+    ""
+  ).trim();
+  const isHector = Boolean(uri);
+
   const current = Array.isArray(props.modelValue) ? [...props.modelValue] : [];
-  if (!current.includes(valueStr)) {
-    current.push(valueStr);
+  const exists = current.some(
+    (item) => getDisplayLabel(item).toLowerCase().trim() === label.toLowerCase(),
+  );
+  if (!exists) {
+    current.push({
+      _value: label,
+      "#term": isHector ? label : "",
+      "#namespace": isHector ? "http://vocabs.bcdh.uni-bonn.de/hector/" : "",
+      "#termUID": isHector ? uri : "",
+      "#lang": defaultMetadataLanguage.value || "de",
+    });
     emit("update:modelValue", current);
   }
-  recordRecentVocabTerm("materials", rawItem || valueStr);
+  if (isHector) {
+    recordRecentVocabTerm("materials", { label, uri, source: "HECTOR" });
+  }
 };
 
 const addRecentMaterial = (chip) => {
-  const val = chip.uri ? `${chip.label} <${chip.uri}>` : chip.label;
-  addValue(val, chip);
+  addValue({ label: chip.label, uri: chip.uri || "" }, chip);
 };
 
 const removeItem = (index) => {
@@ -275,9 +331,13 @@ const onSearchInput = () => {
     return;
   }
 
-  // 1. Instant local filter from recent terms
+  // 1. Instant local filter from recent HECTOR terms only
   const localMatches = (recentMaterials.value || [])
-    .filter((c) => (c.label || "").toLowerCase().includes(query.toLowerCase()))
+    .filter(
+      (c) =>
+        Boolean(c && c.uri && c.uri.trim()) &&
+        (c.label || "").toLowerCase().includes(query.toLowerCase()),
+    )
     .map((c) => ({
       prefLabel: c.label,
       uri: c.uri,
@@ -323,8 +383,10 @@ const onSearchInput = () => {
 };
 
 const selectSuggestion = (suggestion) => {
-  const val = `${suggestion.prefLabel} <${suggestion.uri}>`;
-  addValue(val, { label: suggestion.prefLabel, uri: suggestion.uri });
+  addValue(
+    { label: suggestion.prefLabel, uri: suggestion.uri || "" },
+    { label: suggestion.prefLabel, uri: suggestion.uri || "" },
+  );
   searchQuery.value = "";
   suggestions.value = [];
   showDropdown.value = false;

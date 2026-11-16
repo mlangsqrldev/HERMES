@@ -12,6 +12,12 @@
         <span class="truncate max-w-[280px]">{{
           getKeywordLabel(keyword)
         }}</span>
+        <span
+          v-if="typeof keyword === 'object' && !keyword['#termUID']"
+          class="opacity-75 text-[10px] font-normal"
+        >
+          ({{ currentLocale === "de" ? "Eigener Begriff" : "Custom term" }})
+        </span>
         <button
           type="button"
           class="hover:opacity-75 transition-opacity"
@@ -93,7 +99,13 @@
                   <span
                     class="badge badge-ghost badge-xs text-[10px] opacity-70"
                   >
-                    {{ suggestion.vocabLabel || "HECTOR" }}
+                    {{
+                      suggestion.uri
+                        ? suggestion.vocabLabel || "HECTOR"
+                        : currentLocale === "de"
+                          ? "Eigener Begriff"
+                          : "Custom term"
+                    }}
                   </span>
                 </div>
                 <span
@@ -109,10 +121,7 @@
     </div>
 
     <!-- Quick Selection Chips from HECTOR Vocabulary -->
-    <div
-      v-if="popularKeywords && popularKeywords.length > 0"
-      class="bg-base-200/50 p-2.5 rounded-lg border border-base-300"
-    >
+    <div class="bg-base-200/50 p-2.5 rounded-lg border border-base-300">
       <div class="flex items-center justify-between mb-1.5">
         <span
           class="text-xs font-bold text-base-content/75 flex items-center gap-1.5"
@@ -124,14 +133,41 @@
               : "Popular HECTOR Vocabulary Keywords:"
           }}</span>
         </span>
-        <span class="text-[10px] text-base-content/40">{{
-          currentLocale === "de" ? "1 Klick zum Hinzufügen" : "1 Click to add"
-        }}</span>
+        <div class="flex items-center gap-3">
+          <span class="text-[10px] text-base-content/40 hidden sm:inline">{{
+            currentLocale === "de" ? "1 Klick zum Hinzufügen" : "1 Click to add"
+          }}</span>
+          <a
+            href="https://vocabs.bcdh.uni-bonn.de/hector/de/page/architecture_and_urbanism"
+            target="_blank"
+            rel="noopener"
+            class="text-xs link link-hover text-primary flex items-center gap-1 opacity-80 hover:opacity-100"
+          >
+            HECTOR
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          </a>
+        </div>
       </div>
 
-      <div class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1">
+      <div
+        v-if="hectorPopularKeywords.length > 0"
+        class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1"
+      >
         <button
-          v-for="chip in popularKeywords"
+          v-for="chip in hectorPopularKeywords"
           :key="chip.label"
           type="button"
           class="btn btn-xs normal-case transition-all gap-1 border"
@@ -163,6 +199,7 @@ import {
   getRecentVocabList,
   recordRecentVocabTerm,
 } from "../utils/vocabHistory.js";
+import { defaultMetadataLanguage } from "../utils/sharedState.js";
 
 const props = defineProps({
   modelValue: {
@@ -184,6 +221,9 @@ const suggestions = ref([]);
 const highlightedIndex = ref(-1);
 
 const popularKeywords = getRecentVocabList("keywords");
+const hectorPopularKeywords = computed(() =>
+  (popularKeywords.value || []).filter((c) => Boolean(c && c.uri && c.uri.trim())),
+);
 
 const normalizedKeywords = computed(() => {
   return Array.isArray(props.modelValue) ? props.modelValue : [];
@@ -210,9 +250,19 @@ const addKeyword = (term, uri = "") => {
   if (!val) return;
   if (isAlreadySelected(val)) return;
 
-  const current = [...normalizedKeywords.value, val];
+  const isHector = Boolean(uri && uri.trim());
+  const obj = {
+    _value: val,
+    "#term": isHector ? val : "",
+    "#namespace": isHector ? "http://vocabs.bcdh.uni-bonn.de/hector/" : "",
+    "#termUID": isHector ? uri.trim() : "",
+    "#lang": defaultMetadataLanguage.value || "de",
+  };
+  const current = [...normalizedKeywords.value, obj];
   emit("update:modelValue", current);
-  recordRecentVocabTerm("keywords", { label: val, uri, source: "HECTOR" });
+  if (isHector) {
+    recordRecentVocabTerm("keywords", { label: val, uri: uri.trim(), source: "HECTOR" });
+  }
 };
 
 const addPopularKeyword = (chip) => {
@@ -277,13 +327,13 @@ const onSearchInput = () => {
     return;
   }
 
-  // 1. Instant local match from popular keywords
-  const localMatches = (popularKeywords.value || [])
+  // 1. Instant local match from HECTOR popular keywords only
+  const localMatches = hectorPopularKeywords.value
     .filter((c) => (c.label || "").toLowerCase().includes(query.toLowerCase()))
     .map((c) => ({
       prefLabel: c.label,
       uri: c.uri,
-      vocabLabel: "HECTOR (Lokal)",
+      vocabLabel: "HECTOR",
     }));
 
   suggestions.value = localMatches;
