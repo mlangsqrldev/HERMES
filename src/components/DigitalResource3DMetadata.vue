@@ -2107,13 +2107,13 @@ const setAssetType = (type) => {
 // ----------------------------------------------------
 // 1. Photogrammetry Data
 // ----------------------------------------------------
-const photoCamera = ref("Nikon Z 8");
-const photoSensor = ref("45.7 MP (8256×5504 px)");
-const photoLens = ref("NIKKOR Z 50mm f/1.8 S");
-const photoRawFormat = ref("Nikon NEF (14-Bit Lossless)");
-const photoImageCount = ref("245 Aufnahmen");
-const photoColorTarget = ref("X-Rite ColorChecker Classic");
-const photoGsd = ref("< 0.15 mm/px");
+const photoCamera = ref("");
+const photoSensor = ref("");
+const photoLens = ref("");
+const photoRawFormat = ref("");
+const photoImageCount = ref("");
+const photoColorTarget = ref("");
+const photoGsd = ref("");
 
 const isSearchingCamera = ref(false);
 const showCameraDropdown = ref(false);
@@ -2199,13 +2199,13 @@ const LENS_PRESETS = [
 // ----------------------------------------------------
 // 2. SLS (Structured Light Scanning) Data
 // ----------------------------------------------------
-const slsScanner = ref("Artec Spider II");
-const slsFov = ref("180×140 mm");
-const slsAccuracy = ref("0.05 mm");
-const slsHasRawImages = ref(true);
-const slsCameraSystem = ref("Integrierte Farbkamera im Scanner");
-const slsRawCount = ref("60 Texturaufnahmen");
-const slsRawFormat = ref("TIFF 16-Bit / Scan-Rohdaten");
+const slsScanner = ref("");
+const slsFov = ref("");
+const slsAccuracy = ref("");
+const slsHasRawImages = ref(false);
+const slsCameraSystem = ref("");
+const slsRawCount = ref("");
+const slsRawFormat = ref("");
 
 const isSearchingSls = ref(false);
 const showSlsDropdown = ref(false);
@@ -2630,12 +2630,12 @@ const handle3DFileSelect = (e) => {
 // ----------------------------------------------------
 // 5. Geometry & Mesh Metrics
 // ----------------------------------------------------
-const polygonCount = ref("15.8 Mio. Faces");
-const vertexCount = ref("7.9 Mio. Vertices");
-const meshCategory = ref("High-Poly Master Mesh");
+const polygonCount = ref("");
+const vertexCount = ref("");
+const meshCategory = ref("");
 
-const textureResolution = ref("8K (8192×8192 px)");
-const selectedMaps = ref(["albedo", "normal", "roughness", "ao"]);
+const textureResolution = ref("");
+const selectedMaps = ref([]);
 
 const TEXTURE_RESOLUTIONS = [
   { label: "1K (1024)", val: "1024×1024 px (1K)" },
@@ -2657,39 +2657,16 @@ const PBR_MAPS = [
 // ----------------------------------------------------
 // 5B. Metrology: Dedicated Accuracy & Resolution Fields
 // ----------------------------------------------------
-const accuracyPoint = ref("0.05 mm");
-const accuracyRmse = ref("0.018 mm ICP-RMSE");
-const accuracyVolumetric = ref("0.05 mm + 0.3 mm/m");
-const accuracyCalibration = ref(
-  "VDI/VDE 2634 Kalibrierplatte, Invar-Maßstab & X-Rite ColorChecker Passport",
-);
-const resolutionSpatial = ref("0.1 mm");
+const accuracyPoint = ref("");
+const accuracyRmse = ref("");
+const accuracyVolumetric = ref("");
+const accuracyCalibration = ref("");
+const resolutionSpatial = ref("");
 
 // ----------------------------------------------------
 // 6. Processing Software & Versions (Structured List)
 // ----------------------------------------------------
-const softwareList = ref([
-  {
-    name: "Artec Studio",
-    version: "19",
-    role: "Scan-Registrierung & Mesh-Fusion (SLS)",
-  },
-  {
-    name: "Blender",
-    version: "4.2",
-    role: "Mesh-Dezimation, Retopologie & UV-Unwrapping",
-  },
-  {
-    name: "Substance Designer",
-    version: "14",
-    role: "PBR-Textur-Baking (Albedo, Normal, Roughness, AO)",
-  },
-  {
-    name: "Adobe Photoshop Lightroom",
-    version: "14.1",
-    role: "RAW-Farbkalibrierung (X-Rite ColorChecker)",
-  },
-]);
+const softwareList = ref([]);
 
 const STRUCTURED_SOFTWARE_PRESETS = [
   {
@@ -2856,7 +2833,7 @@ const addSoftwarePreset = (sw) => {
 // ----------------------------------------------------
 // 7. File Size & Repeated CARARE <extent> Elements
 // ----------------------------------------------------
-const fileSizeValue = ref("450");
+const fileSizeValue = ref("");
 const fileSizeUnit = ref("MB");
 
 const computedRepeatedExtents = computed(() => {

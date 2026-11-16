@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.15 · 2026-11-16</span
+              >v0.1.16 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -1322,7 +1322,10 @@ import {
   resetGlobalRights,
   savedContacts,
   savedActors,
+  savedPersons,
+  addOrUpdatePerson,
   savedOrganizations,
+  addOrUpdateOrganization,
   normalizeYearDate,
   resolveLicenceUri,
   isApiSettingsOpen,
@@ -1955,6 +1958,10 @@ const exportTemplatesAsJson = async (stepId = null) => {
             [stepId]: JSON.parse(JSON.stringify(templates.value[stepId] || [])),
           }
         : JSON.parse(JSON.stringify(templates.value)),
+
+      organizations: JSON.parse(JSON.stringify(savedOrganizations.value || [])),
+
+      persons: JSON.parse(JSON.stringify(savedPersons.value || [])),
     };
 
     const defaultFilename = isSectionOnly
@@ -1998,6 +2005,10 @@ const exportSingleTemplate = async (tpl) => {
       section: activeTemplateStep.value,
 
       template: JSON.parse(JSON.stringify(tpl)),
+
+      organizations: JSON.parse(JSON.stringify(savedOrganizations.value || [])),
+
+      persons: JSON.parse(JSON.stringify(savedPersons.value || [])),
     };
 
     const safeName = (tpl.name || "template").replace(
@@ -2102,11 +2113,64 @@ const handleTemplateJsonFileSelected = async (event) => {
   event.target.value = "";
 };
 
+const syncPoolsFromTemplate = (tpl, stepKey = "") => {
+  const d = tpl?.data;
+  if (!d || typeof d !== "object") return;
+
+  const pushOrgName = (val) => {
+    const name = String(val || "").trim();
+    if (name) addOrUpdateOrganization({ name });
+  };
+  pushOrgName(d["recordInformation.source"]);
+  pushOrgName(d.source);
+  pushOrgName(d.repositoryLocation);
+  pushOrgName(d["publicationStatement.publisher"]);
+
+  const pushPersonEntry = (p) => {
+    if (!p) return;
+    if (typeof p === "string") {
+      if (p.trim()) addOrUpdatePerson({ name: p.trim() });
+      return;
+    }
+    const name = String(p.name || "").trim();
+    if (name) {
+      addOrUpdatePerson({
+        name,
+        id: p.id || p.uri || "",
+        organization: p.organization || "",
+        email: p.email || "",
+      });
+    }
+    if (p.organization) pushOrgName(p.organization);
+  };
+
+  for (const c of Array.isArray(d.contacts) ? d.contacts : []) pushPersonEntry(c);
+  for (const c of Array.isArray(d["recordInformation.creation.contacts"])
+    ? d["recordInformation.creation.contacts"]
+    : []) {
+    pushPersonEntry(c);
+  }
+  if (stepKey !== "heritageAssetIdentification") {
+    for (const a of Array.isArray(d.actors) ? d.actors : []) pushPersonEntry(a);
+  }
+};
+
 const applyImportedTemplatesText = async (text) => {
   try {
     const parsed = JSON.parse(text);
 
     let importedCount = 0;
+
+    if (Array.isArray(parsed?.organizations)) {
+      for (const org of parsed.organizations) {
+        if (org && (org.name || org.fullLabel)) addOrUpdateOrganization(org);
+      }
+    }
+    if (Array.isArray(parsed?.persons)) {
+      for (const p of parsed.persons) {
+        if (p && p.name) addOrUpdatePerson(p);
+      }
+    }
 
     // Case 1: Envelope with { templates: { stepId: [ ... ] } }
 
@@ -2124,6 +2188,7 @@ const applyImportedTemplatesText = async (text) => {
               if (exIdx >= 0) templates.value[stepKey][exIdx] = tpl;
               else templates.value[stepKey].push(tpl);
 
+              syncPoolsFromTemplate(tpl, stepKey);
               importedCount++;
             }
           }
@@ -2153,6 +2218,7 @@ const applyImportedTemplatesText = async (text) => {
       if (exIdx >= 0) templates.value[targetStep][exIdx] = tpl;
       else templates.value[targetStep].push(tpl);
 
+      syncPoolsFromTemplate(tpl, targetStep);
       importedCount++;
 
       if (store.value) {
@@ -2208,6 +2274,7 @@ const applyImportedTemplatesText = async (text) => {
               if (exIdx >= 0) templates.value[stepKey][exIdx] = tpl;
               else templates.value[stepKey].push(tpl);
 
+              syncPoolsFromTemplate(tpl, stepKey);
               importedCount++;
             }
           }

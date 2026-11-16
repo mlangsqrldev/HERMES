@@ -110,3 +110,13 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - Künstlicher `subtitle`-Fallback entfernt (da CARARE 2.0.6 nur wiederholbare Titel/`Alternative Title` kennt).
 - **Handbuch erweitert (`public/manual.html`, `HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html`):**
   - Neues zweisprachiges Kapitel **„10. BonnData / Dataverse-Export & Schema-Mapping“** mit Gegenüberstellung CARARE 2.0.6 ↔ BonnData.
+
+---
+
+## 8. Nachtrag `v0.1.16` (16.11.2026) – Leere 3D-Standardfelder & Pool-Sync beim Template-Import
+
+- **Vorausgefüllte 3D-Beispielwerte entfernt (`src/components/DigitalResource3DMetadata.vue`):**
+  - Alle Metrologie-, Auflösungs-, Kamera-/Scanner-, Polygon-, Textur-, Software- und Dateigrößen-Felder starten nun **leer** (`""` / `[]`) statt mit vorausgefüllten Beispielwerten (z. B. `0.05 mm`, `15.8 Mio. Faces`, `450 MB`). Schnellauswahl-Chips und Platzhalter bleiben vollständig erhalten.
+- **Organisations- & Personen-Pool beim Template-Export/-Import (`src/App.vue`):**
+  - Template-JSON-Exporte sichern nun auch `organizations` und `persons`.
+  - Beim Template-Import (`applyImportedTemplatesText`) werden sowohl explizite `organizations`/`persons`-Listen als auch in den Template-Daten enthaltene Quellen, Kontakte, Aufbewahrungsorte und Akteure automatisch über `addOrUpdateOrganization` und `addOrUpdatePerson` in die zentralen Pools übernommen.
