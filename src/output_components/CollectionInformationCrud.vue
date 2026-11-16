@@ -1678,8 +1678,8 @@ import {
 const currentLocale = inject("currentLocale", ref("en"));
 const fieldLabels = {
   id: {
-    en: "ID",
-    de: "ID",
+    en: "Collection ID",
+    de: "Sammlungs-ID",
     docEn:
       "Unique identifier for this data package. No spaces or special characters. Can be an institutional ID, a URI, or a self-chosen string. Once assigned, do not change.",
     docDe:

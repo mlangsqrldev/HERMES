@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.13 · 2026-11-16</span
+              >v0.1.14 · 2026-11-16</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -1289,6 +1289,7 @@ import {
   provide,
   computed,
   watch,
+  nextTick,
 } from "vue";
 
 import { themeChange } from "theme-change";
@@ -3303,7 +3304,81 @@ onMounted(() => {
   sectionRefs.value.forEach((el) => {
     if (el) observer.observe(el);
   });
+
+  // Auto-restore multi-day session draft from localStorage
+  nextTick(() => {
+    try {
+      const raw = localStorage.getItem("hermes_session_draft_v1");
+      if (raw) {
+        const saved = JSON.parse(raw);
+        const restoreMod = (compRef, modData) => {
+          const comp = getChildComp(compRef);
+          if (!comp || !modData) return;
+          if (Array.isArray(modData.items) && comp.items) {
+            if (Array.isArray(comp.items)) {
+              comp.items.splice(0, comp.items.length, ...modData.items);
+            } else if (Array.isArray(comp.items.value)) {
+              comp.items.value = modData.items;
+            }
+          }
+          if (modData.form && comp.form) {
+            Object.assign(comp.form, modData.form);
+          }
+        };
+        restoreMod(collectionRef, saved.collection);
+        restoreMod(heritageRef, saved.heritage);
+        restoreMod(digitalRef, saved.digital);
+        restoreMod(activityRef, saved.activity);
+      }
+    } catch (e) {
+      console.warn("Failed to restore HERMES session draft:", e);
+    }
+  });
 });
+
+let sessionSaveTimer = null;
+watch(
+  () => [
+    getChildComp(collectionRef)?.items,
+    getChildComp(collectionRef)?.form,
+    getChildComp(heritageRef)?.items,
+    getChildComp(heritageRef)?.form,
+    getChildComp(digitalRef)?.items,
+    getChildComp(digitalRef)?.form,
+    getChildComp(activityRef)?.items,
+    getChildComp(activityRef)?.form,
+  ],
+  () => {
+    if (!isAppMounted.value) return;
+    if (sessionSaveTimer) clearTimeout(sessionSaveTimer);
+    sessionSaveTimer = setTimeout(() => {
+      try {
+        const snapMod = (compRef) => {
+          const comp = getChildComp(compRef);
+          if (!comp) return null;
+          const itemsArr = Array.isArray(comp.items)
+            ? comp.items
+            : comp.items?.value || [];
+          return {
+            items: itemsArr,
+            form: comp.form || {},
+          };
+        };
+        const payload = {
+          savedAt: new Date().toISOString(),
+          collection: snapMod(collectionRef),
+          heritage: snapMod(heritageRef),
+          digital: snapMod(digitalRef),
+          activity: snapMod(activityRef),
+        };
+        localStorage.setItem("hermes_session_draft_v1", JSON.stringify(payload));
+      } catch (e) {
+        console.warn("Failed to auto-save HERMES session draft:", e);
+      }
+    }, 1000);
+  },
+  { deep: true },
+);
 
 onUnmounted(() => {
   if (observer) observer.disconnect();

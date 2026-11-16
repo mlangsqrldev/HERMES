@@ -85,3 +85,16 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - `normalizeStr` wandelt Umlaute (`ä` -> `ae`) nun **vor** `normalize("NFD")` um.
 - **Live-PeriodO-Suche (`https://data.perio.do/dataset/`):**
   - Bei Eingaben ab 2 Zeichen im Modus **Alle** oder **PeriodO** wird der vollständige PeriodO-Datensatz (9.537 Epochen, inkl. aller 362 Ägypten-Einträge) einmalig pro Sitzung gecacht und live durchsucht.
+
+---
+
+## 6. Nachtrag `v0.1.14` (16.11.2026) – Eindeutige IDs, Entwurf-Zwischenspeichern, Auto-Save & Animation-Hinweis
+
+- **Eindeutige ID-Bezeichnungen in allen 4 Modulen:**
+  - `Sammlungs-ID` (`CollectionInformationCrud.vue`), `Kulturgut-Datensatz-ID (intern)` & `Inventar- / Objekt-ID` (`HeritageAssetIdentificationCrud.vue`), `Digitalisat-Datensatz-ID (intern)` & `Ressourcen-ID / DOI` (`DigitalResourceCrud.vue`), `Aktivitäts-Datensatz-ID (intern)` & `Aktivitäts-ID` (`ActivityCrud.vue`).
+- **„Als Entwurf zwischenspeichern“ (`Save Draft`):**
+  - Neuer Button in `HeritageAssetIdentificationCrud.vue`, `DigitalResourceCrud.vue` und `ActivityCrud.vue`, um unfertige Datensätze jederzeit ohne Pflichtfeld-Blockade zwischenzuspeichern.
+- **Automatische Sitzungsspeicherung über mehrere Tage (`src/App.vue`):**
+  - Alle laufenden Formulare und gespeicherten Datensätze aller 4 Module werden automatisch in `localStorage` (`hermes_session_draft_v1`) gesichert und beim nächsten Start wiederhergestellt.
+- **Animation-Hinweis (`src/output_components/DigitalResourceCrud.vue`):**
+  - Tooltip bei `Ressourcentyp` (`type`) erklärt, dass animierte `.glb`/`.gltf`-Szenen als `3D-Modell` (`3D`) und gerenderte Video-Animationen/Turntables als `Film` (`Movie`) erfasst werden.

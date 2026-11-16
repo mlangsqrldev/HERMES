@@ -565,7 +565,7 @@
             </div>
           </div>
 
-          <form @submit.prevent="save" @invalid.capture="handleInvalid">
+          <form @submit.prevent="delete form._isDraft; save()" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
                 class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
@@ -2955,6 +2955,24 @@
                     currentLocale === "de"
                       ? "Speichern & Nächstes Teil anlegen"
                       : "Save & Add Next Part"
+                  }}
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-outline btn-sm gap-1"
+                  @click="saveDraft()"
+                  :title="
+                    currentLocale === 'de'
+                      ? 'Unfertigen Datensatz ohne Pflichtfeld-Prüfung zwischenspeichern'
+                      : 'Save incomplete record as draft without required-field check'
+                  "
+                >
+                  💾
+                  {{
+                    currentLocale === "de"
+                      ? "Als Entwurf zwischenspeichern"
+                      : "Save Draft"
                   }}
                 </button>
 
@@ -6845,9 +6863,9 @@ const fieldLabels = {
   },
 
   "recordInformation.id": {
-    en: "Record ID",
+    en: "Heritage Asset Record ID",
 
-    de: "Datensatz-ID",
+    de: "Kulturgut-Datensatz-ID (intern)",
 
     docEn:
       "Unique ID of the record in the content provider\\'s system. Mandatory field – assigned by the content provider\\'s system and must not be changed afterwards.",
@@ -7484,9 +7502,9 @@ const fieldLabels = {
   },
 
   "appellation.id": {
-    en: "Inventory Number",
+    en: "Inventory / Object ID",
 
-    de: "Inventarnummer",
+    de: "Inventar- / Objekt-ID",
 
     docEn:
       "Inventory number or institutional identifier of the heritage asset (e.g. museum number). Distinct from the Record ID above, which identifies the technical record.",
@@ -11386,6 +11404,11 @@ const save = () => {
   setTimeout(() => {
     saveSuccessBadge.value = false;
   }, 3000);
+};
+
+const saveDraft = () => {
+  form._isDraft = true;
+  save();
 };
 
 const edit = (index) => {

@@ -157,7 +157,7 @@
             {{ isEditing ? t("edit") : t("add") }}
             {{ getLabel("digitalResource", "digitalResource") }}
           </h3>
-          <form @submit.prevent="save" @invalid.capture="handleInvalid">
+          <form @submit.prevent="delete form._isDraft; save()" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
                 class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
@@ -1630,6 +1630,23 @@
                 @click="resetForm()"
               >
                 {{ t("cancel") }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm gap-1"
+                @click="saveDraft()"
+                :title="
+                  currentLocale === 'de'
+                    ? 'Unfertigen Datensatz ohne Pflichtfeld-Prüfung zwischenspeichern'
+                    : 'Save incomplete record as draft without required-field check'
+                "
+              >
+                💾
+                {{
+                  currentLocale === "de"
+                    ? "Als Entwurf zwischenspeichern"
+                    : "Save Draft"
+                }}
               </button>
               <button type="submit" class="btn btn-primary">
                 {{
@@ -4237,8 +4254,8 @@ const fieldLabels = {
     placDe: "",
   },
   "recordInformation.id": {
-    en: "Record ID",
-    de: "Datensatz-ID",
+    en: "Digital Resource Record ID",
+    de: "Digitalisat-Datensatz-ID (intern)",
     docEn:
       "The local ID number in the content provider\\'s information system. Mandatory – must be unique within the collection.",
     docDe:
@@ -4625,8 +4642,8 @@ const fieldLabels = {
     placDe: "z.B. 3D-Modell des weiblichen Fragments vom Grabmal der Nikarete",
   },
   "appellation.id": {
-    en: "ID",
-    de: "ID",
+    en: "Resource ID / DOI",
+    de: "Ressourcen-ID / DOI",
     docEn:
       "Unique identifier of this digital resource. Mandatory. Recommendation: use a DOI or other persistent URI.",
     docDe:
@@ -4922,9 +4939,9 @@ const fieldLabels = {
     en: "Type",
     de: "Typ",
     docEn:
-      "The nature or genre of the digital resource. Select from 5 predefined values. For a 3D model: \\'3D\\'.",
+      "The nature or genre of the digital resource (5 predefined CARARE values). For 3D models (including animated .glb/.gltf): '3D'; for rendered video animations/turntables: 'Movie'.",
     docDe:
-      "Art bzw. Genre der digitalen Ressource. Auswahl aus 5 vordefinierten Werten. Für ein 3D-Modell: \\'3D\\'.",
+      "Art bzw. Gattung der digitalen Ressource (5 CARARE-Werte). Für 3D-Modelle (inkl. animierter .glb/.gltf-Szenen): ‚3D-Modell‘; für gerenderte Video-Animationen/Turntables: ‚Film‘.",
     placEn: "e.g. Text | Image | Sound | Movie | 3D",
     placDe: "z.B. Text | Bild | Ton | Film | 3D",
   },
@@ -5921,6 +5938,11 @@ const save = () => {
   setTimeout(() => {
     saveSuccessBadge.value = false;
   }, 3000);
+};
+
+const saveDraft = () => {
+  form._isDraft = true;
+  save();
 };
 
 const edit = (index) => {

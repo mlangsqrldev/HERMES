@@ -189,7 +189,7 @@
               }}
             </span>
           </div>
-          <form @submit.prevent="save" @invalid.capture="handleInvalid">
+          <form @submit.prevent="delete form._isDraft; save()" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
                 class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
@@ -1441,6 +1441,23 @@
                 @click="resetForm()"
               >
                 {{ t("cancel") }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm gap-1"
+                @click="saveDraft()"
+                :title="
+                  currentLocale === 'de'
+                    ? 'Unfertigen Datensatz ohne Pflichtfeld-Prüfung zwischenspeichern'
+                    : 'Save incomplete record as draft without required-field check'
+                "
+              >
+                💾
+                {{
+                  currentLocale === "de"
+                    ? "Als Entwurf zwischenspeichern"
+                    : "Save Draft"
+                }}
               </button>
               <button type="submit" class="btn btn-primary">
                 {{
@@ -3805,8 +3822,8 @@ const fieldLabels = {
     placDe: "",
   },
   "recordInformation.id": {
-    en: "Record ID",
-    de: "Datensatz-ID",
+    en: "Activity Record ID",
+    de: "Aktivitäts-Datensatz-ID (intern)",
     docEn:
       "The local ID number of this record about the activity in the content provider\\'s information system. Mandatory – must be unique within the collection.",
     docDe:
@@ -4192,8 +4209,8 @@ const fieldLabels = {
       "z.B. 3D-Digitalisierung der Attischen Grabmäler der Antikensammlung, Berlin",
   },
   "appellation.id": {
-    en: "ID",
-    de: "ID",
+    en: "Activity ID",
+    de: "Aktivitäts-ID",
     docEn: "Unique identifier of this activity. Mandatory.",
     docDe: "Eindeutige Kennung dieser Aktivität. Pflichtfeld.",
     placEn:
@@ -6058,6 +6075,11 @@ const save = () => {
   setTimeout(() => {
     saveSuccessBadge.value = false;
   }, 3000);
+};
+
+const saveDraft = () => {
+  form._isDraft = true;
+  save();
 };
 
 const formContainerRef = ref(null);
