@@ -270,3 +270,11 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - Im DAP (`ActivityParadata.vue`) erscheint automatisch ein Hinweisbanner, sobald ein Arbeitsschritt unter `consistsOf` ein KI-/IPTC-Tag enthält.
 - **Automatisierte Test-Suite (`vitest` + `happy-dom`, `tests/carareRoundtrip.test.js`, `tests/hectorAndTooltips.test.js`):**
   - `npm test` (7/7 Tests grün) prüft XML-Roundtrip, zentrale Tooltips (`0` fehlende DE/EN-Einträge), HECTOR-3D/IPTC-URIs und `metadataLanguage` im BonnData-Payload.
+
+
+---
+
+## 21. Nachtrag `v0.1.29` (17.11.2026) – Sauberes Anzeigedatum ohne führende Nullen (`TemporalSection.vue`)
+
+- **`src/components/TemporalSection.vue`:**
+  - `formatDisplayYear` und `handlePeriodoSelect` entfernen führende Nullen bei positiven Jahreszahlen (z. B. `0014` → `14`, `0037` → `37`) und formatieren Zeiträume wie *Tiberius* sauber als `14 – 37 n. Chr.` (DE) bzw. `14 – 37 CE` (EN), während `startDate`/`endDate` weiterhin ISO-konform bleiben.

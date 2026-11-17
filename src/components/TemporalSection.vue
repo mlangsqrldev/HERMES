@@ -430,13 +430,19 @@ const closeModal = () => {
   editingIndex.value = null;
 };
 
-const formatDisplayYear = (yr, locale) => {
+const formatDisplayYear = (yr, locale, includeCe = true) => {
   const s = String(yr || "").trim();
   if (!s) return "";
-  const num = parseInt(s, 10);
-  if (!Number.isNaN(num) && num < 0) {
-    const abs = Math.abs(num);
-    return locale === "de" ? `${abs} v. Chr.` : `${abs} BCE`;
+  if (/^-?\d+$/.test(s)) {
+    const num = parseInt(s, 10);
+    if (num < 0) {
+      const abs = Math.abs(num);
+      return locale === "de" ? `${abs} v. Chr.` : `${abs} BCE`;
+    }
+    if (includeCe && num > 0 && num < 1000) {
+      return locale === "de" ? `${num} n. Chr.` : `${num} CE`;
+    }
+    return String(num);
   }
   return s;
 };
@@ -464,16 +470,19 @@ const handlePeriodoSelect = (data) => {
   if (data.displayDate) {
     draft.displayDate = data.displayDate;
   } else if (start && stop) {
-    const sNum = parseInt(start, 10);
-    const eNum = parseInt(stop, 10);
+    const sNum = /^-?\d+$/.test(start.trim()) ? parseInt(start, 10) : NaN;
+    const eNum = /^-?\d+$/.test(stop.trim()) ? parseInt(stop, 10) : NaN;
     if (!Number.isNaN(sNum) && sNum < 0 && !Number.isNaN(eNum) && eNum < 0) {
       const suffix = props.currentLocale === "de" ? "v. Chr." : "BCE";
       draft.displayDate = `${Math.abs(sNum)} – ${Math.abs(eNum)} ${suffix}`;
+    } else if (!Number.isNaN(sNum) && sNum > 0 && !Number.isNaN(eNum) && eNum > 0 && eNum < 1000) {
+      const suffix = props.currentLocale === "de" ? "n. Chr." : "CE";
+      draft.displayDate = `${sNum} – ${eNum} ${suffix}`;
     } else {
-      draft.displayDate = `${formatDisplayYear(start, props.currentLocale)} – ${formatDisplayYear(stop, props.currentLocale)}`;
+      draft.displayDate = `${formatDisplayYear(start, props.currentLocale, true)} – ${formatDisplayYear(stop, props.currentLocale, true)}`;
     }
   } else if (start || stop) {
-    draft.displayDate = formatDisplayYear(start || stop, props.currentLocale);
+    draft.displayDate = formatDisplayYear(start || stop, props.currentLocale, true);
   }
   if (uri) {
     draft["timeSpan.dateRangeQualifier"] = uri;
