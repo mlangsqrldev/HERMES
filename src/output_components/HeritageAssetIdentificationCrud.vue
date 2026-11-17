@@ -2799,7 +2799,7 @@
       <div
         v-if="isDrawerOpen"
         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
-        @click.self="closeDrawer()"
+        @mousedown.self="closeDrawer()"
       >
         <div
           role="dialog"
@@ -2900,6 +2900,7 @@
 
           <form
             @submit.prevent="saveDrawer"
+            @keydown.enter="$event.target?.tagName === 'INPUT' && $event.preventDefault()"
             @invalid.capture="handleInvalid"
             class="space-y-4"
           >
@@ -11357,7 +11358,7 @@ const getAssetValidationStatus = (item) => {
       currentLocale.value === "de" ? "Datierung/Epoche" : "Dating/Period",
     );
 
-  const hasLicence = !!item["rights.licence"];
+  const hasLicence = !!(item["rights.licence"] || globalRights?.licence);
 
   if (!hasLicence)
     missingWarns.push(currentLocale.value === "de" ? "Lizenz" : "Licence");

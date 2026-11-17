@@ -647,18 +647,7 @@
                       <button
                         type="button"
                         class="btn btn-sm btn-primary"
-                        @click.prevent="
-                          if (!form['appellation.name']) {
-                            form['appellation.name'] = [];
-                          }
-                          form['appellation.name'].push({
-                            _value: '',
-                            'appellation.name#lang':
-                              defaultMetadataLanguage.value || 'de',
-                            'appellation.name#preferred':
-                              form['appellation.name'].length === 0,
-                          });
-                        "
+                        @click.prevent="addAppellationName"
                       >
                         {{
                           currentLocale === "de"
@@ -1262,12 +1251,82 @@
                 :current-locale="currentLocale"
               />
 
-              <TemporalSection
-                v-model="form['temporal']"
-                :current-locale="currentLocale"
-                :title="getLabel('temporal', 'Temporal')"
-                :tooltip="getLabel('temporal', 'Temporal coverage of the activity.', 'doc')"
-              />
+              <!-- Activity Time Span (From–To Date for the entire activity/campaign) -->
+              <div
+                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+              >
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-base-200">
+                  <div class="flex flex-row items-center gap-1.5">
+                    <h4 class="font-bold text-lg capitalize text-base-content/80">
+                      {{ getLabel("temporal", "Temporal") }}
+                    </h4>
+                    <div
+                      v-if="getLabel('temporal', '', 'doc')"
+                      @click.stop.prevent
+                      class="tooltip tooltip-accent tooltip-right"
+                      :data-tip="getLabel('temporal', '', 'doc')"
+                    >
+                      <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" fill="currentColor" class="size-[1.2em]">
+                          <path d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <span class="text-xs text-base-content/60">
+                    {{
+                      currentLocale === "de"
+                        ? "Zeitraum der gesamten Aktivität / Kampagne (Von–Bis-Datum)"
+                        : "Time span of the entire activity / campaign (From–To Date)"
+                    }}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div class="form-control">
+                    <label class="label py-1">
+                      <span class="label-text font-semibold text-xs">
+                        {{ currentLocale === "de" ? "Startdatum (Von)" : "Start Date (From)" }}
+                      </span>
+                    </label>
+                    <input
+                      type="date"
+                      class="input input-bordered input-sm w-full"
+                      :value="form['temporal']?.[0]?.['timeSpan.startDate'] || ''"
+                      @input="updateActivityTemporalField('timeSpan.startDate', $event.target.value)"
+                    />
+                  </div>
+
+                  <div class="form-control">
+                    <label class="label py-1">
+                      <span class="label-text font-semibold text-xs">
+                        {{ currentLocale === "de" ? "Enddatum (Bis)" : "End Date (To)" }}
+                      </span>
+                    </label>
+                    <input
+                      type="date"
+                      class="input input-bordered input-sm w-full"
+                      :value="form['temporal']?.[0]?.['timeSpan.endDate'] || ''"
+                      @input="updateActivityTemporalField('timeSpan.endDate', $event.target.value)"
+                    />
+                  </div>
+
+                  <div class="form-control">
+                    <label class="label py-1">
+                      <span class="label-text font-semibold text-xs">
+                        {{ currentLocale === "de" ? "Kampagne / Phase (optional)" : "Campaign / Phase (optional)" }}
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      class="input input-bordered input-sm w-full"
+                      :placeholder="currentLocale === 'de' ? 'z. B. Kampagne Herbst 2026' : 'e.g. Autumn 2026 Campaign'"
+                      :value="form['temporal']?.[0]?.['periodName'] || ''"
+                      @input="updateActivityTemporalField('periodName', $event.target.value)"
+                    />
+                  </div>
+                </div>
+              </div>
               <SpatialSection
                 v-model="form['spatial']"
                 :current-locale="currentLocale"
@@ -5999,6 +6058,36 @@ const setActivityType = (preset) => {
 
 const onActivityTypeInput = () => {
   form["activityType"] = form["eventType"];
+};
+
+const addAppellationName = () => {
+  if (!Array.isArray(form["appellation.name"])) {
+    form["appellation.name"] = [];
+  }
+  form["appellation.name"].push({
+    _value: "",
+    "appellation.name#lang": defaultMetadataLanguage?.value || "de",
+    "appellation.name#preferred": form["appellation.name"].length === 0,
+  });
+};
+
+const updateActivityTemporalField = (key, value) => {
+  if (!Array.isArray(form["temporal"])) {
+    form["temporal"] = [];
+  }
+  const current = form["temporal"][0]
+    ? { ...form["temporal"][0] }
+    : { "timeSpan.startDate": "", "timeSpan.endDate": "", periodName: "" };
+  current[key] = value || "";
+  if (
+    !current["timeSpan.startDate"] &&
+    !current["timeSpan.endDate"] &&
+    !current["periodName"]
+  ) {
+    form["temporal"] = [];
+  } else {
+    form["temporal"] = [current];
+  }
 };
 
 const startNewRecord = () => {

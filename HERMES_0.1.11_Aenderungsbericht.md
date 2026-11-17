@@ -214,3 +214,22 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - `carareXmlParser.js` parst `<coverage><temporal>` und `<coverage><spatial>` der Collection nun direkt in die strukturierten Array-Formate `coverage.temporal` und `coverage.spatial` (inkl. Epoche, Zeitspanne, historischer Name, Adresse, Koordinaten) – identisch zu `HeritageAsset`.
   - `SpatialSection.vue` formatiert `locationSet.historicalName` und `locationSet.namedLocation` sauber als Text statt roher Objekt-/Array-Darstellung.
   - `CollectionInformationCrud.vue` konvertiert beim Laden/Bearbeiten älterer Datensätze automatisch flache `coverage.temporal.*`-/`coverage.spatial.*`-Felder in die Tabellenstruktur von `TemporalSection` und `SpatialSection`.
+
+
+---
+
+## 17. Nachtrag `v0.1.25` (17.11.2026) – Review-Feedback zu v0.1.23
+
+- **Heritage Assets – Ressourcen/Literaturangaben (`HeritageAssetIdentificationCrud.vue`):**
+  - Backdrop-Schließen von `@click.self` auf `@mousedown.self` umgestellt (damit Textmarkieren über den Rand hinaus das Modal nicht schließt) und `Enter` in `<input>`-Feldern im Modal abgefangen, sodass Literaturangaben nicht mehr nach 1–2 Eingaben versehentlich abgesendet/geschlossen werden.
+- **Activity – Zeitangabe (`ActivityCrud.vue`):**
+  - Statt PeriodO-/Epochen-Modal wird für Aktivitäten nun ein direktes Von–Bis-Datum (`Startdatum` / `Enddatum` + optionale `Kampagne / Phase`) angezeigt; `form['temporal']` bleibt im CARARE-XML 100 % kompatibel.
+- **Workflow-Validierung in der linken Spalte (`App.vue`):**
+  - `checkFilled` blockiert nun nicht mehr bei optionalen/nicht-existenten Unterfeldern (`actors.contacts.organization`, `actors.id`, `references.rights`, `recordInformation.creation.contacts.organization`, `consistsOf.techniques/equipment`) und erkennt bei `spatial` auch `historicalName`, `geopoliticalArea` und `townOrCity`, sodass die Prozentanzeige sauber über 20 % hinaus bis 100 % ansteigt.
+- **Globale Pools – Personen vs. Organisationen (`sharedState.js`):**
+  - `savedPersons` speichert und lädt nun konsequent nur noch natürliche Personen (`type !== "organisation"`), während Körperschaften/Institutionen ausschließlich im Organisations-Pool verwaltet werden.
+- **QA-Erstnutzer-Fixes (`ActivityCrud.vue`, `CollectionInformationCrud.vue`, `HeritageAssetIdentificationCrud.vue`, `App.vue`):**
+  - Button `Titel hinzufügen` in `ActivityCrud.vue` über `addAppellationName()` repariert.
+  - `addTemplateModal` in `CollectionInformationCrud.vue` um sichtbaren `✕`-Schließen-Button und `@click.self` auf dem Backdrop ergänzt.
+  - `getAssetValidationStatus` in `HeritageAssetIdentificationCrud.vue` berücksichtigt nun auch `globalRights.licence`, sodass vollständig ausgefüllte Kulturgüter nicht fälschlich auf `0/1 exportbereit` bleiben.
+  - Startsprache `currentLocale` einheitlich auf `"de"` gesetzt.

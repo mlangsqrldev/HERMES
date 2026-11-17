@@ -1466,9 +1466,21 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="addTemplateModal" class="modal z-[9999]">
-    <div class="modal-box max-w-md">
-      <h3 class="font-bold text-lg mb-6">{{ t("addtemplate") }}</h3>
+  <dialog
+    ref="addTemplateModal"
+    class="modal z-[9999]"
+    @click.self="addTemplateModal?.close()"
+  >
+    <div class="modal-box max-w-md relative">
+      <button
+        type="button"
+        class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3"
+        @click="addTemplateModal?.close()"
+        :title="t('cancel')"
+      >
+        ✕
+      </button>
+      <h3 class="font-bold text-lg mb-6 pr-8">{{ t("addtemplate") }}</h3>
       <div class="flex flex-col gap-4">
         <input
           type="text"

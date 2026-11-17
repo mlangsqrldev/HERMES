@@ -364,7 +364,10 @@ const savedPersonsRaw = (() => {
     const raw = localStorage.getItem("hermes_saved_persons");
     if (raw) {
       const parsed = JSON.parse(raw);
-      const cleaned = filterOutDummies(parsed);
+      const cleaned = filterOutDummies(parsed).filter((p) => {
+        const t = String(p?.type || p?.actorType || "").toLowerCase();
+        return t !== "organisation" && t !== "organization";
+      });
       if (cleaned.length !== parsed.length) {
         localStorage.setItem("hermes_saved_persons", JSON.stringify(cleaned));
       }
@@ -495,6 +498,10 @@ export const addOrUpdatePerson = (person) => {
   const phoneVal = person.phone || "";
   const addressVal = person.address || "";
   const typeVal = person.type || person.actorType || "person";
+  const lowerType = String(typeVal).toLowerCase();
+  if (lowerType === "organisation" || lowerType === "organization") {
+    return;
+  }
 
   const existingIndex = savedPersons.value.findIndex(
     (p) => (p.name || "").trim().toLowerCase() === lowerName,

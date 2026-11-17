@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.24 · 2026-11-16</span
+              >v0.1.25 · 2026-11-17</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -1465,7 +1465,7 @@ const openManual = async () => {
 
 // Localization State & Dictionary
 
-const currentLocale = ref("en");
+const currentLocale = ref("de");
 
 provide("currentLocale", currentLocale);
 
@@ -2862,6 +2862,20 @@ const filledStatus = computed(() => {
             return String(val).trim() !== "";
           }
 
+          // Optional or non-existent nested sub-fields should not permanently block workflow completion
+          if (
+            [
+              "actors.contacts.organization",
+              "actors.id",
+              "references.rights",
+              "recordInformation.creation.contacts.organization",
+              "consistsOf.techniques",
+              "consistsOf.equipment",
+            ].includes(field.fieldPath)
+          ) {
+            return true;
+          }
+
           // If field.fieldPath is a subfield of an array (e.g. recordInformation.creation.contacts.organization)
 
           const parts = field.fieldPath.split(".");
@@ -2877,7 +2891,26 @@ const filledStatus = computed(() => {
               if (dataObj[parentPath].length === 0) return true;
 
               return dataObj[parentPath].every((item) => {
+                // For spatial arrays, accept namedLocation, historicalName, geopoliticalArea, or townOrCity
+                if (
+                  (parentPath === "spatial" ||
+                    parentPath === "coverage.spatial") &&
+                  (childProp === "locationSet.namedLocation" ||
+                    childProp === "locationSet.geopoliticalArea")
+                ) {
+                  return Boolean(
+                    item["locationSet.namedLocation"] ||
+                      item["locationSet.historicalName"] ||
+                      item["locationSet.geopoliticalArea"] ||
+                      item["locationSet.address.townOrCity"],
+                  );
+                }
+
                 const subVal = item[childProp] || item[parts[parts.length - 1]];
+
+                if (Array.isArray(subVal)) {
+                  return subVal.length > 0;
+                }
 
                 return (
                   subVal !== null &&
