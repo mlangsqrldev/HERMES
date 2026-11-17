@@ -178,9 +178,13 @@ export function parseCarareXml(xmlString) {
       statement: getText(col, "statement"),
       "statement#lang": getLang(getDirectChild(col, "statement"), "de"),
       "statement#preferred": getPreferred(getDirectChild(col, "statement")),
-      keywords: getDirectChildren(col, "keywords").map((k) =>
-        k.textContent.trim(),
-      ),
+      keywords: getDirectChildren(col, "keywords").map((k) => ({
+        _value: k.textContent.trim(),
+        "#lang": getLang(k, "de"),
+        "#term": getAttr(k, "term"),
+        "#namespace": getAttr(k, "namespace"),
+        "#termUID": getAttr(k, "termUID"),
+      })),
       "keywords#lang": getLang(getDirectChild(col, "keywords"), "de"),
       "keywords#namespace": getAttr(
         getDirectChild(col, "keywords"),
@@ -496,7 +500,7 @@ export function parseCarareXml(xmlString) {
       "characters.materials": fromCharOrDirect("materials").map((m) => ({
         _value: m.textContent.trim(),
         "#lang": getLang(m, "de"),
-        "#term": getAttr(m, "term") || m.textContent.trim(),
+        "#term": getAttr(m, "term"),
         "#namespace": getAttr(m, "namespace"),
         "#termUID": getAttr(m, "termUID"),
       })),
@@ -1107,23 +1111,35 @@ export function parseCarareXml(xmlString) {
       ),
 
       // Paradata: Sub-activities (Capture, Representation, Mesh Processing, etc.)
-      consistsOf: getDirectChildren(act, "consistsOf").map((co) => ({
-        hadSpecificPurpose: getText(co, "hadSpecificPurpose"),
-        startDate: getText(co, "startDate"),
-        endDate: getText(co, "endDate"),
-        methods: getDirectChildren(co, "methods").map((m) =>
-          m.textContent.trim(),
-        ),
-        techniques: getDirectChildren(co, "techniques").map((t) =>
-          t.textContent.trim(),
-        ),
-        materials: getDirectChildren(co, "materials").map((m) =>
-          m.textContent.trim(),
-        ),
-        equipment: getDirectChildren(co, "equipment").map((e) =>
-          e.textContent.trim(),
-        ),
-      })),
+      consistsOf: getDirectChildren(act, "consistsOf").map((co) => {
+        const mEls = getDirectChildren(co, "methods");
+        const tEls = getDirectChildren(co, "techniques");
+        const matEls = getDirectChildren(co, "materials");
+        const eqEls = getDirectChildren(co, "equipment");
+        return {
+          hadSpecificPurpose: getText(co, "hadSpecificPurpose"),
+          "hadSpecificPurpose#lang": getLang(
+            getDirectChild(co, "hadSpecificPurpose"),
+            "de",
+          ),
+          startDate: getText(co, "startDate"),
+          endDate: getText(co, "endDate"),
+          methods: mEls.map((m) => m.textContent.trim()).filter(Boolean).join("; "),
+          "methods#lang": mEls[0] ? getLang(mEls[0], "de") : "de",
+          "methods#term": mEls[0] ? getAttr(mEls[0], "term") : "",
+          "methods#namespace": mEls[0] ? getAttr(mEls[0], "namespace") : "",
+          "methods#termUID": mEls[0] ? getAttr(mEls[0], "termUID") : "",
+          techniques: tEls.map((t) => t.textContent.trim()).filter(Boolean).join("; "),
+          "techniques#lang": tEls[0] ? getLang(tEls[0], "de") : "de",
+          "techniques#term": tEls[0] ? getAttr(tEls[0], "term") : "",
+          "techniques#namespace": tEls[0] ? getAttr(tEls[0], "namespace") : "",
+          "techniques#termUID": tEls[0] ? getAttr(tEls[0], "termUID") : "",
+          materials: matEls.map((m) => m.textContent.trim()).filter(Boolean).join("; "),
+          "materials#lang": matEls[0] ? getLang(matEls[0], "de") : "de",
+          equipment: eqEls.map((e) => e.textContent.trim()).filter(Boolean).join("; "),
+          "equipment#lang": eqEls[0] ? getLang(eqEls[0], "de") : "de",
+        };
+      }),
 
       assessments: getText(act, "assessments"),
       assessmentsList: getDirectChildren(act, "assessments").map((a) =>

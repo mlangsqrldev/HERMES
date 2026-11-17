@@ -390,7 +390,7 @@
 
                   <td class="text-center">
                     <div
-                      class="tooltip tooltip-right"
+                      class="tooltip tooltip-right flex items-center justify-center gap-1"
                       :data-tip="
                         getAssetValidationStatus(item).details.length > 0
                           ? (currentLocale === 'de' ? 'Fehlt: ' : 'Missing: ') +
@@ -399,7 +399,7 @@
                       "
                     >
                       <span
-                        class="inline-flex items-center justify-center size-5 rounded-full text-xs font-bold shadow-2xs"
+                        class="inline-flex items-center justify-center size-5 rounded-full text-xs font-bold shadow-2xs shrink-0"
                         :class="{
                           'bg-success/20 text-success':
                             getAssetValidationStatus(item).status === 'valid',
@@ -412,6 +412,15 @@
                         }"
                       >
                         {{ getAssetValidationStatus(item).icon }}
+                      </span>
+                      <span
+                        v-if="getAssetValidationStatus(item).details.length > 0"
+                        class="text-[10px] leading-tight text-warning-content/80 bg-warning/15 border border-warning/30 rounded px-1.5 py-0.5 max-w-[130px] truncate"
+                      >
+                        {{
+                          (currentLocale === "de" ? "Fehlt: " : "Missing: ") +
+                          getAssetValidationStatus(item).details.join(", ")
+                        }}
                       </span>
                     </div>
                   </td>

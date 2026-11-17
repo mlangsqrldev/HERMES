@@ -78,6 +78,30 @@
       </div>
     </div>
 
+    <!-- AI Step Detection Hint -->
+    <div
+      v-if="hasAiConsistsOfStep"
+      class="mb-4 p-3 rounded-xl bg-secondary/10 border border-secondary/30 text-xs flex items-start gap-2.5"
+    >
+      <span class="text-base leading-none">✨</span>
+      <div>
+        <span class="font-bold text-secondary">
+          {{
+            currentLocale === "de"
+              ? "KI-gestützter Arbeitsschritt erkannt:"
+              : "AI-assisted step detected:"
+          }}
+        </span>
+        <span class="text-base-content/80 ml-1">
+          {{
+            currentLocale === "de"
+              ? "Bitte erläutern Sie in Dimension 4 (Textur/Shader) oder Dimension 5 (Abbildungsbilanz) kurz, welche Modellbereiche KI-ergänzt wurden und wofür."
+              : "Please briefly state in Dimension 4 (Texture/Shader) or Dimension 5 (Representation Balance) which model areas were AI-generated and why."
+          }}
+        </span>
+      </div>
+    </div>
+
     <!-- 5 Dimensions (All visible in clean stacked cards for fast multilingual free-text entry) -->
     <div class="space-y-4">
       <div
@@ -323,6 +347,35 @@ const hasDimContent = (dimId) =>
 
 const completedCount = computed(() => {
   return DAP_DIMENSIONS.filter((d) => hasDimContent(d.id)).length;
+});
+
+const hasAiConsistsOfStep = computed(() => {
+  const list = props.form?.consistsOf;
+  if (!Array.isArray(list)) return false;
+  return list.some((s) => {
+    if (!s || typeof s !== "object") return false;
+    const blob = [
+      s.hadSpecificPurpose,
+      s.methods,
+      s.techniques,
+      s["techniques#termUID"],
+      s["methods#termUID"],
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return (
+      blob.includes("iptc") ||
+      blob.includes("ki-inpainting") ||
+      blob.includes("ki-animation") ||
+      blob.includes("trainedalgorithmicmedia") ||
+      blob.includes("concept_cef1191a") ||
+      blob.includes("concept_dfee2781") ||
+      blob.includes("concept_7042efdc") ||
+      blob.includes("concept_4441ef06") ||
+      blob.includes("concept_c5219268")
+    );
+  });
 });
 
 const addDimLang = (dimId) => {

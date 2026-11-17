@@ -255,3 +255,18 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - `consistsOf.startDate` und `consistsOf.endDate` im Arbeitsschritt-Modal von Textfeld (mit `-400`-Historien-Pattern) auf `type="date"` mit `:max="maxDate"` umgestellt (identisch zu `temporal` und `creation.date`).
   - `temporal.startDate` / `temporal.endDate` ebenfalls mit `:max="maxDate"` abgesichert.
   - 1-Klick-Vorlagen in `ActivityConsistsOf3D.vue` setzen nun `YYYY-MM-DD` statt nur die 4-stellige Jahreszahl.
+
+
+---
+
+## 20. Nachtrag `v0.1.28` (17.11.2026) – Roundtrip-Sicherheit, KI↔DAP-Verknüpfung & Automatisierte Tests
+
+- **CARARE XML Roundtrip-Fixes (`src/utils/carareXmlParser.js`):**
+  - `Collection.keywords` bewahrt beim Re-Import nun `lang`, `term`, `namespace` und `termUID` (ohne HECTOR-Attribute bei eigenen Begriffen zu erfinden).
+  - `HeritageAsset.characters.materials` setzt `#term` bei eigenen Begriffen ohne HECTOR-Attribut nicht mehr fälschlich wieder auf den Textwert.
+  - `Activity.consistsOf` importiert `methods`, `techniques`, `materials`, `equipment` inklusive `term`, `namespace` und `termUID` verlustfrei als Strings zurück ins Formular.
+- **Sichtbare Validierung & KI↔DAP-Hinweis (`HeritageAssetIdentificationCrud.vue`, `ActivityParadata.vue`):**
+  - In der Kulturgut-Tabelle wird bei `🟡 Unvollständig` nun direkt neben dem Badge ein kompakter `Fehlt: ...`-Hinweis angezeigt.
+  - Im DAP (`ActivityParadata.vue`) erscheint automatisch ein Hinweisbanner, sobald ein Arbeitsschritt unter `consistsOf` ein KI-/IPTC-Tag enthält.
+- **Automatisierte Test-Suite (`vitest` + `happy-dom`, `tests/carareRoundtrip.test.js`, `tests/hectorAndTooltips.test.js`):**
+  - `npm test` (7/7 Tests grün) prüft XML-Roundtrip, zentrale Tooltips (`0` fehlende DE/EN-Einträge), HECTOR-3D/IPTC-URIs und `metadataLanguage` im BonnData-Payload.
