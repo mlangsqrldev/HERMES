@@ -233,3 +233,15 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - `addTemplateModal` in `CollectionInformationCrud.vue` um sichtbaren `✕`-Schließen-Button und `@click.self` auf dem Backdrop ergänzt.
   - `getAssetValidationStatus` in `HeritageAssetIdentificationCrud.vue` berücksichtigt nun auch `globalRights.licence`, sodass vollständig ausgefüllte Kulturgüter nicht fälschlich auf `0/1 exportbereit` bleiben.
   - Startsprache `currentLocale` einheitlich auf `"de"` gesetzt.
+
+
+---
+
+## 18. Nachtrag `v0.1.26` (17.11.2026) – HECTOR 3D Documentation & KI-gestützte Arbeitsschritte (`consistsOf`)
+
+- **HECTOR-Vokabular erweitert (`bcdhbonn/hector-editor-skos`, `HECTOR_3D_Documentation.ttl`, Commit `396e84f`):**
+  - 15 neue SKOS-Konzepte unter `KI-gestützte Verfahren` (`concept_cfe6958f`) hinzugefügt, inkl. der drei IPTC *Digital Source Types* (`trainedAlgorithmicMedia`, `compositeWithTrainedAlgorithmicMedia`, `algorithmicallyEnhanced` mit `skos:exactMatch` auf `cv.iptc.org`) sowie konkreter KI-3D-Verfahren (`KI-Inpainting`, `Diffusionsbasierte Bild-/Textursynthese`, `KI-Geometrie-Rekonstruktion`, `KI-Upscaling`, `KI-Denoising`, `Image-to-Video`, `Image-to-3D / Text-to-3D`, `NeRF`, `3DGS`, `KI-Segmentierung`).
+- **HERMES Integration (`src/utils/hector3dVocab.js`, `ActivityConsistsOf3D.vue`, `ActivityCrud.vue`, `App.vue`):**
+  - Zwei 1-Klick-Vorlagen für KI-Arbeitsschritte (`✨ KI-Texturergänzung (Inpainting)` und `🎬 KI-Animation (Derivat)`) nach Valentinas Spezifikation ergänzt.
+  - HECTOR-3D-/KI-Verfahren-Chips unter `consistsOf.methods` sowie 3 `IPTC Digital Source Type`-Chips (mit HECTOR-URIs) unter `consistsOf.techniques` eingebaut; `<methods>` und `<techniques>` emittieren nun `term=`, `namespace=` und `termUID=` im CARARE-XML.
+  - Klare Auslegungshinweise für `consistsOf.materials` (Eingaben, Maske, Referenzbilder, Prompt, Seed) und `consistsOf.equipment` (KI-Modell + Version + Anbieter, Software, Hardware) ergänzt.

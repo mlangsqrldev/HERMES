@@ -3175,6 +3175,22 @@
                       )
                     "
                   />
+                  <!-- HECTOR 3D & KI-Verfahren (hector_3d_documentation) -->
+                  <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-base-content/50 mr-1">
+                      HECTOR 3D / KI:
+                    </span>
+                    <button
+                      v-for="term in CURATED_HECTOR_3D_TERMS.filter((t) => t.category !== 'ai_iptc').slice(0, 8)"
+                      :key="term.uri"
+                      type="button"
+                      class="btn btn-2xs btn-outline border-base-300 hover:border-primary hover:bg-primary/10 font-normal"
+                      @click="applyHector3dToDrawer('methods', term)"
+                      :title="term.uri"
+                    >
+                      + {{ currentLocale === "de" ? term.de : term.en }}
+                    </button>
+                  </div>
                   <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
                 <div class="form-control w-full mb-4">
@@ -3242,6 +3258,22 @@
                       )
                     "
                   />
+                  <!-- IPTC Digital Source Type (HECTOR 3D) -->
+                  <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-secondary mr-1">
+                      IPTC Digital Source Type (HECTOR):
+                    </span>
+                    <button
+                      v-for="iptc in IPTC_AI_TERMS"
+                      :key="iptc.key"
+                      type="button"
+                      class="btn btn-2xs btn-outline btn-secondary font-normal"
+                      @click="applyIptcToDrawer(iptc)"
+                      :title="`${iptc.uri} (${iptc.iptcUri})`"
+                    >
+                      + {{ currentLocale === "de" ? iptc.shortDe : iptc.shortEn }}
+                    </button>
+                  </div>
                   <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
                 <div class="form-control w-full mb-4">
@@ -3300,11 +3332,9 @@
                     v-model="drawerForm['materials']"
                     class="input input-bordered w-full validator"
                     :placeholder="
-                      getLabel(
-                        'consistsOf.materials',
-                        'e.g. conservation materials, bonding agents (for restoration work)',
-                        'plac',
-                      )
+                      currentLocale === 'de'
+                        ? 'Eingaben: Quelldaten, Maske, Referenzbilder, Prompt, Seed (oder Festigungsmittel)'
+                        : 'Inputs: source data, mask, reference images, prompt, seed (or conservation materials)'
                     "
                   />
                   <div class="validator-hint">{{ t("validationHint") }}</div>
@@ -3399,11 +3429,9 @@
                     v-model="drawerForm['equipment']"
                     class="input input-bordered w-full validator text-xs"
                     :placeholder="
-                      getLabel(
-                        'consistsOf.equipment',
-                        'e.g. Artec Leo 3D scanner; Nikon Z8 camera with 24-70mm f/2.8 lens and colour reference card; software: Artec Studio 19, Blender 4.2, Substance Designer 14, Adobe Photoshop Lightroom 14.1',
-                        'plac',
-                      )
+                      currentLocale === 'de'
+                        ? 'KI-Modell (Name, Version, Anbieter, lokal/Cloud); Software (mit Version); Hardware (Scanner, Kamera, GPU)'
+                        : 'AI model (name, version, provider, local/cloud); software (with version); hardware (scanner, camera, GPU)'
                     "
                   />
                   <div class="validator-hint">{{ t("validationHint") }}</div>
@@ -3722,6 +3750,11 @@
 
 <script setup>
 import { getTooltipText } from "../utils/tooltips.js";
+import {
+  IPTC_AI_TERMS,
+  CURATED_HECTOR_3D_TERMS,
+  searchHector3dVocabulary,
+} from "../utils/hector3dVocab.js";
 import {
   ref,
   reactive,
@@ -6069,6 +6102,35 @@ const addAppellationName = () => {
     "appellation.name#lang": defaultMetadataLanguage?.value || "de",
     "appellation.name#preferred": form["appellation.name"].length === 0,
   });
+};
+
+const applyHector3dToDrawer = (field, term) => {
+  const label = currentLocale.value === "de" ? term.de : term.en;
+  const cur = String(drawerForm[field] || "").trim();
+  if (!cur) {
+    drawerForm[field] = label;
+  } else if (!cur.toLowerCase().includes(label.toLowerCase())) {
+    drawerForm[field] = `${cur}; ${label}`;
+  }
+  drawerForm[`${field}#term`] = label;
+  drawerForm[`${field}#namespace`] =
+    "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/";
+  drawerForm[`${field}#termUID`] = term.uri;
+};
+
+const applyIptcToDrawer = (iptc) => {
+  const tag = `IPTC Digital Source Type: ${iptc.key} (${iptc.iptcUri})`;
+  const cur = String(drawerForm["techniques"] || "").trim();
+  if (!cur) {
+    drawerForm["techniques"] = tag;
+  } else if (!cur.includes(iptc.key)) {
+    drawerForm["techniques"] = `${cur}; ${tag}`;
+  }
+  drawerForm["techniques#term"] =
+    currentLocale.value === "de" ? iptc.de : iptc.en;
+  drawerForm["techniques#namespace"] =
+    "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/";
+  drawerForm["techniques#termUID"] = iptc.uri;
 };
 
 const updateActivityTemporalField = (key, value) => {

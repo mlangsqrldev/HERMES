@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.25 · 2026-11-17</span
+              >v0.1.26 · 2026-11-17</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -6348,8 +6348,6 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
           "publisher",
           "place",
           "hadSpecificPurpose",
-          "methods",
-          "techniques",
           "equipment",
         ].includes(elName)
       ) {
@@ -6378,6 +6376,8 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
           "heritageAssetType",
           "keywords",
           "materials",
+          "methods",
+          "techniques",
           "eventType",
           "assessments",
           "roles",

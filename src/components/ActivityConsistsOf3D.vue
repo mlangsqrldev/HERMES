@@ -50,6 +50,40 @@
               : "Apply Full Standard Workflow"
           }}
         </button>
+        <button
+          type="button"
+          class="btn btn-xs btn-outline btn-secondary gap-1"
+          @click="addPredefinedSubactivity('ai_inpainting')"
+          :title="
+            currentLocale === 'de'
+              ? 'Vorlage für KI-gestützte Texturergänzung / Inpainting (inkl. IPTC & HECTOR)'
+              : 'Template for AI texture inpainting (incl. IPTC & HECTOR)'
+          "
+        >
+          ✨
+          {{
+            currentLocale === "de"
+              ? "KI-Texturergänzung (Inpainting)"
+              : "AI Texture Inpainting"
+          }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-xs btn-outline btn-secondary gap-1"
+          @click="addPredefinedSubactivity('ai_animation')"
+          :title="
+            currentLocale === 'de'
+              ? 'Vorlage für KI-gestützte Vermittlungsanimation (Derivat)'
+              : 'Template for AI dissemination animation (derivative)'
+          "
+        >
+          🎬
+          {{
+            currentLocale === "de"
+              ? "KI-Animation (Derivat)"
+              : "AI Animation (Derivative)"
+          }}
+        </button>
       </div>
     </div>
 
@@ -673,6 +707,90 @@ const addPredefinedSubactivity = (kind) => {
     };
 
     emit("add-step", procStep);
+  }
+
+  if (kind === "ai_inpainting") {
+    const aiInpaintStep = {
+      hadSpecificPurpose: isDe
+        ? "KI-gestützte Ergänzung der Textur im Bereich [betroffene Partie, z. B. linke Wange / Abschattung beim Scan]; Ziel: geschlossene Textur für das Webmodell, nicht für das Archivmaster"
+        : "AI-assisted texture completion in [affected area, e.g. left cheek / scan occlusion]; goal: closed texture for web model, not archival master",
+      "hadSpecificPurpose#lang": lang,
+      startDate: new Date().getFullYear().toString(),
+      endDate: new Date().getFullYear().toString(),
+      methods: isDe
+        ? "Generative Texturergänzung (KI-Inpainting) einer Fehlstelle; ca. [X] % der Texturfläche betroffen"
+        : "Generative texture completion (AI inpainting) of a missing area; approx. [X]% of texture area affected",
+      "methods#lang": lang,
+      "methods#term": isDe
+        ? "KI-Inpainting (Texturergänzung)"
+        : "AI texture inpainting",
+      "methods#namespace":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/",
+      "methods#termUID":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/concept_4441ef06",
+      techniques: isDe
+        ? "Diffusionsbasiertes Inpainting auf maskiertem UV-Bereich; prompt-gesteuert mit Referenzbildern; IPTC Digital Source Type: compositeWithTrainedAlgorithmicMedia (http://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia)"
+        : "Diffusion-based inpainting on masked UV area; prompt-guided with reference photos; IPTC Digital Source Type: compositeWithTrainedAlgorithmicMedia (http://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia)",
+      "techniques#lang": lang,
+      "techniques#term": isDe
+        ? "Teilweise KI-generierte Medien (compositeWithTrainedAlgorithmicMedia)"
+        : "Composite with AI-generated media (compositeWithTrainedAlgorithmicMedia)",
+      "techniques#namespace":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/",
+      "techniques#termUID":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/concept_cef1191a",
+      materials: isDe
+        ? "Eingabe: Albedo-Map 8K (Mastertextur), UV-Maske; Referenzfotos der Kampagne; Prompt: „...“; Seed: [...]"
+        : "Input: 8K Albedo map (master texture), UV mask; campaign reference photos; Prompt: '...'; Seed: [...]",
+      "materials#lang": lang,
+      equipment: isDe
+        ? "KI-Modell: [Name, Version, Anbieter; lokal oder Cloud]; Software: [z. B. Bildbearbeitung/Texturierung, Version]; Hardware: [GPU]"
+        : "AI model: [Name, Version, Provider; local or cloud]; Software: [e.g. image/texture tool, version]; Hardware: [GPU]",
+      "equipment#lang": lang,
+    };
+    emit("add-step", aiInpaintStep);
+  }
+
+  if (kind === "ai_animation") {
+    const aiAnimStep = {
+      hadSpecificPurpose: isDe
+        ? "Erzeugung einer Vermittlungsanimation (Kamerafahrt mit KI-generierter Lichtstimmung) aus dem Webmodell; keine Veränderung der Geometrie"
+        : "Generation of a dissemination animation (camera flight with AI-generated lighting) from the web model; no geometry changes",
+      "hadSpecificPurpose#lang": lang,
+      startDate: new Date().getFullYear().toString(),
+      endDate: new Date().getFullYear().toString(),
+      methods: isDe
+        ? "KI-gestützte Videogenerierung auf Basis gerenderter Einzelbilder"
+        : "AI-assisted video generation based on rendered still frames",
+      "methods#lang": lang,
+      "methods#term": isDe
+        ? "Image-to-Video (KI-Animation)"
+        : "Image-to-Video (AI animation)",
+      "methods#namespace":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/",
+      "methods#termUID":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/concept_c5219268",
+      techniques: isDe
+        ? "Image-to-Video; Stiltransfer der Beleuchtung; IPTC Digital Source Type: compositeWithTrainedAlgorithmicMedia (http://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia)"
+        : "Image-to-Video; lighting style transfer; IPTC Digital Source Type: compositeWithTrainedAlgorithmicMedia (http://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia)",
+      "techniques#lang": lang,
+      "techniques#term": isDe
+        ? "Teilweise KI-generierte Medien (compositeWithTrainedAlgorithmicMedia)"
+        : "Composite with AI-generated media (compositeWithTrainedAlgorithmicMedia)",
+      "techniques#namespace":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/",
+      "techniques#termUID":
+        "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/concept_cef1191a",
+      materials: isDe
+        ? "Eingabe: [120] Renderbilder aus Blender (Webmodell); Prompt: „...“"
+        : "Input: [120] rendered frames from Blender (web model); Prompt: '...'",
+      "materials#lang": lang,
+      equipment: isDe
+        ? "KI-Modell: [Name, Version, Anbieter]; Software: Blender 4.3 LTS (Rendering)"
+        : "AI model: [Name, Version, Provider]; Software: Blender 4.3 LTS (Rendering)",
+      "equipment#lang": lang,
+    };
+    emit("add-step", aiAnimStep);
   }
 };
 </script>
