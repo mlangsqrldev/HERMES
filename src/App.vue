@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.29 · 2026-11-17</span
+              >v0.1.30 · 2026-11-17</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -1214,9 +1214,21 @@
     </form>
   </dialog>
 
-  <dialog ref="addTemplateModal" class="modal z-[9999]">
-    <div class="modal-box max-w-md">
-      <h3 class="font-bold text-lg mb-6">{{ t("addtemplate") }}</h3>
+  <dialog
+    ref="addTemplateModal"
+    class="modal z-[9999]"
+    @click.self="addTemplateModal?.close()"
+  >
+    <div class="modal-box max-w-md relative">
+      <button
+        type="button"
+        class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3"
+        @click="addTemplateModal?.close()"
+        :title="t('cancel')"
+      >
+        ✕
+      </button>
+      <h3 class="font-bold text-lg mb-6 pr-8">{{ t("addtemplate") }}</h3>
 
       <div class="flex flex-col gap-4">
         <input
@@ -1227,9 +1239,17 @@
         />
 
         <div class="modal-action mt-2 w-full">
-          <form method="dialog" class="w-full">
+          <form method="dialog" class="w-full flex gap-2">
             <button
-              class="btn btn-primary w-full"
+              type="button"
+              class="btn btn-ghost flex-1"
+              @click="addTemplateModal?.close()"
+            >
+              {{ t("cancel") }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary flex-1"
               @click="addTemplate(activeAddTemplateStep)"
               :disabled="!newTemplateName"
             >
@@ -1540,16 +1560,11 @@ const applyGlobalRightsToAll = (rightsObj) => {
 
     if (Array.isArray(comp.items)) {
       comp.items.forEach((item) => {
-        if ("recordInformation.metadataRights" in item)
-          item["recordInformation.metadataRights"] = rightsObj.metadataRights;
-
-        if ("rights.copyrightCreditLine" in item)
-          item["rights.copyrightCreditLine"] = rightsObj.copyrightCreditLine;
-
-        if ("rights.accessRights" in item)
-          item["rights.accessRights"] = rightsObj.accessRights;
-
-        if ("rights.licence" in item) item["rights.licence"] = targetLicence;
+        item["recordInformation.metadataRights"] = rightsObj.metadataRights;
+        item["rights.copyrightCreditLine"] = rightsObj.copyrightCreditLine;
+        item["rights.accessRights"] = rightsObj.accessRights;
+        item["rights.licence"] = targetLicence;
+        item["rights.reproductionRights"] = rightsObj.reproductionRights;
       });
     }
   });
@@ -3260,7 +3275,7 @@ const completedSectionsCount = computed(() => {
   let count = 0;
 
   for (const step of steps) {
-    if (filledStatus.value[step.id]?.groupFilled) count++;
+    if (getSectionQualityStatus(step.id)?.status === "valid") count++;
   }
 
   return count;
@@ -6277,7 +6292,8 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       ["materials", "methods", "techniques", "periodName"].includes(
         node.name,
       ) &&
-      node.text
+      node.text &&
+      !node.attributes["termUID"]
     ) {
       node.text = resolveTermList(node.text);
     }

@@ -198,10 +198,19 @@
             currentLocale === "de" ? "Rechte" : "Rights"
           }}</span>
           <span
-            class="badge badge-xs badge-primary font-mono truncate max-w-[110px]"
-            :title="globalRights.licence"
+            class="badge badge-xs font-mono truncate max-w-[110px]"
+            :class="globalRights.licence ? 'badge-primary' : 'badge-warning'"
+            :title="
+              globalRights.licence ||
+              (currentLocale === 'de'
+                ? 'Noch keine Lizenz gewählt'
+                : 'No licence selected yet')
+            "
           >
-            {{ getLicenceShortCode(globalRights.licence) || "CC BY 4.0" }}
+            {{
+              getLicenceShortCode(globalRights.licence) ||
+              (currentLocale === "de" ? "Nicht gesetzt" : "Unset")
+            }}
           </span>
         </button>
     </div>

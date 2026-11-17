@@ -278,3 +278,17 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
 
 - **`src/components/TemporalSection.vue`:**
   - `formatDisplayYear` und `handlePeriodoSelect` entfernen führende Nullen bei positiven Jahreszahlen (z. B. `0014` → `14`, `0037` → `37`) und formatieren Zeiträume wie *Tiberius* sauber als `14 – 37 n. Chr.` (DE) bzw. `14 – 37 CE` (EN), während `startDate`/`endDate` weiterhin ISO-konform bleiben.
+
+
+---
+
+## 22. Nachtrag `v0.1.30` (17.11.2026) – Senior-IT-Audit-Fixes
+
+- **`App.vue` (`addTemplateModal`, `completedSectionsCount`, `resolveTermList`, `applyGlobalRightsToAll`):**
+  - `addTemplateModal` besitzt nun `✕`-Button, `Abbrechen`-Button und Backdrop-Schließen (`@click.self`).
+  - `completedSectionsCount` nutzt direkt `getSectionQualityStatus(step.id)?.status === "valid"` als Single Source of Truth (exakt konsistent `4/5` = `80 %` bei 4 ausgefüllten Modulen).
+  - `resolveTermList` hängt bei bereits gesetztem `termUID` keine `(https://...)`-URI mehr an `<materials>`-Textknoten an.
+  - `applyGlobalRightsToAll` überträgt `rights.licence` und `rights.reproductionRights` nun auch auf gespeicherte `items`.
+- **`GlobalDefaultsBar.vue`, `RightsSettingsModal.vue`, `HeritageAssetIdentificationCrud.vue`:**
+  - Header-Rechte-Button zeigt ehrlich `Nicht gesetzt` (gelb) statt falschem `CC BY 4.0`-Fallback, solange keine Lizenz gewählt wurde.
+  - `copyGlobalHaToTarget` und `HeritageAsset.save()` übernehmen `rights.licence` und globale Rechtefelder zuverlässig (inkl. `<rights><licence>` im XML).

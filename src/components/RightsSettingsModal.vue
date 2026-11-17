@@ -735,6 +735,8 @@ const copyGlobalHaToTarget = (target) => {
   if (!target) return;
   target["recordInformation.metadataRights"] =
     globalRights.metadataRights || "";
+  target["rights.licence"] =
+    resolveLicenceUri(globalRights.licence, props.locale) || "";
   target["rights.copyrightCreditLine"] =
     globalRights.haCopyrightCreditLine ||
     globalRights.copyrightCreditLine ||

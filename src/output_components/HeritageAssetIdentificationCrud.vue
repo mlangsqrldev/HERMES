@@ -11171,6 +11171,20 @@ const save = () => {
       globalRights.metadataRights ||
       "https://creativecommons.org/publicdomain/zero/1.0/deed.de";
   }
+  if (!form["rights.licence"] && globalRights?.licence) {
+    form["rights.licence"] =
+      resolveLicenceUri(globalRights.licence, currentLocale?.value || "de") ||
+      globalRights.licence;
+  }
+  if (!form["rights.accessRights"] && globalRights?.accessRights) {
+    form["rights.accessRights"] = globalRights.accessRights;
+  }
+  if (!form["rights.copyrightCreditLine"] && globalRights?.copyrightCreditLine) {
+    form["rights.copyrightCreditLine"] = globalRights.copyrightCreditLine;
+  }
+  if (!form["rights.reproductionRights"] && globalRights?.reproductionRights) {
+    form["rights.reproductionRights"] = globalRights.reproductionRights;
+  }
   if (form["provenance"] && !form["provenance#lang"]) {
     form["provenance#lang"] = defaultMetadataLanguage.value || "de";
   }
@@ -11367,7 +11381,11 @@ const getAssetValidationStatus = (item) => {
       currentLocale.value === "de" ? "Datierung/Epoche" : "Dating/Period",
     );
 
-  const hasLicence = !!(item["rights.licence"] || globalRights?.licence);
+  const hasLicence = !!(
+    item["rights.licence"] ||
+    globalRights?.haLicence ||
+    globalRights?.licence
+  );
 
   if (!hasLicence)
     missingWarns.push(currentLocale.value === "de" ? "Lizenz" : "Licence");
