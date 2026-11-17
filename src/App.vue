@@ -1372,7 +1372,7 @@ import { listen } from "@tauri-apps/api/event";
 
 import { open, save } from "@tauri-apps/plugin-dialog";
 
-import { writeFile } from "@tauri-apps/plugin-fs";
+import { readFile, readTextFile, writeFile } from "@tauri-apps/plugin-fs";
 
 import { isTauri, getAppStore } from "./utils/platform.js";
 
@@ -1471,8 +1471,6 @@ const folderInput = ref(null);
 
 const openManual = async () => {
   try {
-    const { invoke } = await import("@tauri-apps/api/core");
-
     await invoke("open_manual_window");
   } catch (err) {
     console.warn("Tauri open_manual_window fallback:", err);
@@ -2118,8 +2116,6 @@ const triggerImportTemplatesJson = async () => {
           typeof selected === "string" ? selected : selected?.path;
 
         if (filePath) {
-          const { readFile } = await import("@tauri-apps/plugin-fs");
-
           const bytes = await readFile(filePath);
 
           const text = new TextDecoder("utf-8").decode(bytes);
@@ -2391,8 +2387,6 @@ const loadSampleDataset = async (silent = false) => {
 
     if (!xmlText) {
       try {
-        const { readTextFile } = await import("@tauri-apps/plugin-fs");
-
         xmlText = await readTextFile(
           "CARARE_Phantasie_Kollektion_3D_Master_und_Derivate.xml",
         );
@@ -2564,8 +2558,6 @@ const handleDirectorySelect = async () => {
 
       if (!selectedDirPath) return;
 
-      console.log("Selected directory:", selectedDirPath);
-
       // Pass the clean, absolute path directly to Rust
 
       fileHashes.value = await invoke("generate_bag_hashes", {
@@ -2579,8 +2571,6 @@ const handleDirectorySelect = async () => {
       for (const [relativePath, hash] of Object.entries(fileHashes.value)) {
         manifestContent += `${hash} data/${relativePath}\n`;
       }
-
-      console.log("Generated Manifest Data:\n", manifestContent);
     } catch (error) {
       // Now, if anything fails (Rust error or JS error), you will actually see it!
 
@@ -2773,8 +2763,6 @@ const filledStatus = computed(() => {
     const comp = getComponentRef(groupId);
 
     const fieldsMap = requiredTree.value[groupId];
-
-    console.log(fieldsMap);
 
     if (!fieldsMap) {
       status[groupId].groupFilled = true;
@@ -3633,8 +3621,6 @@ const triggerImport = async () => {
 
         if (filePath) {
           const fileName = filePath.split(/[/\\]/).pop() || "imported_carare";
-
-          const { readFile } = await import("@tauri-apps/plugin-fs");
 
           const fileBytes = await readFile(filePath);
 
