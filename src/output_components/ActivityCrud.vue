@@ -1291,6 +1291,7 @@
                     </label>
                     <input
                       type="date"
+                      :max="maxDate"
                       class="input input-bordered input-sm w-full"
                       :value="form['temporal']?.[0]?.['timeSpan.startDate'] || ''"
                       @input="updateActivityTemporalField('timeSpan.startDate', $event.target.value)"
@@ -1305,6 +1306,7 @@
                     </label>
                     <input
                       type="date"
+                      :max="maxDate"
                       class="input input-bordered input-sm w-full"
                       :value="form['temporal']?.[0]?.['timeSpan.endDate'] || ''"
                       @input="updateActivityTemporalField('timeSpan.endDate', $event.target.value)"
@@ -3019,25 +3021,17 @@
                     </div>
                   </div>
                   <input
-                    type="text"
-                    pattern="^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$"
+                    type="date"
+                    :max="maxDate"
                     required
                     v-model="drawerForm['startDate']"
-                    @input="validateDateNotFuture($event)"
                     class="input input-bordered w-full validator"
-                    :placeholder="
-                      getLabel(
-                        'consistsOf.startDate',
-                        'e.g. -500, 48, -7 or 2025',
-                        'plac',
-                      )
-                    "
                   />
                   <div class="validator-hint">
                     {{
                       currentLocale === "de"
-                        ? "Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)"
-                        : "Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)"
+                        ? "Gültiges Datum erforderlich (nicht in der Zukunft)"
+                        : "Valid date required (not in future)"
                     }}
                   </div>
                 </div>
@@ -3090,25 +3084,17 @@
                     </div>
                   </div>
                   <input
-                    type="text"
-                    pattern="^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$"
+                    type="date"
+                    :max="maxDate"
                     required
                     v-model="drawerForm['endDate']"
-                    @input="validateDateNotFuture($event)"
                     class="input input-bordered w-full validator"
-                    :placeholder="
-                      getLabel(
-                        'consistsOf.endDate',
-                        'e.g. -400, 48, -7 or 2025',
-                        'plac',
-                      )
-                    "
                   />
                   <div class="validator-hint">
                     {{
                       currentLocale === "de"
-                        ? "Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)"
-                        : "Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)"
+                        ? "Gültiges Datum erforderlich (nicht in der Zukunft)"
+                        : "Valid date required (not in future)"
                     }}
                   </div>
                 </div>

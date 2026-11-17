@@ -670,8 +670,8 @@ const addPredefinedSubactivity = (kind) => {
     const captureStep = {
       hadSpecificPurpose: purposeText,
       "hadSpecificPurpose#lang": lang,
-      startDate: new Date().getFullYear().toString(),
-      endDate: new Date().getFullYear().toString(),
+      startDate: new Date().toISOString().slice(0, 10),
+      endDate: new Date().toISOString().slice(0, 10),
       methods: methodText,
       "methods#lang": lang,
       techniques: techText,
@@ -691,8 +691,8 @@ const addPredefinedSubactivity = (kind) => {
         ? "3D-Post-Processing: Bereinigung der Punktwolke, Netzoptimierung, UV-Unwrapping und Textur-Baking"
         : "3D post-processing: point cloud cleanup, mesh decimation, UV unwrapping and texture baking",
       "hadSpecificPurpose#lang": lang,
-      startDate: new Date().getFullYear().toString(),
-      endDate: new Date().getFullYear().toString(),
+      startDate: new Date().toISOString().slice(0, 10),
+      endDate: new Date().toISOString().slice(0, 10),
       methods: isDe
         ? "Polygondezimierung, Quad-Remeshing, PBR-Textur-Baking"
         : "Polygon decimation, quad remeshing, PBR texture baking",
@@ -715,8 +715,8 @@ const addPredefinedSubactivity = (kind) => {
         ? "KI-gestützte Ergänzung der Textur im Bereich [betroffene Partie, z. B. linke Wange / Abschattung beim Scan]; Ziel: geschlossene Textur für das Webmodell, nicht für das Archivmaster"
         : "AI-assisted texture completion in [affected area, e.g. left cheek / scan occlusion]; goal: closed texture for web model, not archival master",
       "hadSpecificPurpose#lang": lang,
-      startDate: new Date().getFullYear().toString(),
-      endDate: new Date().getFullYear().toString(),
+      startDate: new Date().toISOString().slice(0, 10),
+      endDate: new Date().toISOString().slice(0, 10),
       methods: isDe
         ? "Generative Texturergänzung (KI-Inpainting) einer Fehlstelle; ca. [X] % der Texturfläche betroffen"
         : "Generative texture completion (AI inpainting) of a missing area; approx. [X]% of texture area affected",
@@ -757,8 +757,8 @@ const addPredefinedSubactivity = (kind) => {
         ? "Erzeugung einer Vermittlungsanimation (Kamerafahrt mit KI-generierter Lichtstimmung) aus dem Webmodell; keine Veränderung der Geometrie"
         : "Generation of a dissemination animation (camera flight with AI-generated lighting) from the web model; no geometry changes",
       "hadSpecificPurpose#lang": lang,
-      startDate: new Date().getFullYear().toString(),
-      endDate: new Date().getFullYear().toString(),
+      startDate: new Date().toISOString().slice(0, 10),
+      endDate: new Date().toISOString().slice(0, 10),
       methods: isDe
         ? "KI-gestützte Videogenerierung auf Basis gerenderter Einzelbilder"
         : "AI-assisted video generation based on rendered still frames",

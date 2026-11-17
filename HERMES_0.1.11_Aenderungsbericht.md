@@ -245,3 +245,13 @@ Zur Qualitätssicherung wurde ein spezialisierter **Browser-QA-Subagent** (*Muse
   - Zwei 1-Klick-Vorlagen für KI-Arbeitsschritte (`✨ KI-Texturergänzung (Inpainting)` und `🎬 KI-Animation (Derivat)`) nach Valentinas Spezifikation ergänzt.
   - HECTOR-3D-/KI-Verfahren-Chips unter `consistsOf.methods` sowie 3 `IPTC Digital Source Type`-Chips (mit HECTOR-URIs) unter `consistsOf.techniques` eingebaut; `<methods>` und `<techniques>` emittieren nun `term=`, `namespace=` und `termUID=` im CARARE-XML.
   - Klare Auslegungshinweise für `consistsOf.materials` (Eingaben, Maske, Referenzbilder, Prompt, Seed) und `consistsOf.equipment` (KI-Modell + Version + Anbieter, Software, Hardware) ergänzt.
+
+
+---
+
+## 19. Nachtrag `v0.1.27` (17.11.2026) – Einheitliche Datumsformatierung in Activity
+
+- **`ActivityCrud.vue`, `ActivityConsistsOf3D.vue`:**
+  - `consistsOf.startDate` und `consistsOf.endDate` im Arbeitsschritt-Modal von Textfeld (mit `-400`-Historien-Pattern) auf `type="date"` mit `:max="maxDate"` umgestellt (identisch zu `temporal` und `creation.date`).
+  - `temporal.startDate` / `temporal.endDate` ebenfalls mit `:max="maxDate"` abgesichert.
+  - 1-Klick-Vorlagen in `ActivityConsistsOf3D.vue` setzen nun `YYYY-MM-DD` statt nur die 4-stellige Jahreszahl.
