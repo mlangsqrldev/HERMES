@@ -10378,14 +10378,20 @@ const form = reactive({
   dcRelation: [],
 });
 
-// Automatically prefill repositoryLocation from Collection if currently empty
+// Automatically prefill repositoryLocation from Collection while untouched by user
+let lastAutoRepoLocation = collectionInstitution.fullLabel || "";
 
 watch(
   () => collectionInstitution.fullLabel,
   (newVal) => {
-    if (newVal && !form["repositoryLocation"]) {
+    if (
+      newVal &&
+      (!form["repositoryLocation"] ||
+        form["repositoryLocation"] === lastAutoRepoLocation)
+    ) {
       form["repositoryLocation"] = newVal;
     }
+    lastAutoRepoLocation = newVal || "";
   },
   { immediate: true },
 );

@@ -174,7 +174,7 @@ function buildProjectRelationshipIndex(allData = {}) {
     entityRegistry[id] = {
       id,
       type: "Collection",
-      name: col.title || col.name || `Sammlung ${idx + 1}`,
+      name: getEntityName(col, `Sammlung ${idx + 1}`),
       record: col,
     };
   });
@@ -867,8 +867,9 @@ export function generatePdfReport(allData = {}, locale = "de") {
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 16;
+  const margin = 15;
   const contentWidth = pageWidth - 2 * margin;
+  const footerReserved = 14;
 
   let y = margin;
 
@@ -880,15 +881,41 @@ export function generatePdfReport(allData = {}, locale = "de") {
   // Entity Starting Page Registry: id -> pageNumber
   const entityPageMap = {};
 
-  // Clean term formatter: strips bulky http:// URIs to present crisp terms for museum staff
-  const formatMuseumTerm = (val) => {
-    if (!val) return "—";
-    if (Array.isArray(val)) {
-      return val.map(formatSingleMuseumTerm).filter(Boolean).join(", ");
-    }
-    return formatSingleMuseumTerm(val);
+  // Insert soft wrap points inside long unbroken URLs/URIs/tokens so jsPDF never overflows a box
+  const wrapLongTokens = (text) =>
+    String(text || "").replace(/([\/_\-?&=.:;#]{1})(?=\S{16,})/g, "$1 ");
+
+  const safeSplit = (text, maxWidth) => {
+    const str = String(text || "");
+    const lines = doc.splitTextToSize(str, maxWidth);
+    const out = [];
+    lines.forEach((line) => {
+      if (doc.getTextWidth(line) > maxWidth + 0.5) {
+        out.push(...doc.splitTextToSize(wrapLongTokens(line), maxWidth));
+      } else {
+        out.push(line);
+      }
+    });
+    return out;
   };
 
+  const truncateToWidth = (text, maxWidth) => {
+    const str = String(text || "");
+    if (doc.getTextWidth(str) <= maxWidth) return str;
+    let lo = 0;
+    let hi = str.length;
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      if (doc.getTextWidth(str.slice(0, mid) + "…") <= maxWidth) {
+        lo = mid;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    return lo > 0 ? str.slice(0, lo) + "…" : "…";
+  };
+
+  // Clean term formatter: keeps crisp readable terms (and optional URI summary)
   const formatSingleMuseumTerm = (val) => {
     if (!val) return "—";
     if (typeof val === "object") {
@@ -902,9 +929,20 @@ export function generatePdfReport(allData = {}, locale = "de") {
       return label ? String(label).trim() : "—";
     }
     let str = String(val).trim();
-    // Remove raw URLs in parentheses like (http://...)
     str = str.replace(/\s*\(https?:\/\/[^\)]+\)/g, "");
     return str || "—";
+  };
+
+  const formatMuseumTerm = (val) => {
+    if (!val) return "—";
+    if (Array.isArray(val)) {
+      const joined = val
+        .map(formatSingleMuseumTerm)
+        .filter((s) => s && s !== "—")
+        .join(", ");
+      return joined || "—";
+    }
+    return formatSingleMuseumTerm(val);
   };
 
   // Extract human-readable date for Activity
@@ -922,38 +960,44 @@ export function generatePdfReport(allData = {}, locale = "de") {
         if (period) return period;
       }
     }
-    if (act["recordInformation.creation.date"])
-      return act["recordInformation.creation.date"];
+    if (act["startDate"] || act["endDate"]) {
+      const s = act["startDate"] || "";
+      const e = act["endDate"] || "";
+      if (s && e) return `${s} bis ${e}`;
+      return s || e;
+    }
     if (Array.isArray(act.consistsOf) && act.consistsOf.length > 0) {
       const starts = act.consistsOf.map((c) => c.startDate).filter(Boolean);
       const ends = act.consistsOf.map((c) => c.endDate).filter(Boolean);
       if (starts.length && ends.length)
         return `${starts[0]} bis ${ends[ends.length - 1]}`;
     }
-    return act["event.date.date"] || "—";
+    return (
+      act["recordInformation.creation.date"] || act["event.date.date"] || "—"
+    );
   };
 
   // Header helper for subsequent pages
   const drawPageHeader = () => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184); // slate-400
+    doc.setTextColor(148, 163, 184);
     doc.text(
       "HERMES • CARARE 2.0.6 Archival Documentation & Digital Authenticity Profile",
       margin,
       11,
     );
     doc.text(now, pageWidth - margin, 11, { align: "right" });
-    doc.setDrawColor(226, 232, 240); // slate-200
+    doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.3);
     doc.line(margin, 13, pageWidth - margin, 13);
   };
 
   // Check page break helper
   const checkPageBreak = (neededHeight = 16) => {
-    if (y + neededHeight > pageHeight - margin - 12) {
+    if (y + neededHeight > pageHeight - margin - footerReserved) {
       doc.addPage();
-      y = margin + 3;
+      y = margin + 4;
       drawPageHeader();
     }
   };
@@ -962,94 +1006,131 @@ export function generatePdfReport(allData = {}, locale = "de") {
   const printSectionHeader = (title, accentColor = [3, 105, 161]) => {
     checkPageBreak(18);
     y += 2;
-    doc.setFillColor(241, 245, 249); // slate-100
-    doc.setDrawColor(203, 213, 225); // slate-300
+    doc.setFillColor(241, 245, 249);
+    doc.setDrawColor(203, 213, 225);
     doc.setLineWidth(0.3);
-    doc.roundedRect(margin, y, contentWidth, 8, 1.5, 1.5, "FD");
+    doc.roundedRect(margin, y, contentWidth, 8.5, 1.5, 1.5, "FD");
 
-    // Colored left accent bar
     doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
-    doc.roundedRect(margin, y, 2.8, 8, 1, 1, "F");
+    doc.roundedRect(margin, y, 2.8, 8.5, 1, 1, "F");
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.setTextColor(15, 23, 42); // slate-900
-    doc.text(title, margin + 5.5, y + 5.5);
-    y += 12;
+    doc.setTextColor(15, 23, 42);
+    doc.text(truncateToWidth(title, contentWidth - 10), margin + 5.5, y + 5.7);
+    y += 11.5;
   };
 
-  // Robust Field Printer helper: GUARANTEES ZERO COLLISION
+  // Dynamic Entity Header Box: wraps title cleanly so it NEVER overflows
+  const printEntityHeader = (
+    title,
+    badge,
+    { fill, border, accent, titleColor, badgeColor },
+  ) => {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    const badgeW = doc.getTextWidth(badge) + 8;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    const titleMaxW = Math.max(60, contentWidth - badgeW - 10);
+    const titleLines = safeSplit(title, titleMaxW);
+    const boxH = Math.max(8.5, titleLines.length * 4.4 + 4.2);
+
+    checkPageBreak(boxH + 4);
+
+    doc.setFillColor(...fill);
+    doc.setDrawColor(...border);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(margin, y, contentWidth, boxH, 1.2, 1.2, "FD");
+
+    doc.setFillColor(...accent);
+    doc.roundedRect(margin, y, 2.5, boxH, 0.5, 0.5, "F");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(...titleColor);
+    doc.text(titleLines, margin + 4.5, y + 5.4);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    doc.setTextColor(...badgeColor);
+    doc.text(badge, pageWidth - margin - 3, y + 5.2, { align: "right" });
+
+    y += boxH + 2;
+  };
+
+  // Robust Field Printer helper: GUARANTEES ZERO OVERFLOW
   const printFieldRow = (label, value, bg = false) => {
     if (value === null || value === undefined) return;
     const cleanVal = extractCleanText(value, "—");
     if (!cleanVal || cleanVal === "—") return;
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-
-    const labelColWidth = 56;
-    const valueColWidth = contentWidth - labelColWidth - 4;
+    const labelColWidth = 54;
+    const valueColWidth = contentWidth - labelColWidth - 5;
 
     doc.setFont("helvetica", "bold");
-    const labelLines = doc.splitTextToSize(String(label), labelColWidth - 6);
+    doc.setFontSize(8.2);
+    const labelLines = safeSplit(String(label), labelColWidth - 6);
 
     doc.setFont("helvetica", "normal");
-    const valueLines = doc.splitTextToSize(cleanVal, valueColWidth);
+    doc.setFontSize(8.5);
+    const valueLines = safeSplit(cleanVal, valueColWidth);
 
     const lineCount = Math.max(labelLines.length, valueLines.length);
-    const rowHeight = Math.max(7.2, lineCount * 4.5 + 3.5);
+    const rowHeight = Math.max(7.0, lineCount * 4.3 + 3.4);
 
     checkPageBreak(rowHeight + 2);
 
     if (bg) {
-      doc.setFillColor(248, 250, 252); // slate-50
-      doc.rect(margin, y - 1, contentWidth, rowHeight, "F");
+      doc.setFillColor(248, 250, 252);
+      doc.rect(margin, y - 0.5, contentWidth, rowHeight, "F");
     }
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
-    doc.setTextColor(71, 85, 105); // slate-600
-    doc.text(labelLines, margin + 2, y + 3.8);
+    doc.setFontSize(8.2);
+    doc.setTextColor(71, 85, 105);
+    doc.text(labelLines, margin + 2.5, y + 3.8);
 
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(15, 23, 42); // slate-900
+    doc.setFontSize(8.5);
+    doc.setTextColor(15, 23, 42);
     doc.text(valueLines, margin + labelColWidth, y + 3.8);
 
-    // Subtle bottom border
-    doc.setDrawColor(241, 245, 249);
+    doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.2);
     doc.line(
       margin,
-      y + rowHeight - 1,
+      y + rowHeight - 0.5,
       margin + contentWidth,
-      y + rowHeight - 1,
+      y + rowHeight - 0.5,
     );
 
     y += rowHeight;
   };
 
-  // Interactive Clickable Pills for Relations: Jumps to target entity page
+  // Interactive Clickable Pills for Relations: guaranteed inside box bounds
   const printRelationRow = (label, targetIds, bg = false) => {
     const validTargets = (targetIds || []).filter(Boolean);
     if (validTargets.length === 0) return;
 
-    const labelColWidth = 66;
+    const labelColWidth = 54;
     const valueColWidth = contentWidth - labelColWidth - 4;
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
-    const labelLines = doc.splitTextToSize(String(label), labelColWidth - 6);
+    doc.setFontSize(8.2);
+    const labelLines = safeSplit(String(label), labelColWidth - 6);
 
-    // Calculate pill layout
     const pills = [];
     let curX = margin + labelColWidth;
     let curYOffset = 0;
-    const pillHeight = 5.2;
+    const pillHeight = 5.4;
     const pillPaddingX = 2.5;
+    const maxPillTextW = valueColWidth - pillPaddingX * 2;
 
     validTargets.forEach((targetId) => {
       const info = entityRegistry[targetId] || {};
-      let pillText = `-> ${targetId}`;
+      let rawPillText = `-> ${targetId}`;
       let badgeType = "default";
 
       if (info.type === "HeritageAsset") {
@@ -1057,29 +1138,33 @@ export function generatePdfReport(allData = {}, locale = "de") {
           info.name && info.name.length > 26
             ? info.name.substring(0, 24) + "…"
             : info.name || "";
-        pillText = `-> [HA] ${targetId}${shortName ? ` (${shortName})` : ""}`;
+        rawPillText = `-> [HA] ${targetId}${shortName ? ` (${shortName})` : ""}`;
         badgeType = "ha";
       } else if (info.type === "DigitalResource") {
-        if (info.subType === "master") {
-          pillText = `-> [Master 3D] ${targetId}`;
-          badgeType = "dr-master";
-        } else {
-          pillText = `-> [Realtime GLB] ${targetId}`;
-          badgeType = "dr-deriv";
-        }
+        const drRec = info.record || {};
+        const drType = String(drRec.type || "").trim();
+        const tag =
+          info.subType === "master"
+            ? "Master"
+            : drType && drType !== "3D" && drType !== "3D-Modell"
+              ? drType
+              : "Derivat";
+        rawPillText = `-> [${tag}] ${targetId}`;
+        badgeType = info.subType === "master" ? "dr-master" : "dr-deriv";
       } else if (info.type === "Activity") {
-        pillText = `-> [DAP-Kampagne] ${targetId}`;
+        rawPillText = `-> [Aktivität] ${targetId}`;
         badgeType = "activity";
       }
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.5);
+      const pillText = truncateToWidth(rawPillText, maxPillTextW);
       const textWidth = doc.getTextWidth(pillText);
       const pillWidth = Math.min(valueColWidth, textWidth + pillPaddingX * 2);
 
       if (curX + pillWidth > margin + contentWidth) {
         curX = margin + labelColWidth;
-        curYOffset += pillHeight + 2;
+        curYOffset += pillHeight + 1.8;
       }
 
       pills.push({
@@ -1092,48 +1177,46 @@ export function generatePdfReport(allData = {}, locale = "de") {
         badgeType,
       });
 
-      curX += pillWidth + 2.5;
+      curX += pillWidth + 2.2;
     });
 
-    const contentBlockHeight = curYOffset + pillHeight + 3.5;
-    const labelHeight = labelLines.length * 4.2 + 2;
-    const totalRowHeight = Math.max(contentBlockHeight, labelHeight, 7.5);
+    const contentBlockHeight = curYOffset + pillHeight + 3.2;
+    const labelHeight = labelLines.length * 4.2 + 2.5;
+    const totalRowHeight = Math.max(contentBlockHeight, labelHeight, 7.8);
 
     checkPageBreak(totalRowHeight + 2);
     const actualY = y;
 
     if (bg) {
       doc.setFillColor(248, 250, 252);
-      doc.rect(margin, actualY - 1, contentWidth, totalRowHeight, "F");
+      doc.rect(margin, actualY - 0.5, contentWidth, totalRowHeight, "F");
     }
 
-    // Draw Label
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
+    doc.setFontSize(8.2);
     doc.setTextColor(71, 85, 105);
-    doc.text(labelLines, margin + 2, actualY + 3.2);
+    doc.text(labelLines, margin + 2.5, actualY + 3.8);
 
-    // Draw Pills
     pills.forEach((pill) => {
       const pillY = actualY + pill.yOffset + 1;
       const pillX = pill.x;
 
       if (pill.badgeType === "dr-master") {
-        doc.setFillColor(254, 243, 199); // amber-100
-        doc.setDrawColor(217, 119, 6); // amber-600
-        doc.setTextColor(180, 83, 9); // amber-700
+        doc.setFillColor(254, 243, 199);
+        doc.setDrawColor(217, 119, 6);
+        doc.setTextColor(180, 83, 9);
       } else if (pill.badgeType === "dr-deriv") {
-        doc.setFillColor(209, 250, 229); // emerald-100
-        doc.setDrawColor(16, 185, 129); // emerald-500
-        doc.setTextColor(4, 120, 87); // emerald-700
+        doc.setFillColor(209, 250, 229);
+        doc.setDrawColor(16, 185, 129);
+        doc.setTextColor(4, 120, 87);
       } else if (pill.badgeType === "ha") {
-        doc.setFillColor(224, 242, 254); // sky-100
-        doc.setDrawColor(14, 165, 233); // sky-500
-        doc.setTextColor(3, 105, 161); // sky-700
+        doc.setFillColor(224, 242, 254);
+        doc.setDrawColor(14, 165, 233);
+        doc.setTextColor(3, 105, 161);
       } else if (pill.badgeType === "activity") {
-        doc.setFillColor(238, 242, 255); // indigo-100
-        doc.setDrawColor(99, 102, 241); // indigo-500
-        doc.setTextColor(67, 56, 202); // indigo-700
+        doc.setFillColor(238, 242, 255);
+        doc.setDrawColor(99, 102, 241);
+        doc.setTextColor(67, 56, 202);
       } else {
         doc.setFillColor(241, 245, 249);
         doc.setDrawColor(203, 213, 225);
@@ -1145,9 +1228,8 @@ export function generatePdfReport(allData = {}, locale = "de") {
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.5);
-      doc.text(pill.text, pillX + pillPaddingX, pillY + 3.6);
+      doc.text(pill.text, pillX + pillPaddingX, pillY + 3.7);
 
-      // Register hotspot for click navigation
       linkHotspots.push({
         fromPage: doc.internal.getCurrentPageInfo().pageNumber,
         x: pillX,
@@ -1158,26 +1240,24 @@ export function generatePdfReport(allData = {}, locale = "de") {
       });
     });
 
-    // Border bottom
-    doc.setDrawColor(241, 245, 249);
+    doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.2);
     doc.line(
       margin,
-      actualY + totalRowHeight - 1,
+      actualY + totalRowHeight - 0.5,
       margin + contentWidth,
-      actualY + totalRowHeight - 1,
+      actualY + totalRowHeight - 0.5,
     );
 
     y += totalRowHeight;
   };
 
   // --- PAGE 1: TITLE BANNER ---
-  doc.setFillColor(30, 41, 59); // deep slate #1e293b
-  doc.roundedRect(margin, y, contentWidth, 26, 3, 3, "F");
+  doc.setFillColor(30, 41, 59);
+  doc.roundedRect(margin, y, contentWidth, 25, 3, 3, "F");
 
-  // Amber accent line
-  doc.setFillColor(217, 119, 6); // amber-600 #d97706
-  doc.roundedRect(margin, y + 24.5, contentWidth, 1.5, 0, 0, "F");
+  doc.setFillColor(217, 119, 6);
+  doc.roundedRect(margin, y + 23.5, contentWidth, 1.5, 0, 0, "F");
 
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
@@ -1192,16 +1272,16 @@ export function generatePdfReport(allData = {}, locale = "de") {
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
-  doc.setTextColor(224, 242, 254); // sky-100
+  doc.setTextColor(224, 242, 254);
   doc.text(
     isDe
-      ? "Museumsdokumentation • Digital Authenticity Profile (DAP 1–6) • CARARE 2.0.6"
-      : "Museum Documentation • Digital Authenticity Profile (DAP 1–6) • CARARE 2.0.6",
+      ? "Museumsdokumentation • Digital Authenticity Profile (DAP 1–5) • CARARE 2.0.6"
+      : "Museum Documentation • Digital Authenticity Profile (DAP 1–5) • CARARE 2.0.6",
     margin + 6,
-    y + 18,
+    y + 17.5,
   );
 
-  y += 31;
+  y += 30;
 
   // Overview Statistics Box
   const collections = allData.Collection || [];
@@ -1210,15 +1290,20 @@ export function generatePdfReport(allData = {}, locale = "de") {
   const activities = allData.Activity || [];
 
   const colPrimary = collections[0] || {};
+  const colContactOrg =
+    Array.isArray(colPrimary.contacts) && colPrimary.contacts[0]
+      ? colPrimary.contacts[0].organization || ""
+      : "";
   const institutionName = extractCleanText(
-    colPrimary.source || colPrimary.institution,
-    "Universität Bonn / SMB",
+    colPrimary["recordInformation.source"] ||
+      colPrimary.source ||
+      colPrimary.institution ||
+      colContactOrg,
+    "—",
   );
   const collectionTitle = extractCleanText(
-    colPrimary.title || colPrimary.name,
-    isDe
-      ? "Attische Meisterwerke der Antikensammlung"
-      : "Attic Masterpieces Collection",
+    colPrimary["appellation.name"] || colPrimary.title || colPrimary.name,
+    isDe ? "Unbenannte Sammlung" : "Untitled Collection",
   );
 
   const rawOverviewRows = [
@@ -1226,30 +1311,30 @@ export function generatePdfReport(allData = {}, locale = "de") {
     [isDe ? "Sammlung / Projekt" : "Collection / Project", collectionTitle],
     [
       isDe ? "Projektumfang" : "Project Scope",
-      `${heritageAssets.length} ${isDe ? "Kulturgüter" : "Heritage Assets"} • ${digitalResources.length} ${isDe ? "3D-Modelle" : "3D Models"} • ${activities.length} ${isDe ? "Digitalisierungskampagnen" : "Campaigns"}`,
+      `${collections.length} ${isDe ? "Sammlung" : "Collection"} • ${heritageAssets.length} ${isDe ? "Kulturgüter" : "Heritage Assets"} • ${digitalResources.length} ${isDe ? "Digitalisate" : "Digital Resources"} • ${activities.length} ${isDe ? "Aktivitäten" : "Activities"}`,
     ],
     [
       isDe ? "Archivstandard" : "Archival Standard",
-      "CARARE 2.0.6 XML (XSD-validiert) • BagIt RFC 8493 (SHA-256)",
+      "CARARE 2.0.6 XML (XSD) • BagIt RFC 8493 (SHA-256) • HECTOR / IPTC",
     ],
     [
       isDe ? "Paradata-Standard" : "Paradata Standard",
-      "Digital Authenticity Profile (DAP-1 bis DAP-6, HECTOR Vokabular)",
+      "Digital Authenticity Profile (DAP-1 bis DAP-5)",
     ],
     [
       isDe ? "Erstellungsdatum & Software" : "Generated On & Software",
-      `${now} • HERMES v0.1.6 (Heritage Metadata Entry System)`,
+      `${now} • HERMES v0.1.31 (Heritage Metadata Entry System)`,
     ],
   ];
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
+  doc.setFontSize(8.2);
 
   let totalOverviewHeight = 4;
   const processedOverviewRows = rawOverviewRows.map(([k, v]) => {
     const cleanText = extractCleanText(v, "—");
-    const vLines = doc.splitTextToSize(cleanText, contentWidth - 52);
-    const rowH = Math.max(6.0, vLines.length * 4.2 + 2.0);
+    const vLines = safeSplit(cleanText, contentWidth - 54);
+    const rowH = Math.max(6.2, vLines.length * 4.2 + 2.0);
     totalOverviewHeight += rowH;
     return { k: String(k), vLines, rowH };
   });
@@ -1262,51 +1347,113 @@ export function generatePdfReport(allData = {}, locale = "de") {
   y += 3.5;
   processedOverviewRows.forEach(({ k, vLines, rowH }) => {
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    doc.setFontSize(8.2);
     doc.setTextColor(71, 85, 105);
-    doc.text(k + ":", margin + 4, y + 3.0);
+    doc.text(k + ":", margin + 4, y + 3.2);
 
     doc.setFont("helvetica", "normal");
     doc.setTextColor(15, 23, 42);
-    doc.text(vLines, margin + 48, y + 3.0);
+    doc.text(vLines, margin + 50, y + 3.2);
     y += rowH;
   });
 
-  y += 5;
+  y += 6;
 
-  // Statement / Context box with generous padding so text never overflows
-  const statementStr = extractCleanText(colPrimary.statement, "");
-  if (statementStr && statementStr !== "—") {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    const statementLines = doc.splitTextToSize(statementStr, contentWidth - 10);
-    const stmtBoxH = statementLines.length * 4.4 + 12;
-    checkPageBreak(stmtBoxH + 4);
-
-    doc.setFillColor(241, 245, 249);
-    doc.setDrawColor(203, 213, 225);
-    doc.setLineWidth(0.3);
-    doc.roundedRect(margin, y, contentWidth, stmtBoxH, 1.5, 1.5, "FD");
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
-    doc.setTextColor(51, 65, 85);
-    doc.text(
-      isDe ? "Projektkontext / Leitbild:" : "Project Context / Rationale:",
-      margin + 4,
-      y + 5.6,
+  // --- CHAPTER 0: COLLECTION INFORMATION ---
+  if (collections.length > 0) {
+    printSectionHeader(
+      isDe
+        ? "0. Sammlung & Projektkontext (Collection Information)"
+        : "0. Collection Information & Project Context",
+      [15, 118, 110],
     );
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(30, 41, 59);
-    doc.text(statementLines, margin + 4, y + 9.5);
-    y += stmtBoxH + 4;
+    collections.forEach((col, idx) => {
+      const colId = getEntityId(col, `COL-${idx + 1}`);
+      const colName = getEntityName(col, collectionTitle);
+      printEntityHeader(
+        `${idx + 1}. ${colName} [ID: ${colId}]`,
+        isDe ? "SAMMLUNG" : "COLLECTION",
+        {
+          fill: [240, 253, 250],
+          border: [153, 246, 228],
+          accent: [15, 118, 110],
+          titleColor: [17, 94, 89],
+          badgeColor: [15, 118, 110],
+        },
+      );
+
+      printFieldRow(
+        isDe ? "Datenanbieter / Institution" : "Data Provider",
+        col["recordInformation.source"] || col.source || institutionName,
+        true,
+      );
+      printFieldRow(
+        isDe ? "Sammlungs-ID (Appellation)" : "Collection ID",
+        col["appellation.id"],
+        false,
+      );
+      printFieldRow(
+        isDe ? "Beschreibung" : "Description",
+        col.description,
+        true,
+      );
+      printFieldRow(
+        isDe ? "Leitbild / Statement" : "Statement",
+        col.statement,
+        false,
+      );
+      if (Array.isArray(col.keywords) && col.keywords.length > 0) {
+        printFieldRow(
+          isDe ? "Schlagwörter (HECTOR)" : "Keywords",
+          formatMuseumTerm(col.keywords),
+          true,
+        );
+      }
+      if (Array.isArray(col.contacts) && col.contacts.length > 0) {
+        const contactSummary = col.contacts
+          .map((c) =>
+            [
+              c.name,
+              c.role ? `(${c.role})` : "",
+              c.organization,
+              c.email,
+            ]
+              .filter(Boolean)
+              .join(" "),
+          )
+          .filter(Boolean)
+          .join("; ");
+        printFieldRow(isDe ? "Kontakt" : "Contacts", contactSummary, false);
+      }
+      const colRights = [
+        col["rights.licence"] ? `Lizenz: ${col["rights.licence"]}` : "",
+        col["rights.copyrightCreditLine"]
+          ? `Credit: ${col["rights.copyrightCreditLine"]}`
+          : "",
+        col["rights.accessRights"]
+          ? `Zugang: ${col["rights.accessRights"]}`
+          : "",
+        col["rights.reproductionRights"]
+          ? `Reproduktion: ${col["rights.reproductionRights"]}`
+          : "",
+        col["recordInformation.metadataRights"]
+          ? `Metadaten: ${col["recordInformation.metadataRights"]}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" • ");
+      if (colRights) {
+        printFieldRow(isDe ? "Rechte & Lizenzen" : "Rights & Licence", colRights, true);
+      }
+      y += 3;
+    });
   }
 
   // --- CHAPTER 1: HERITAGE ASSETS (PHYSICAL ASSETS) ---
   printSectionHeader(
     isDe
-      ? "1. Dokumentierte Kulturgüter (Museumsobjekte)"
+      ? "1. Dokumentierte Kulturgüter (Heritage Assets)"
       : "1. Documented Heritage Assets (Museum Objects)",
     [3, 105, 161],
   );
@@ -1320,109 +1467,175 @@ export function generatePdfReport(allData = {}, locale = "de") {
     heritageAssets.forEach((ha, idx) => {
       const recId = getEntityId(ha, `HA-${idx + 1}`);
       const name = getEntityName(ha, `Kulturgut ${idx + 1}`);
+      const invId = extractCleanText(ha["appellation.id"], "");
       const type = formatMuseumTerm(
-        ha.generalType || ha.monumentType || ha.type || "Artefact",
+        ha["characters.monumentType"] ||
+          ha.monumentType ||
+          ha.generalType ||
+          ha.type ||
+          "Artefact",
       );
-      const materials = formatMuseumTerm(ha.materials || ha.material);
-      const period = formatMuseumTerm(ha.periodName || ha.temporal || ha.epoch);
-      const startDate =
-        ha["characters.temporal.timeSpan.startDate"] || ha.startDate || "";
-      const endDate =
-        ha["characters.temporal.timeSpan.endDate"] || ha.endDate || "";
-      const loc = ha["spatial.locationSet.namedLocation"] || ha.location || "";
+      const materials = formatMuseumTerm(
+        ha["characters.materials"] || ha.materials || ha.material,
+      );
+
+      // Temporal array support (characters.temporal)
+      let temporalText = "";
+      const tempArr = Array.isArray(ha["characters.temporal"])
+        ? ha["characters.temporal"]
+        : Array.isArray(ha.temporal)
+          ? ha.temporal
+          : [];
+      if (tempArr.length > 0) {
+        temporalText = tempArr
+          .map((t) => {
+            const p = formatSingleMuseumTerm(t.periodName || t.displayDate || "");
+            const s = t["timeSpan.startDate"] || t.startDate || "";
+            const e = t["timeSpan.endDate"] || t.endDate || "";
+            const span = s || e ? ` (${s} bis ${e})` : "";
+            return `${p !== "—" ? p : ""}${span}`.trim();
+          })
+          .filter(Boolean)
+          .join("; ");
+      } else {
+        const period = formatMuseumTerm(ha.periodName || ha.epoch);
+        const startDate =
+          ha["characters.temporal.timeSpan.startDate"] || ha.startDate || "";
+        const endDate =
+          ha["characters.temporal.timeSpan.endDate"] || ha.endDate || "";
+        if (period !== "—" || startDate || endDate) {
+          temporalText = `${period !== "—" ? period : ""}${startDate || endDate ? ` (${startDate} bis ${endDate})` : ""}`.trim();
+        }
+      }
+
+      // Dimensions array support (characters.dimensions)
+      const dimArr = Array.isArray(ha["characters.dimensions"])
+        ? ha["characters.dimensions"]
+        : [];
+      const dimText = dimArr
+        .map((d) =>
+          [
+            d.type ? `${d.type}:` : "",
+            d.dimension,
+            d.value,
+            d.unit,
+          ]
+            .filter(Boolean)
+            .join(" "),
+        )
+        .filter(Boolean)
+        .join("; ");
+
+      const loc =
+        ha["spatial.locationSet.namedLocation"] ||
+        ha["spatial.namedLocation"] ||
+        ha.location ||
+        "";
       const town = ha["spatial.locationSet.address.townOrCity"] || "";
       const country = ha["spatial.locationSet.address.country"] || "";
       const repo = formatMuseumTerm(ha.repositoryLocation);
-      const desc = ha.description || "";
-      const condition = ha.condition || ha["conditions.conditionText"] || "";
+      const desc = extractCleanText(
+        ha["characters.description"] || ha.description,
+        "",
+      );
+      const condition = extractCleanText(
+        ha["characters.condition"] ||
+          ha.condition ||
+          ha["conditions.conditionText"],
+        "",
+      );
+      const inscription = extractCleanText(ha["characters.inscription"], "");
 
       const linkedDrs = Array.from(relations.haToDr[recId] || []);
       const linkedActs = Array.from(relations.haToAct[recId] || []);
 
       entityPageMap[recId] = doc.internal.getCurrentPageInfo().pageNumber;
 
-      checkPageBreak(14);
-
-      // Card Header
-      doc.setFillColor(240, 249, 255); // sky-50
-      doc.setDrawColor(186, 230, 253); // sky-200
-      doc.setLineWidth(0.3);
-      doc.roundedRect(margin, y, contentWidth, 8.5, 1, 1, "FD");
-
-      doc.setFillColor(3, 105, 161); // sky-700
-      doc.roundedRect(margin, y, 2.5, 8.5, 0.5, 0.5, "F");
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
-      doc.setTextColor(3, 105, 161);
-      doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, {
-        maxWidth: contentWidth - 52,
-      });
-
-      // Badge
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(7);
-      doc.setTextColor(14, 116, 144);
-      doc.text(
-        isDe ? "MUSEUMSOBJEKT" : "HERITAGE ASSET",
-        pageWidth - margin - 3,
-        y + 5,
-        { align: "right" },
+      printEntityHeader(
+        `${idx + 1}. ${name} [ID: ${recId}]`,
+        isDe ? "KULTURGUT" : "HERITAGE ASSET",
+        {
+          fill: [240, 249, 255],
+          border: [186, 230, 253],
+          accent: [3, 105, 161],
+          titleColor: [3, 105, 161],
+          badgeColor: [14, 116, 144],
+        },
       );
-      y += 10.5;
 
+      if (invId && invId !== "—" && invId !== recId)
+        printFieldRow(isDe ? "Inventar- / Objekt-ID" : "Asset ID", invId, false);
       printFieldRow(isDe ? "Objektart / Typologie" : "Typology", type, true);
       printFieldRow(
-        isDe ? "Material & Technik" : "Materials",
+        isDe ? "Material" : "Materials",
         materials,
         false,
       );
-      printFieldRow(
-        isDe ? "Datierung & Epoche" : "Dating & Period",
-        `${period}${startDate || endDate ? ` (${startDate} bis ${endDate})` : ""}`,
-        true,
-      );
+      if (temporalText)
+        printFieldRow(
+          isDe ? "Datierung & Epoche" : "Dating & Period",
+          temporalText,
+          true,
+        );
+      if (dimText)
+        printFieldRow(isDe ? "Abmessungen" : "Dimensions", dimText, false);
       if (repo && repo !== "—")
-        printFieldRow(isDe ? "Aufbewahrungsort" : "Repository", repo, false);
+        printFieldRow(
+          isDe ? "Standort / Sammlung" : "Repository",
+          repo,
+          true,
+        );
       if (loc || town)
         printFieldRow(
           isDe ? "Fundort / Herkunft" : "Location / Provenance",
           `${loc}${town ? `, ${town}` : ""}${country ? ` (${country})` : ""}`,
-          true,
+          false,
         );
       if (condition && condition !== "—")
         printFieldRow(
-          isDe ? "Erhaltungszustand" : "Condition Assessment",
+          isDe ? "Erhaltungszustand" : "Condition",
           condition,
-          false,
+          true,
         );
+      if (inscription && inscription !== "—")
+        printFieldRow(isDe ? "Inschrift" : "Inscription", inscription, false);
       if (desc && desc !== "—")
         printFieldRow(isDe ? "Beschreibung" : "Description", desc, true);
 
-      // Prominent Relations
+      const haRights = [
+        ha["rights.licence"] ? `Lizenz: ${ha["rights.licence"]}` : "",
+        ha["rights.copyrightCreditLine"]
+          ? `Credit: ${ha["rights.copyrightCreditLine"]}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" • ");
+      if (haRights)
+        printFieldRow(isDe ? "Rechte & Lizenz" : "Rights", haRights, false);
+
       if (linkedDrs.length > 0) {
         printRelationRow(
-          isDe ? "Zugehörige 3D-Digitalisate" : "3D Representations",
+          isDe ? "Zugehörige Digitalisate" : "Digital Representations",
           linkedDrs,
-          false,
+          true,
         );
       }
       if (linkedActs.length > 0) {
         printRelationRow(
           isDe ? "Digitalisierungskampagne" : "Digitisation Campaign",
           linkedActs,
-          true,
+          false,
         );
       }
       y += 3;
     });
   }
 
-  // --- KAPITEL 2: DIGITALE 3D-RESSOURCEN (MASTER VS DERIVAT) ---
+  // --- KAPITEL 2: DIGITALE RESSOURCEN (MASTER & DERIVATE) ---
   printSectionHeader(
     isDe
-      ? "2. Digitale 3D-Ressourcen (Master & Realtime-Derivate)"
-      : "2. Digital 3D Resources (Master & Derivatives)",
+      ? "2. Digitale Ressourcen (Master & Derivate)"
+      : "2. Digital Resources (Master & Derivatives)",
     [180, 83, 9],
   );
 
@@ -1436,18 +1649,30 @@ export function generatePdfReport(allData = {}, locale = "de") {
       const recId = getEntityId(dr, `DR-${idx + 1}`);
       const info = entityRegistry[recId] || {};
       const isMaster = info.subType === "master";
+      const drTypeLabel = extractCleanText(dr.type, "3D");
 
       const name = extractCleanText(
         dr["appellation.name"] || info.name,
-        isMaster ? "3D Master Model" : "3D Realtime Derivative",
+        isMaster ? "3D Master Model" : "Digital Derivative",
       );
       const format =
         dr.format || (isMaster ? "model/obj" : "model/gltf-binary");
-      const extent = dr.extent || "—";
-      const formatDetails = dr.formatDetails || "";
-      const object = dr.object || "";
-      const licence = dr["rights.licence"] || "CC BY 4.0";
+      const extentList = Array.isArray(dr.extentList) ? dr.extentList : [];
+      const extentDisplay =
+        extentList.length > 0
+          ? extentList.join(" • ")
+          : extractCleanText(dr.extent, "—");
+      const formatDetails = extractCleanText(dr.formatDetails, "");
+      const object = extractCleanText(dr.object, "");
+      const drDesc = extractCleanText(dr.description, "");
+      const drNote = Array.isArray(dr.note)
+        ? dr.note.filter(Boolean).join(" • ")
+        : extractCleanText(dr.note, "");
+      const licence = dr["rights.licence"] || "";
       const credit = dr["rights.copyrightCreditLine"] || "";
+      const acc = dr.accuracy || {};
+      const res = dr.resolution || {};
+      const swList = Array.isArray(dr.softwareList) ? dr.softwareList : [];
 
       const parentHaList = Array.from(relations.drToHa[recId] || []);
       const masterList = Array.from(relations.drToMaster[recId] || []);
@@ -1456,115 +1681,120 @@ export function generatePdfReport(allData = {}, locale = "de") {
 
       entityPageMap[recId] = doc.internal.getCurrentPageInfo().pageNumber;
 
-      checkPageBreak(14);
+      const badgeLabel = isMaster
+        ? isDe
+          ? "ARCHIVMASTER"
+          : "ARCHIVAL MASTER"
+        : isDe
+          ? `DERIVAT (${drTypeLabel.toUpperCase()})`
+          : `DERIVATIVE (${drTypeLabel.toUpperCase()})`;
 
-      if (isMaster) {
-        doc.setFillColor(254, 243, 199); // amber-100
-        doc.setDrawColor(245, 158, 11); // amber-500
-        doc.setLineWidth(0.3);
-        doc.roundedRect(margin, y, contentWidth, 8.5, 1, 1, "FD");
+      printEntityHeader(
+        `${idx + 1}. ${name} [ID: ${recId}]`,
+        badgeLabel,
+        isMaster
+          ? {
+              fill: [254, 243, 199],
+              border: [245, 158, 11],
+              accent: [217, 119, 6],
+              titleColor: [180, 83, 9],
+              badgeColor: [180, 83, 9],
+            }
+          : {
+              fill: [209, 250, 229],
+              border: [16, 185, 129],
+              accent: [5, 150, 105],
+              titleColor: [4, 120, 87],
+              badgeColor: [4, 120, 87],
+            },
+      );
 
-        doc.setFillColor(217, 119, 6); // amber-600
-        doc.roundedRect(margin, y, 2.5, 8.5, 0.5, 0.5, "F");
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9.5);
-        doc.setTextColor(180, 83, 9);
-        doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, {
-          maxWidth: contentWidth - 52,
-        });
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(7);
-        doc.setTextColor(180, 83, 9);
-        doc.text(
-          isDe ? "3D-MASTER (ARCHIVQUALITÄT)" : "3D MASTER (ARCHIVAL)",
-          pageWidth - margin - 3,
-          y + 5,
-          { align: "right" },
+      printFieldRow(
+        isDe ? "Typ & Format" : "Type & Format",
+        `${drTypeLabel} • ${format}${dr.createdOn ? ` • Erstellt: ${dr.createdOn}` : ""}`,
+        true,
+      );
+      if (extentDisplay && extentDisplay !== "—")
+        printFieldRow(
+          isDe ? "Umfang & Geometrie" : "Extent & Geometry",
+          extentDisplay,
+          false,
         );
-      } else {
-        doc.setFillColor(209, 250, 229); // emerald-100
-        doc.setDrawColor(16, 185, 129); // emerald-500
-        doc.setLineWidth(0.3);
-        doc.roundedRect(margin, y, contentWidth, 8.5, 1, 1, "FD");
-
-        doc.setFillColor(5, 150, 105); // emerald-600
-        doc.roundedRect(margin, y, 2.5, 8.5, 0.5, 0.5, "F");
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9.5);
-        doc.setTextColor(4, 120, 87);
-        doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, {
-          maxWidth: contentWidth - 52,
-        });
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(7);
-        doc.setTextColor(4, 120, 87);
-        doc.text(
-          isDe ? "WEB REALTIME-DERIVAT (GLB)" : "WEB REALTIME ASSET (GLB)",
-          pageWidth - margin - 3,
-          y + 5,
-          { align: "right" },
+      if (object && object !== "—")
+        printFieldRow(
+          isDe ? "Datei / URI" : "File / URI",
+          object,
+          true,
+        );
+      const metrologyBits = [
+        res.spatialResolution ? `Räuml. Auflösung: ${res.spatialResolution}` : "",
+        res.textureResolution ? `Textur: ${res.textureResolution}` : "",
+        res.gsd ? `GSD: ${res.gsd}` : "",
+        acc.pointAccuracy ? `Punktgenauigkeit: ${acc.pointAccuracy}` : "",
+        acc.registrationRmse ? `RMSE: ${acc.registrationRmse}` : "",
+        acc.calibrationMethod ? `Kalibrierung: ${acc.calibrationMethod}` : "",
+      ]
+        .filter(Boolean)
+        .join(" • ");
+      if (metrologyBits)
+        printFieldRow(
+          isDe ? "Auflösung & Metrologie" : "Resolution & Metrology",
+          metrologyBits,
+          false,
+        );
+      if (swList.length > 0) {
+        const swText = swList
+          .map(
+            (s) =>
+              `${s.name}${s.version ? ` v${s.version}` : ""}${s.role ? ` (${s.role})` : ""}`,
+          )
+          .join("; ");
+        printFieldRow(isDe ? "Software" : "Software", swText, true);
+      }
+      if (formatDetails && formatDetails !== "—")
+        printFieldRow(
+          isDe ? "Technische Details" : "Technical Details",
+          formatDetails,
+          false,
+        );
+      if (drDesc && drDesc !== "—")
+        printFieldRow(isDe ? "Beschreibung" : "Description", drDesc, true);
+      if (drNote && drNote !== "—")
+        printFieldRow(isDe ? "Hinweise" : "Notes", drNote, false);
+      if (licence || credit) {
+        printFieldRow(
+          isDe ? "Rechte & Lizenz" : "Licence & Rights",
+          `${licence || "—"}${credit ? ` • ${credit}` : ""}`,
+          true,
         );
       }
 
-      y += 10.5;
-
-      // Concisely combine format & extent without repeating
-      const formatDisplay = `${isMaster ? (isDe ? "Archival Master (High-Poly)" : "Archival Master") : isDe ? "Web Realtime Asset (GLB)" : "Web Realtime Asset"} • Format: ${format}${extent && extent !== "—" ? ` • Umfang: ${extent}` : ""}`;
-      printFieldRow(
-        isDe ? "Format & Modelltyp" : "Format & Type",
-        formatDisplay,
-        true,
-      );
-
-      if (object)
-        printFieldRow(
-          isDe ? "Datei / Master-Objekt" : "File Name",
-          object,
-          false,
-        );
-      if (formatDetails && formatDetails !== "—")
-        printFieldRow(
-          isDe ? "3D-Parameter & Pipeline" : "3D Specs & Pipeline",
-          formatDetails,
-          true,
-        );
-      printFieldRow(
-        isDe ? "Nutzungsrechte & Lizenz" : "Licence & Rights",
-        `${licence}${credit ? ` • ${credit}` : ""}`,
-        false,
-      );
-
-      // Relational Lineage
       if (parentHaList.length > 0) {
         printRelationRow(
           isDe ? "Repräsentiertes Kulturgut" : "Represented Asset",
           parentHaList,
-          true,
+          false,
         );
       }
       if (!isMaster && masterList.length > 0) {
         printRelationRow(
-          isDe ? "Ursprung (3D Master)" : "Source Master File",
+          isDe ? "Ursprung (Archivmaster)" : "Source Master File",
           masterList,
-          false,
+          true,
         );
       }
       if (isMaster && derivList.length > 0) {
         printRelationRow(
-          isDe ? "Abgeleitete Web-Modelle" : "Derived Realtime Assets",
+          isDe ? "Abgeleitete Derivate" : "Derived Assets",
           derivList,
-          false,
+          true,
         );
       }
       if (linkedActs.length > 0) {
         printRelationRow(
-          isDe ? "Erzeugende Kampagne" : "Digitisation Campaign",
+          isDe ? "Erzeugende Aktivität" : "Digitisation Activity",
           linkedActs,
-          true,
+          false,
         );
       }
 
@@ -1572,12 +1802,11 @@ export function generatePdfReport(allData = {}, locale = "de") {
     });
   }
 
-  // --- CHAPTER 3: DIGITISATION & AUTHENTICITY PROTOCOL (DAP 1–6) ---
-  // Unified, coherent dossier: combines campaign metadata and the 6 DAP authenticity steps
+  // --- CHAPTER 3: ACTIVITIES, WORKFLOW STEPS (consistsOf) & DAP 1–5 ---
   printSectionHeader(
     isDe
-      ? "3. Digitalisierungs- & Authentizitätsprotokoll (DAP 1–6)"
-      : "3. Digitisation & Authenticity Protocol (DAP 1–6)",
+      ? "3. Aktivitäten, Arbeitsschritte & Authentizitätsprofil (DAP 1–5)"
+      : "3. Activities, Workflow Steps & Authenticity Protocol (DAP 1–5)",
     [67, 56, 202],
   );
 
@@ -1624,25 +1853,24 @@ export function generatePdfReport(allData = {}, locale = "de") {
     },
     {
       id: "DAP-5",
-      phase: "PRINCIPLES",
-      name: isDe
-        ? "DAP-5: Wissenschaftliche Kriterien & Leitlinien"
-        : "DAP-5: Scholarly Rationale & Charters",
-      question: isDe
-        ? "Welche wissenschaftlichen Kriterien und Standards (z.B. London Charter) leiteten das Vorhaben?"
-        : "What principles or charters guided the documentation?",
-    },
-    {
-      id: "DAP-6",
       phase: "EVALUATION",
       name: isDe
-        ? "DAP-6: Abbildungsbilanz & Gesamturteil"
-        : "DAP-6: Balance of Evidence & Verdict",
+        ? "DAP-5: Abbildungsbilanz & Gesamturteil"
+        : "DAP-5: Balance of Evidence & Verdict",
       question: isDe
         ? "Wie verlässlich bildet das 3D-Modell die Realität ab (Soll-Ist-Abweichung, Einschränkungen)?"
         : "How reliably does the 3D asset represent reality?",
     },
   ];
+
+  const isDapItem = (co) =>
+    Boolean(
+      co &&
+        (co.isDap ||
+          co.dapId ||
+          String(co["methods#termUID"] || "").includes("/dap/DAP-") ||
+          String(co.hadSpecificPurpose || "").includes("Digital Authenticity Profile")),
+    );
 
   if (activities.length === 0) {
     printFieldRow(
@@ -1660,44 +1888,31 @@ export function generatePdfReport(allData = {}, locale = "de") {
         act.eventType || act.activityType || "3D-Digitalisierung",
       );
       const date = getActivityDate(act);
-      const purpose = act.hasGeneralPurpose || act.description || "";
+      const purpose = extractCleanText(
+        act.hasGeneralPurpose || act.description,
+        "",
+      );
 
       const linkedHaList = Array.from(relations.actToHa[recId] || []);
       const linkedDrList = Array.from(relations.actToDr[recId] || []);
       const consistsOfList = Array.isArray(act.consistsOf)
         ? act.consistsOf
         : [];
+      const regularSteps = consistsOfList.filter((co) => !isDapItem(co));
 
       entityPageMap[recId] = doc.internal.getCurrentPageInfo().pageNumber;
 
-      checkPageBreak(18);
-
-      // Campaign Header Box
-      doc.setFillColor(238, 242, 255); // indigo-50
-      doc.setDrawColor(199, 210, 254); // indigo-200
-      doc.setLineWidth(0.3);
-      doc.roundedRect(margin, y, contentWidth, 7.5, 1, 1, "FD");
-
-      doc.setFillColor(79, 70, 229); // indigo-600
-      doc.roundedRect(margin, y, 2.5, 7.5, 0.5, 0.5, "F");
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
-      doc.setTextColor(67, 56, 202);
-      doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, {
-        maxWidth: contentWidth - 52,
-      });
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(7);
-      doc.setTextColor(79, 70, 229);
-      doc.text(
-        isDe ? "DAP-KAMPAGNE" : "DAP CAMPAIGN",
-        pageWidth - margin - 3,
-        y + 5,
-        { align: "right" },
+      printEntityHeader(
+        `${idx + 1}. ${name} [ID: ${recId}]`,
+        isDe ? "AKTIVITÄT" : "ACTIVITY",
+        {
+          fill: [238, 242, 255],
+          border: [199, 210, 254],
+          accent: [79, 70, 229],
+          titleColor: [67, 56, 202],
+          badgeColor: [79, 70, 229],
+        },
       );
-      y += 10.5;
 
       printFieldRow(
         isDe ? "Verfahren & Aktivitätstyp" : "Method & Event Type",
@@ -1716,7 +1931,6 @@ export function generatePdfReport(allData = {}, locale = "de") {
           true,
         );
 
-      // Actors
       const actors = Array.isArray(act.actors) ? act.actors : [];
       if (actors.length > 0) {
         const actorSummary = actors
@@ -1732,7 +1946,6 @@ export function generatePdfReport(allData = {}, locale = "de") {
         );
       }
 
-      // Jump links to target objects and models
       if (linkedHaList.length > 0) {
         printRelationRow(
           isDe ? "Digitalisiertes Kulturgut" : "Target Heritage Asset",
@@ -1742,20 +1955,87 @@ export function generatePdfReport(allData = {}, locale = "de") {
       }
       if (linkedDrList.length > 0) {
         printRelationRow(
-          isDe ? "Erzeugte 3D-Modelle" : "Generated 3D Models",
+          isDe ? "Erzeugte Digitalisate" : "Generated Digital Resources",
           linkedDrList,
           false,
         );
       }
 
-      // Render the 6 DAP authenticity dimensions directly inside this campaign
-      const activeDaps = dapDefs.filter((def) => {
-        return consistsOfList.some((co) => {
-          const m = String(co.methods || "");
-          const p = String(co.hadSpecificPurpose || "");
-          return m.includes(def.id) || p.includes(def.id);
+      // Render regular consistsOf work steps (SfM, SLS, Post-Processing, AI)
+      if (regularSteps.length > 0) {
+        y += 2.5;
+        checkPageBreak(12);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8.5);
+        doc.setTextColor(51, 65, 85);
+        doc.text(
+          isDe
+            ? `Durchgeführte Arbeitsschritte (${regularSteps.length}):`
+            : `Workflow Sub-Steps (${regularSteps.length}):`,
+          margin + 2,
+          y + 3,
+        );
+        y += 6;
+
+        regularSteps.forEach((step, sIdx) => {
+          const stepTitle = `${isDe ? "Schritt" : "Step"} #${sIdx + 1}: ${extractCleanText(step.hadSpecificPurpose || step.methods, isDe ? "Arbeitsschritt" : "Step")}`;
+          const stepSpan =
+            step.startDate || step.endDate
+              ? `${step.startDate || ""}${step.endDate ? ` – ${step.endDate}` : ""}`
+              : "";
+          printEntityHeader(stepTitle, stepSpan || "CONSISTS OF", {
+            fill: [248, 250, 252],
+            border: [203, 213, 225],
+            accent: [100, 116, 139],
+            titleColor: [30, 41, 59],
+            badgeColor: [100, 116, 139],
+          });
+
+          if (step.methods)
+            printFieldRow(
+              isDe ? "Methoden" : "Methods",
+              extractCleanText(step.methods, "—"),
+              true,
+            );
+          if (step.techniques)
+            printFieldRow(
+              isDe ? "Techniken (inkl. IPTC)" : "Techniques",
+              extractCleanText(step.techniques, "—"),
+              false,
+            );
+          if (step.materials)
+            printFieldRow(
+              isDe ? "Materialien / Eingaben" : "Materials / Inputs",
+              extractCleanText(step.materials, "—"),
+              true,
+            );
+          if (step.equipment)
+            printFieldRow(
+              isDe ? "Ausrüstung & KI-Modell" : "Equipment & AI Model",
+              extractCleanText(step.equipment, "—"),
+              false,
+            );
+          y += 1.5;
         });
-      });
+      }
+
+      // Render the 5 DAP authenticity dimensions
+      const activeDaps = dapDefs
+        .map((def) => {
+          const match = consistsOfList.find((co) => {
+            const uid = String(co["methods#termUID"] || "");
+            const p = String(co.hadSpecificPurpose || "");
+            const m = String(co.methods || "");
+            return (
+              co.dapId === def.id ||
+              uid.endsWith(`/${def.id}`) ||
+              p.includes(def.id) ||
+              m.includes(def.id)
+            );
+          });
+          return match ? { def, match } : null;
+        })
+        .filter(Boolean);
 
       if (activeDaps.length > 0) {
         y += 2;
@@ -1766,76 +2046,65 @@ export function generatePdfReport(allData = {}, locale = "de") {
         doc.setTextColor(51, 65, 85);
         doc.text(
           isDe
-            ? "Paradata-Dimensionen (Digital Authenticity Profile DAP-1 bis DAP-6):"
-            : "Paradata Dimensions (Digital Authenticity Profile DAP-1 to DAP-6):",
+            ? "Digital Authenticity Profile (DAP-1 bis DAP-5):"
+            : "Digital Authenticity Profile (DAP-1 to DAP-5):",
           margin + 2,
           y + 3,
         );
         y += 6;
 
-        activeDaps.forEach((def) => {
-          const match = consistsOfList.find((co) => {
-            const m = String(co.methods || "");
-            const p = String(co.hadSpecificPurpose || "");
-            return m.includes(def.id) || p.includes(def.id);
-          });
-
-          const content =
-            match.techniques ||
-            match.materials ||
-            (match.hadSpecificPurpose
-              ? match.hadSpecificPurpose.split(":").slice(1).join(":").trim()
-              : "") ||
+        activeDaps.forEach(({ def, match }) => {
+          const answer =
+            extractCleanText(match.methods, "") ||
+            extractCleanText(match.techniques, "") ||
+            extractCleanText(match.materials, "") ||
             "—";
-          const equipment = match.equipment || "";
+          const equipment = extractCleanText(match.equipment, "");
 
-          checkPageBreak(20);
+          checkPageBreak(14);
+          doc.setFillColor(248, 250, 252);
+          doc.setDrawColor(226, 232, 240);
+          doc.roundedRect(margin, y, contentWidth, 6.2, 1, 1, "FD");
 
-          // DAP Dimension Header Bar (Clean, no raw http:// URLs)
-          doc.setFillColor(248, 250, 252); // slate-50
-          doc.setDrawColor(226, 232, 240); // slate-200
-          doc.roundedRect(margin, y, contentWidth, 6, 1, 1, "FD");
-
-          doc.setFillColor(2, 132, 199); // sky-600
-          doc.roundedRect(margin, y, 2, 6, 0.5, 0.5, "F");
+          doc.setFillColor(2, 132, 199);
+          doc.roundedRect(margin, y, 2, 6.2, 0.5, 0.5, "F");
 
           doc.setFont("helvetica", "bold");
           doc.setFontSize(8);
           doc.setTextColor(15, 23, 42);
-          doc.text(def.name, margin + 4, y + 4.2);
+          doc.text(def.name, margin + 4, y + 4.3);
 
           doc.setFont("helvetica", "bold");
           doc.setFontSize(7);
           doc.setTextColor(100, 116, 139);
-          doc.text(`[${def.phase}]`, pageWidth - margin - 2, y + 4.2, {
+          doc.text(`[${def.phase}]`, pageWidth - margin - 2, y + 4.3, {
             align: "right",
           });
-          y += 7.5;
+          y += 7.2;
 
-          // Question in soft callout box
           doc.setFont("helvetica", "italic");
           doc.setFontSize(7.5);
           doc.setTextColor(100, 116, 139);
-          const qLines = doc.splitTextToSize(
-            `Frage: ${def.question}`,
+          const qLines = safeSplit(
+            `${isDe ? "Leitfrage" : "Question"}: ${def.question}`,
             contentWidth - 8,
           );
-          const qBoxHeight = qLines.length * 4.0 + 4.5;
+          const qBoxHeight = qLines.length * 3.9 + 4.2;
+          checkPageBreak(qBoxHeight + 10);
 
           doc.setFillColor(248, 250, 252);
-          doc.rect(margin + 1, y - 1, contentWidth - 2, qBoxHeight, "F");
+          doc.rect(margin + 1, y - 0.5, contentWidth - 2, qBoxHeight, "F");
           doc.text(qLines, margin + 4, y + 3.2);
-          y += qBoxHeight + 2;
+          y += qBoxHeight + 1.5;
 
-          // Finding & Method
           printFieldRow(
-            isDe ? "Befund & Methode" : "Finding & Method",
-            formatSingleMuseumTerm(content),
+            isDe ? "Dokumentation" : "Documentation",
+            answer,
             true,
           );
-          if (equipment) {
+          if (equipment && equipment !== "—") {
             printFieldRow(
-              isDe ? "Eingesetzte Geräte & Software" : "Hardware / Pipeline",
+              isDe ? "Geräte & Software" : "Equipment & Software",
               equipment,
               false,
             );
@@ -1851,7 +2120,6 @@ export function generatePdfReport(allData = {}, locale = "de") {
   // --- FINAL PASS: JUMP LINKS & FOOTER (Seite X von Y) ---
   const totalPages = doc.getNumberOfPages();
 
-  // 1. Resolve all link hotspots to target pages
   linkHotspots.forEach((spot) => {
     const targetPage = entityPageMap[spot.targetId];
     if (targetPage) {
@@ -1860,7 +2128,6 @@ export function generatePdfReport(allData = {}, locale = "de") {
     }
   });
 
-  // 2. Draw standard archival footers
   for (let p = 1; p <= totalPages; p++) {
     doc.setPage(p);
     doc.setFont("helvetica", "normal");
@@ -1872,7 +2139,7 @@ export function generatePdfReport(allData = {}, locale = "de") {
     doc.line(margin, pageHeight - 12, pageWidth - margin, pageHeight - 12);
 
     doc.text(
-      "HERMES v0.1.6 • Heritage Metadata Entry System • BCDH Universität Bonn",
+      "HERMES v0.1.31 • Heritage Metadata Entry System • BCDH Universität Bonn",
       margin,
       pageHeight - 8,
     );

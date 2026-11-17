@@ -2912,8 +2912,29 @@ const syncStructuredFormFields = () => {
   props.form["extentList"] = [...computedRepeatedExtents.value];
 };
 
+const resetLocal3dFields = () => {
+  polygonCount.value = "";
+  vertexCount.value = "";
+  meshCategory.value = "";
+  textureResolution.value = "";
+  selectedMaps.value = [];
+  accuracyPoint.value = "";
+  accuracyRmse.value = "";
+  accuracyVolumetric.value = "";
+  accuracyCalibration.value = "";
+  resolutionSpatial.value = "";
+  softwareList.value = [];
+  fileSizeValue.value = "";
+  photoImageCount.value = "";
+  photoGsd.value = "";
+  photoSensor.value = "";
+  slsAccuracy.value = "";
+  tlsPositions.value = "";
+};
+
 const loadFromForm = () => {
   if (!props.form) return;
+  resetLocal3dFields();
   if (props.form["accuracy"] && typeof props.form["accuracy"] === "object") {
     if (props.form["accuracy"].pointAccuracy)
       accuracyPoint.value = props.form["accuracy"].pointAccuracy;
@@ -2952,10 +2973,12 @@ const loadFromForm = () => {
 watch(
   () =>
     props.form &&
-    (props.form["recordInformation.id"] || props.form["appellation.id"]),
-  () => {
+    `${props.form["recordInformation.id"] || ""}|${props.form["appellation.id"] || ""}`,
+  (newVal) => {
     loadFromForm();
-    syncStructuredFormFields();
+    if (newVal && newVal !== "|") {
+      syncStructuredFormFields();
+    }
   },
 );
 

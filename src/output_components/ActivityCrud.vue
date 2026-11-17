@@ -301,9 +301,8 @@
                     </div>
                     <input
                       type="text"
-                      required
                       v-model="form['recordInformation.id']"
-                      class="input input-bordered w-full validator"
+                      class="input input-bordered w-full"
                       :placeholder="
                         getLabel(
                           'recordInformation.id',
@@ -385,9 +384,8 @@
                     </div>
                     <input
                       type="text"
-                      required
                       v-model="form['recordInformation.source']"
-                      class="input input-bordered w-full validator"
+                      class="input input-bordered w-full"
                       :placeholder="
                         getLabel(
                           'recordInformation.source',
@@ -498,9 +496,8 @@
                         <input
                           type="date"
                           :max="maxDate"
-                          required
                           v-model="form['recordInformation.creation.date']"
-                          class="input input-bordered w-full validator"
+                          class="input input-bordered w-full"
                           :placeholder="
                             getLabel(
                               'recordInformation.creation.date',
@@ -1190,7 +1187,7 @@
                     ]"
                     :key="actPreset.label"
                     type="button"
-                    class="btn btn-2xs"
+                    class="btn btn-xs"
                     :class="
                       form['eventType'] === actPreset.label ||
                       form['eventType'] === actPreset.en
@@ -3162,20 +3159,60 @@
                     "
                   />
                   <!-- HECTOR 3D & KI-Verfahren (hector_3d_documentation) -->
-                  <div class="mt-2 flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-base-content/50 mr-1">
-                      HECTOR 3D / KI:
-                    </span>
-                    <button
-                      v-for="term in CURATED_HECTOR_3D_TERMS.filter((t) => t.category !== 'ai_iptc').slice(0, 8)"
-                      :key="term.uri"
-                      type="button"
-                      class="btn btn-2xs btn-outline border-base-300 hover:border-primary hover:bg-primary/10 font-normal"
-                      @click="applyHector3dToDrawer('methods', term)"
-                      :title="term.uri"
-                    >
-                      + {{ currentLocale === "de" ? term.de : term.en }}
-                    </button>
+                  <div
+                    class="mt-2 bg-base-200/50 p-2.5 rounded-lg border border-base-300 space-y-2"
+                  >
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <span
+                        class="text-[11px] font-bold uppercase tracking-wider text-base-content/70"
+                      >
+                        HECTOR 3D / KI-Verfahren
+                      </span>
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="text"
+                          v-model="hector3dMethodSearch"
+                          class="input input-xs input-bordered w-40 bg-base-100"
+                          :placeholder="
+                            currentLocale === 'de'
+                              ? 'HECTOR 3D suchen...'
+                              : 'Search HECTOR 3D...'
+                          "
+                        />
+                        <a
+                          href="https://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/"
+                          target="_blank"
+                          rel="noopener"
+                          class="text-xs link link-hover text-primary opacity-80 hover:opacity-100"
+                        >
+                          HECTOR ↗
+                        </a>
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto pr-1">
+                      <button
+                        v-for="term in displayedHector3dMethods"
+                        :key="term.uri"
+                        type="button"
+                        class="btn btn-xs normal-case font-normal transition-colors"
+                        :class="
+                          isHector3dSelected('methods', term)
+                            ? 'btn-primary text-primary-content'
+                            : 'btn-ghost border border-base-300 bg-base-100 hover:border-primary hover:bg-primary/10'
+                        "
+                        @click="toggleHector3dInDrawer('methods', term)"
+                        :title="term.uri"
+                      >
+                        <span v-if="isHector3dSelected('methods', term)" class="font-bold">✓</span>
+                        <span v-else class="text-primary font-bold">+</span>
+                        <span>{{ term.label }}</span>
+                        <span
+                          v-if="isHector3dSelected('methods', term)"
+                          class="ml-0.5 opacity-80 font-bold"
+                          aria-label="Entfernen"
+                        >×</span>
+                      </button>
+                    </div>
                   </div>
                   <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
@@ -3245,20 +3282,48 @@
                     "
                   />
                   <!-- IPTC Digital Source Type (HECTOR 3D) -->
-                  <div class="mt-2 flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-secondary mr-1">
-                      IPTC Digital Source Type (HECTOR):
-                    </span>
-                    <button
-                      v-for="iptc in IPTC_AI_TERMS"
-                      :key="iptc.key"
-                      type="button"
-                      class="btn btn-2xs btn-outline btn-secondary font-normal"
-                      @click="applyIptcToDrawer(iptc)"
-                      :title="`${iptc.uri} (${iptc.iptcUri})`"
-                    >
-                      + {{ currentLocale === "de" ? iptc.shortDe : iptc.shortEn }}
-                    </button>
+                  <div
+                    class="mt-2 bg-base-200/50 p-2.5 rounded-lg border border-base-300 space-y-2"
+                  >
+                    <div class="flex items-center justify-between gap-2">
+                      <span
+                        class="text-[11px] font-bold uppercase tracking-wider text-secondary"
+                      >
+                        IPTC Digital Source Type (HECTOR 3D)
+                      </span>
+                      <a
+                        href="https://cv.iptc.org/newscodes/digitalsourcetype/"
+                        target="_blank"
+                        rel="noopener"
+                        class="text-xs link link-hover text-secondary opacity-80 hover:opacity-100"
+                      >
+                        IPTC ↗
+                      </a>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                      <button
+                        v-for="iptc in IPTC_AI_TERMS"
+                        :key="iptc.key"
+                        type="button"
+                        class="btn btn-xs normal-case font-normal transition-colors"
+                        :class="
+                          isIptcSelected(iptc)
+                            ? 'btn-secondary text-secondary-content'
+                            : 'btn-ghost border border-base-300 bg-base-100 hover:border-secondary hover:bg-secondary/10'
+                        "
+                        @click="toggleIptcInDrawer(iptc)"
+                        :title="`${iptc.uri} (${iptc.iptcUri})`"
+                      >
+                        <span v-if="isIptcSelected(iptc)" class="font-bold">✓</span>
+                        <span v-else class="text-secondary font-bold">+</span>
+                        <span>{{ currentLocale === "de" ? iptc.shortDe : iptc.shortEn }}</span>
+                        <span
+                          v-if="isIptcSelected(iptc)"
+                          class="ml-0.5 opacity-80 font-bold"
+                          aria-label="Entfernen"
+                        >×</span>
+                      </button>
+                    </div>
                   </div>
                   <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
@@ -5973,6 +6038,15 @@ const save = () => {
     form["recordInformation.id"] =
       form["appellation.id"] || `ACT-${Date.now().toString(36).toUpperCase()}`;
   }
+  if (!form["recordInformation.source"]) {
+    form["recordInformation.source"] =
+      collectionInstitution?.name || collectionInstitution?.fullLabel || "HERMES";
+  }
+  if (!form["recordInformation.creation.date"]) {
+    form["recordInformation.creation.date"] = new Date()
+      .toISOString()
+      .slice(0, 10);
+  }
   if (!form["recordInformation.country"]) {
     form["recordInformation.country"] = collectionInstitution?.country || "DE";
   }
@@ -6090,33 +6164,119 @@ const addAppellationName = () => {
   });
 };
 
-const applyHector3dToDrawer = (field, term) => {
-  const label = currentLocale.value === "de" ? term.de : term.en;
-  const cur = String(drawerForm[field] || "").trim();
-  if (!cur) {
-    drawerForm[field] = label;
-  } else if (!cur.toLowerCase().includes(label.toLowerCase())) {
-    drawerForm[field] = `${cur}; ${label}`;
+const hector3dMethodSearch = ref("");
+const hector3dSearchResults = ref([]);
+let hector3dSearchTimer = null;
+
+watch(hector3dMethodSearch, (q) => {
+  if (hector3dSearchTimer) clearTimeout(hector3dSearchTimer);
+  const query = String(q || "").trim();
+  if (!query) {
+    hector3dSearchResults.value = [];
+    return;
   }
-  drawerForm[`${field}#term`] = label;
-  drawerForm[`${field}#namespace`] =
-    "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/";
-  drawerForm[`${field}#termUID`] = term.uri;
+  hector3dSearchTimer = setTimeout(async () => {
+    const lang = currentLocale.value === "de" ? "de" : "en";
+    const results = await searchHector3dVocabulary(query, lang);
+    hector3dSearchResults.value = results.map((r) => ({
+      uri: r.uri,
+      label: r.prefLabel,
+      de: r.prefLabel,
+      en: r.prefLabel,
+    }));
+  }, 220);
+});
+
+const displayedHector3dMethods = computed(() => {
+  const query = hector3dMethodSearch.value.trim().toLowerCase();
+  if (query && hector3dSearchResults.value.length > 0) {
+    return hector3dSearchResults.value;
+  }
+  const curated = CURATED_HECTOR_3D_TERMS.filter(
+    (t) => t.category !== "ai_iptc",
+  ).map((t) => ({
+    ...t,
+    label: currentLocale.value === "de" ? t.de : t.en,
+  }));
+  if (!query) return curated;
+  return curated.filter(
+    (t) =>
+      t.de.toLowerCase().includes(query) ||
+      t.en.toLowerCase().includes(query),
+  );
+});
+
+const splitSemicolonList = (val) =>
+  String(val || "")
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+const isHector3dSelected = (field, term) => {
+  const label = (term.label || (currentLocale.value === "de" ? term.de : term.en) || "").toLowerCase();
+  const altLabel = (currentLocale.value === "de" ? term.en : term.de || "").toLowerCase();
+  const parts = splitSemicolonList(drawerForm[field]);
+  return parts.some((p) => {
+    const lower = p.toLowerCase();
+    return lower === label || (altLabel && lower === altLabel);
+  });
 };
 
-const applyIptcToDrawer = (iptc) => {
-  const tag = `IPTC Digital Source Type: ${iptc.key} (${iptc.iptcUri})`;
-  const cur = String(drawerForm["techniques"] || "").trim();
-  if (!cur) {
-    drawerForm["techniques"] = tag;
-  } else if (!cur.includes(iptc.key)) {
-    drawerForm["techniques"] = `${cur}; ${tag}`;
+const toggleHector3dInDrawer = (field, term) => {
+  const label = term.label || (currentLocale.value === "de" ? term.de : term.en);
+  const altLabel = currentLocale.value === "de" ? term.en : term.de;
+  const parts = splitSemicolonList(drawerForm[field]);
+  if (isHector3dSelected(field, term)) {
+    const remaining = parts.filter((p) => {
+      const lower = p.toLowerCase();
+      return (
+        lower !== label.toLowerCase() &&
+        (!altLabel || lower !== altLabel.toLowerCase())
+      );
+    });
+    drawerForm[field] = remaining.join("; ");
+    if (drawerForm[`${field}#termUID`] === term.uri) {
+      drawerForm[`${field}#term`] = "";
+      drawerForm[`${field}#namespace`] = "";
+      drawerForm[`${field}#termUID`] = "";
+    }
+  } else {
+    parts.push(label);
+    drawerForm[field] = parts.join("; ");
+    drawerForm[`${field}#term`] = label;
+    drawerForm[`${field}#namespace`] =
+      "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/";
+    drawerForm[`${field}#termUID`] = term.uri;
   }
-  drawerForm["techniques#term"] =
-    currentLocale.value === "de" ? iptc.de : iptc.en;
-  drawerForm["techniques#namespace"] =
-    "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/";
-  drawerForm["techniques#termUID"] = iptc.uri;
+};
+
+const isIptcSelected = (iptc) => {
+  const cur = String(drawerForm["techniques"] || "");
+  return cur.includes(iptc.key) || cur.includes(iptc.iptcUri);
+};
+
+const toggleIptcInDrawer = (iptc) => {
+  const tag = `IPTC Digital Source Type: ${iptc.key} (${iptc.iptcUri})`;
+  const parts = splitSemicolonList(drawerForm["techniques"]);
+  if (isIptcSelected(iptc)) {
+    const remaining = parts.filter(
+      (p) => !p.includes(iptc.key) && !p.includes(iptc.iptcUri),
+    );
+    drawerForm["techniques"] = remaining.join("; ");
+    if (drawerForm["techniques#termUID"] === iptc.uri) {
+      drawerForm["techniques#term"] = "";
+      drawerForm["techniques#namespace"] = "";
+      drawerForm["techniques#termUID"] = "";
+    }
+  } else {
+    parts.push(tag);
+    drawerForm["techniques"] = parts.join("; ");
+    drawerForm["techniques#term"] =
+      currentLocale.value === "de" ? iptc.de : iptc.en;
+    drawerForm["techniques#namespace"] =
+      "http://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/";
+    drawerForm["techniques#termUID"] = iptc.uri;
+  }
 };
 
 const updateActivityTemporalField = (key, value) => {
@@ -6199,6 +6359,12 @@ const resetForm = (force = false) => {
     }
   });
   form["recordInformation.language"] = [defLang];
+  form["recordInformation.country"] = collectionInstitution?.country || "DE";
+  form["recordInformation.source"] =
+    collectionInstitution?.name || collectionInstitution?.fullLabel || "";
+  form["recordInformation.creation.date"] = new Date()
+    .toISOString()
+    .slice(0, 10);
   form["recordInformation.metadataRights"] = globalRights.metadataRights || "";
   form["digitalAuthenticityProfile"] = null;
   form["accuracy"] = null;

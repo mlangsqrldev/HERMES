@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.30 · 2026-11-17</span
+              >v0.1.31 · 2026-11-17</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -258,7 +258,7 @@
       <!-- Left Sidebar Container -->
 
       <aside
-        class="sticky top-24 left-0 w-60 xl:w-64 shrink-0 flex flex-col gap-4 min-w-0"
+        class="sticky top-24 left-0 w-60 xl:w-64 shrink-0 flex flex-col gap-4 min-w-0 max-h-[calc(100vh-6.5rem)] overflow-y-auto pr-1"
       >
         <!-- Navigation Card -->
 
@@ -3682,6 +3682,13 @@ const removeFileHash = (fileName) => {
 };
 
 const clearAllForms = () => {
+  const msg =
+    currentLocale.value === "de"
+      ? "Möchten Sie wirklich alle erfassten Daten und Formulare zurücksetzen?"
+      : "Are you sure you want to reset all forms and records?";
+  if (typeof window !== "undefined" && !window.confirm(msg)) {
+    return;
+  }
   try {
     resetGlobalRights();
   } catch (e) {}
@@ -5698,6 +5705,14 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
     for (const [rawKey, val] of Object.entries(data)) {
       if (val === null || val === undefined || val === "") continue;
 
+      if (
+        (rawKey.startsWith("_") && rawKey !== "_value") ||
+        rawKey === "isDap" ||
+        rawKey === "dapId"
+      ) {
+        continue;
+      }
+
       if (rawKey.startsWith("#")) {
         let attrName = rawKey.substring(1);
 
@@ -6190,9 +6205,9 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
         t.includes("foto")
       ) {
         node.text = "Image";
-      } else if (t.includes("sound") || t.includes("audio")) {
+      } else if (t.includes("sound") || t.includes("audio") || t.includes("ton")) {
         node.text = "Sound";
-      } else if (t.includes("movie") || t.includes("video")) {
+      } else if (t.includes("movie") || t.includes("video") || t.includes("film")) {
         node.text = "Movie";
       } else if (t.includes("text")) {
         node.text = "Text";
@@ -6206,11 +6221,11 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
       if (t.includes("3d") || t.includes("model") || t.includes("mesh")) {
         node.text = "3D";
-      } else if (t.includes("image") || t.includes("foto")) {
+      } else if (t.includes("image") || t.includes("foto") || t.includes("bild")) {
         node.text = "Image";
-      } else if (t.includes("sound") || t.includes("audio")) {
+      } else if (t.includes("sound") || t.includes("audio") || t.includes("ton")) {
         node.text = "Sound";
-      } else if (t.includes("movie") || t.includes("video")) {
+      } else if (t.includes("movie") || t.includes("video") || t.includes("film")) {
         node.text = "Movie";
       } else if (t.includes("text") || t.includes("pdf")) {
         node.text = "Text";

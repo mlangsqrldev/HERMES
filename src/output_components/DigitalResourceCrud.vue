@@ -3567,7 +3567,7 @@
                     <div class="flex items-center gap-1">
                       <button
                         type="button"
-                        class="btn btn-2xs btn-outline btn-accent gap-0.5"
+                        class="btn btn-xs btn-outline btn-accent gap-0.5"
                         @click.prevent="openOrgPicker('publicationStatement')"
                       >
                         🏛️
@@ -3575,7 +3575,7 @@
                       </button>
                       <button
                         type="button"
-                        class="btn btn-2xs btn-outline btn-secondary gap-0.5"
+                        class="btn btn-xs btn-outline btn-secondary gap-0.5"
                         @click.prevent="
                           openPersonPicker('publicationStatement')
                         "
@@ -5837,7 +5837,7 @@ const cloneAsWebDerivative = () => {
   }
 
   copy["format"] = "model/gltf-binary";
-  copy["type"] = "3D";
+  copy["type"] = currentLocale.value === "de" ? "3D-Modell" : "3D";
   copy["isFormatOf"] = [baseId];
   copy["isDerivativeOf"] = [baseId];
 
