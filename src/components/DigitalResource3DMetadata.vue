@@ -1170,25 +1170,28 @@
             class="input input-sm input-bordered w-full font-mono text-xs"
             placeholder="e.g. 15.8 Mio. Faces"
           />
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            <button
-              v-for="p in [
-                '50.000 Faces (Web)',
-                '500.000 Faces',
-                '2.5 Mio. Faces',
-                '15.8 Mio. Faces',
-              ]"
-              :key="p"
-              type="button"
-              class="preset-chip font-mono"
-              @click="
-                polygonCount = p;
-                onFieldChanged();
-              "
-            >
-              {{ p.split(" ")[0] }}
-            </button>
-          </div>
+        </div>
+
+        <!-- Anzahl der Texturen (Texture Count) -->
+        <div v-if="assetType === 'mesh'">
+          <label class="label py-0.5">
+            <span class="label-text text-xs font-semibold">
+              {{
+                currentLocale === "de"
+                  ? "Anzahl der Texturen (Texture Count):"
+                  : "Texture Count:"
+              }}
+            </span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            v-model="textureCount"
+            @input="onFieldChanged"
+            class="input input-sm input-bordered w-full font-mono text-xs"
+            placeholder="e.g. 4"
+          />
         </div>
 
         <!-- Vertices / Eckpunkte oder Punktwolkenanzahl -->
@@ -1414,26 +1417,6 @@
                 class="input input-sm input-bordered w-full font-mono text-xs"
                 placeholder="z.B. 0.05 mm"
               />
-              <div class="flex flex-wrap gap-1.5 mt-2">
-                <button
-                  v-for="preset in [
-                    '0.02 mm',
-                    '0.05 mm',
-                    '0.1 mm',
-                    '1.0 mm @ 10m',
-                  ]"
-                  :key="preset"
-                  type="button"
-                  class="preset-chip font-mono"
-                  @click="
-                    accuracyPoint = preset;
-                    slsAccuracy = preset;
-                    onFieldChanged();
-                  "
-                >
-                  {{ preset }}
-                </button>
-              </div>
             </div>
           </div>
 
@@ -1451,7 +1434,6 @@
                       : "Registration Error / RMSE"
                   }}
                 </span>
-                
               </div>
               <p
                 class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
@@ -1471,135 +1453,102 @@
                 class="input input-sm input-bordered w-full font-mono text-xs"
                 placeholder="z.B. 0.018 mm ICP-RMSE (0.32 px)"
               />
-              <div class="flex flex-wrap gap-1.5 mt-2">
-                <button
-                  v-for="preset in [
-                    '0.02 mm ICP-RMSE',
-                    '0.35 px Reproj.-Error',
-                    '0.05 mm RMSE',
-                    '1.2 mm Cloud-to-Cloud',
-                  ]"
-                  :key="preset"
-                  type="button"
-                  class="preset-chip font-mono"
-                  @click="
-                    accuracyRmse = preset;
-                    onFieldChanged();
-                  "
-                >
-                  {{ preset }}
-                </button>
-              </div>
             </div>
           </div>
 
-          <!-- Volumetrische Genauigkeit -->
+          <!-- Skalierung (HECTOR) -->
           <div
             class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
-            data-xml-tag="volumetricAccuracy"
+            data-xml-tag="scalingMethod"
           >
             <div>
               <div class="flex items-start justify-between gap-2 mb-1">
                 <span class="text-xs font-bold text-base-content leading-snug">
-                  {{
-                    currentLocale === "de"
-                      ? "Volumetrische Genauigkeit"
-                      : "Volumetric Accuracy"
-                  }}
+                  {{ currentLocale === "de" ? "Skalierung (HECTOR)" : "Scaling (HECTOR)" }}
                 </span>
-                
               </div>
-              <p
-                class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
-              >
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
                 {{
                   currentLocale === "de"
-                    ? "Längenmessabweichung über die Gesamtausdehnung des Objekts (z.B. mm pro Meter Objektlänge)."
-                    : "Length measurement error across total object extent (e.g. mm per meter of object length)."
+                    ? "Verfahren bzw. Hilfsmittel zur maßstäblichen Skalierung des 3D-Modells."
+                    : "Method or reference used for metric scaling of the 3D model."
                 }}
               </p>
             </div>
-            <div>
-              <input
-                type="text"
-                v-model="accuracyVolumetric"
-                @input="onFieldChanged"
-                class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 0.05 mm + 0.3 mm/m"
-              />
-              <div class="flex flex-wrap gap-1.5 mt-2">
+            <div class="space-y-2">
+              <div class="flex flex-wrap gap-1.5">
                 <button
-                  v-for="preset in [
-                    '0.05 mm + 0.3 mm/m',
-                    '0.1 mm + 0.3 mm/m',
-                    '± 0.15 mm auf 1.2 m',
-                  ]"
-                  :key="preset"
+                  v-for="sc in ['Maßstab', 'Tachymeter', 'GNSS', 'Targets']"
+                  :key="sc"
                   type="button"
-                  class="preset-chip font-mono"
+                  class="btn btn-xs"
+                  :class="scalingMethod === sc ? 'btn-primary' : 'btn-outline border-base-300'"
                   @click="
-                    accuracyVolumetric = preset;
+                    scalingMethod = scalingMethod === sc ? '' : sc;
                     onFieldChanged();
                   "
                 >
-                  {{ preset }}
+                  {{ sc }}
                 </button>
               </div>
-            </div>
-          </div>
-
-          <!-- Kalibrierungsmethode & Norm -->
-          <div
-            class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
-            data-xml-tag="calibrationMethod"
-          >
-            <div>
-              <div class="flex items-start justify-between gap-2 mb-1">
-                <span class="text-xs font-bold text-base-content leading-snug">
-                  {{
-                    currentLocale === "de"
-                      ? "Kalibrierung & Referenzstandard"
-                      : "Calibration & Reference Standard"
-                  }}
-                </span>
-                
-              </div>
-              <p
-                class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
-              >
-                {{
-                  currentLocale === "de"
-                    ? "Verwendete Prüfplaketten, Maßstäbe, Kalibrierstandards (VDI/VDE 2634) und Farbtargets."
-                    : "Calibration plates, scale bars, metrological standards (VDI/VDE 2634), and color targets used."
-                }}
-              </p>
-            </div>
-            <div>
               <input
                 type="text"
-                v-model="accuracyCalibration"
+                v-model="scalingMethod"
                 @input="onFieldChanged"
                 class="input input-sm input-bordered w-full text-xs"
-                placeholder="z.B. VDI/VDE 2634, Invar-Maßstab, ColorChecker"
+                :placeholder="currentLocale === 'de' ? 'Maßstab, Tachymeter, GNSS, Targets...' : 'Scale bar, Total station, GNSS, Targets...'"
               />
-              <div class="flex flex-wrap gap-1.5 mt-2">
+            </div>
+          </div>
+
+          <!-- Georeferenzierung (EPSG Online + Genauigkeit) -->
+          <div
+            class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
+            data-xml-tag="georeferencing"
+          >
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === "de" ? "Georeferenzierung (EPSG)" : "Georeferencing (EPSG)" }}
+                </span>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{
+                  currentLocale === "de"
+                    ? "EPSG-Code (mit Online-Abfrage) und Genauigkeit der Georeferenzierung."
+                    : "EPSG code (with online lookup) and georeferencing accuracy."
+                }}
+              </p>
+            </div>
+            <div class="space-y-2">
+              <div class="join w-full">
+                <input
+                  type="text"
+                  v-model="geoEpsg"
+                  @input="onFieldChanged"
+                  class="input input-sm input-bordered join-item w-full font-mono text-xs"
+                  placeholder="z. B. EPSG:25832"
+                />
                 <button
-                  v-for="preset in [
-                    'VDI/VDE 2634 + ColorChecker',
-                    'Invar-Maßstab + Kalibrierplatte',
-                    'Werkskalibrierung + Target',
-                  ]"
-                  :key="preset"
                   type="button"
-                  class="preset-chip"
-                  @click="
-                    accuracyCalibration = preset;
-                    onFieldChanged();
-                  "
+                  class="btn btn-sm btn-outline join-item text-xs"
+                  :disabled="isLookingUpEpsg || !geoEpsg.trim()"
+                  @click="lookupEpsgOnline"
                 >
-                  {{ preset }}
+                  <span v-if="isLookingUpEpsg" class="loading loading-spinner loading-xs"></span>
+                  <span v-else>{{ currentLocale === "de" ? "Online prüfen" : "Lookup" }}</span>
                 </button>
               </div>
+              <div v-if="geoEpsgName" class="text-[11px] text-success font-medium">
+                ✓ {{ geoEpsgName }}
+              </div>
+              <input
+                type="text"
+                v-model="geoAccuracy"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full text-xs"
+                :placeholder="currentLocale === 'de' ? 'Genauigkeit (Freitext, z. B. ± 2 cm)' : 'Accuracy (free text, e.g. ± 2 cm)'"
+              />
             </div>
           </div>
         </div>
@@ -1619,65 +1568,9 @@
               ? "Auflösung – Geometrische & Optische Abtastdichte"
               : "Resolution – Geometric & Optical Sampling Density"
           }}</span>
-          
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Räumliche 3D-Auflösung (Punktabstand) -->
-          <div
-            class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
-            data-xml-tag="spatialResolution"
-          >
-            <div>
-              <div class="flex items-start justify-between gap-2 mb-1">
-                <span class="text-xs font-bold text-base-content leading-snug">
-                  {{
-                    currentLocale === "de"
-                      ? "Räumliche 3D-Auflösung (Punktabstand)"
-                      : "3D Spatial Resolution (Point Spacing)"
-                  }}
-                </span>
-                
-              </div>
-              <p
-                class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed"
-              >
-                {{
-                  currentLocale === "de"
-                    ? "Kleinster aufgelöster 3D-Punktabstand (Point Spacing) bzw. Kantenlänge des Polygonnetzes."
-                    : "Smallest resolved 3D point spacing or triangle edge length on the mesh surface."
-                }}
-              </p>
-            </div>
-            <div>
-              <input
-                type="text"
-                v-model="resolutionSpatial"
-                @input="onFieldChanged"
-                class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 0.1 mm Punktabstand"
-              />
-              <div class="flex flex-wrap gap-1.5 mt-2">
-                <button
-                  v-for="preset in [
-                    '0.05 mm',
-                    '0.1 mm',
-                    '0.25 mm',
-                    '1.5 mm @ 10m',
-                  ]"
-                  :key="preset"
-                  type="button"
-                  class="preset-chip font-mono"
-                  @click="
-                    resolutionSpatial = preset;
-                    onFieldChanged();
-                  "
-                >
-                  {{ preset }}
-                </button>
-              </div>
-            </div>
-          </div>
 
           <!-- Ground Sampling Distance (GSD) -->
           <div
@@ -1713,25 +1606,6 @@
                 class="input input-sm input-bordered w-full font-mono text-xs"
                 placeholder="z.B. 0.12 mm/px"
               />
-              <div class="flex flex-wrap gap-1.5 mt-2">
-                <button
-                  v-for="preset in [
-                    '0.05 mm/px',
-                    '0.12 mm/px',
-                    '< 0.15 mm/px',
-                    '0.30 mm/px',
-                  ]"
-                  :key="preset"
-                  type="button"
-                  class="preset-chip font-mono"
-                  @click="
-                    photoGsd = preset;
-                    onFieldChanged();
-                  "
-                >
-                  {{ preset }}
-                </button>
-              </div>
             </div>
           </div>
 
@@ -1817,12 +1691,19 @@
                 type="text"
                 v-model="photoSensor"
                 @input="onFieldChanged"
+                @blur="recordRecentOpticalSensor(photoSensor)"
                 class="input input-sm input-bordered w-full font-mono text-xs"
                 placeholder="z.B. 45.7 MP"
               />
-              <div class="flex flex-wrap gap-1.5 mt-2">
+              <div
+                v-if="recentOpticalSensors.length > 0"
+                class="flex flex-wrap items-center gap-1.5 mt-2"
+              >
+                <span class="text-[10px] font-bold uppercase text-base-content/50">
+                  {{ currentLocale === "de" ? "Zuletzt:" : "Recent:" }}
+                </span>
                 <button
-                  v-for="res in SENSOR_PRESETS"
+                  v-for="res in recentOpticalSensors"
                   :key="res"
                   type="button"
                   class="preset-chip font-mono"
@@ -1841,76 +1722,45 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 5: DATEIGRÖSSE & AUSMASS                             -->
+    <!-- SECTION 5: DATEIGRÖSSE                                       -->
     <!-- ============================================================ -->
     <div
       class="p-3.5 bg-base-200/30 rounded-xl border border-base-200 mb-5"
       data-xml-tag="extent"
     >
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-        <div>
-          <label class="label py-1">
-            <span
-              class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5"
-            >
-              <span>💾</span>
-              <span>{{
-                currentLocale === "de"
-                  ? "Dateigröße (Messumfang)"
-                  : "File Size (Extent)"
-              }}</span>
-              <span class="text-accent font-black">*</span>
-              <span
-                class="tooltip tooltip-accent tooltip-right cursor-help font-normal normal-case"
-                :data-tip="getTooltipText('Components', '3d.fileSize', currentLocale)"
-              >
-                ℹ️
-              </span>
-            </span>
-          </label>
-          <div class="join w-full">
-            <input
-              type="number"
-              step="any"
-              v-model="fileSizeValue"
-              @input="updateExtent"
-              class="input input-sm input-bordered join-item w-full font-mono text-xs"
-              placeholder="e.g. 450"
-            />
-            <select
-              v-model="fileSizeUnit"
-              @change="updateExtent"
-              class="select select-sm select-bordered join-item font-semibold text-xs"
-            >
-              <option value="MB">MB</option>
-              <option value="GB">GB</option>
-              <option value="KB">KB</option>
-              <option value="TB">TB</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- CARARE <extent> Primary -->
-        <div>
-          <label class="label py-1">
-            <span
-              class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5"
-            >
-              <span>📐</span>
-              <span>{{
-                currentLocale === "de"
-                  ? "Primäres Ausmaß"
-                  : "Primary Extent"
-              }}</span>
-            </span>
-          </label>
+      <div class="max-w-md">
+        <label class="label py-1">
+          <span
+            class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5"
+          >
+            <span>💾</span>
+            <span>{{
+              currentLocale === "de"
+                ? "Dateigröße (Messumfang)"
+                : "File Size (Extent)"
+            }}</span>
+            <span class="text-accent font-black">*</span>
+          </span>
+        </label>
+        <div class="join w-full">
           <input
-            type="text"
-            :value="extent"
-            @input="$emit('update:extent', $event.target.value)"
-            class="input input-sm input-bordered w-full font-mono text-xs"
-            placeholder="e.g. 450 MB"
+            type="number"
+            step="any"
+            v-model="fileSizeValue"
+            @input="updateExtent"
+            class="input input-sm input-bordered join-item w-full font-mono text-xs"
+            placeholder="e.g. 450"
           />
+          <select
+            v-model="fileSizeUnit"
+            @change="updateExtent"
+            class="select select-sm select-bordered join-item font-semibold text-xs"
+          >
+            <option value="MB">MB</option>
+            <option value="GB">GB</option>
+            <option value="KB">KB</option>
+            <option value="TB">TB</option>
+          </select>
         </div>
       </div>
     </div>
@@ -1930,6 +1780,16 @@
               : "Format Details"
           }}</span>
           <span class="text-accent font-black">*</span>
+          <span
+            class="tooltip tooltip-accent tooltip-right cursor-help font-normal normal-case"
+            :data-tip="
+              currentLocale === 'de'
+                ? 'Dieses Feld wird automatisch aus den obigen Parametern für den CARARE XML Export generiert und kann bei Bedarf manuell angepasst werden.'
+                : 'This field is automatically generated from the parameters above for CARARE XML export and can be adjusted manually if needed.'
+            "
+          >
+            ℹ️
+          </span>
         </label>
       </div>
 
@@ -1943,15 +1803,6 @@
             : 'e.g. Photogrammetry: Nikon Z 8 (45.7 MP), 245 RAW shots. Mesh: 15.8M faces, 8K PBR textures. Software: RealityCapture.'
         "
       ></textarea>
-      <div class="mt-1 text-[11px] text-base-content/50">
-        <span>
-          {{
-            currentLocale === "de"
-              ? "ℹ️ Dieses Feld wird automatisch aus den obigen Parametern für den CARARE XML Export generiert und kann bei Bedarf manuell angepasst werden."
-              : "ℹ️ This field is automatically generated from the parameters above for CARARE XML export and can be adjusted manually if needed."
-          }}
-        </span>
-      </div>
     </div>
 
     <!-- Equipment Modal Picker -->
@@ -1977,6 +1828,10 @@
 <script setup>
 import { getTooltipText } from "../utils/tooltips.js";
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+import {
+  recentOpticalSensors,
+  recordRecentOpticalSensor,
+} from "../utils/sharedState.js";
 import SoftwarePickerModal from "./SoftwarePickerModal.vue";
 import EquipmentPickerModal from "./EquipmentPickerModal.vue";
 
@@ -2624,8 +2479,37 @@ const handle3DFileSelect = (e) => {
 // 5. Geometry & Mesh Metrics
 // ----------------------------------------------------
 const polygonCount = ref("");
+const textureCount = ref("");
 const vertexCount = ref("");
 const meshCategory = ref("");
+const scalingMethod = ref("");
+const geoEpsg = ref("");
+const geoEpsgName = ref("");
+const geoAccuracy = ref("");
+const isLookingUpEpsg = ref(false);
+
+const lookupEpsgOnline = async () => {
+  const raw = geoEpsg.value.trim().replace(/^epsg:/i, "");
+  if (!raw) return;
+  isLookingUpEpsg.value = true;
+  geoEpsgName.value = "";
+  try {
+    const res = await fetch(`https://epsg.io/?q=${encodeURIComponent(raw)}&format=json`);
+    if (res.ok) {
+      const data = await res.json();
+      const hit = Array.isArray(data.results) ? data.results[0] : null;
+      if (hit) {
+        geoEpsg.value = `EPSG:${hit.code}`;
+        geoEpsgName.value = hit.name || "";
+        onFieldChanged();
+      }
+    }
+  } catch (e) {
+    console.warn("EPSG lookup failed:", e);
+  } finally {
+    isLookingUpEpsg.value = false;
+  }
+};
 
 const textureResolution = ref("");
 const selectedMaps = ref([]);
@@ -2838,14 +2722,12 @@ const computedRepeatedExtents = computed(() => {
   }
   if (assetType.value === "mesh") {
     if (polygonCount.value) list.push(`Polygon Count: ${polygonCount.value}`);
+    if (textureCount.value) list.push(`Texture Count: ${textureCount.value}`);
     if (vertexCount.value) list.push(`Vertex Count: ${vertexCount.value}`);
     if (textureResolution.value)
       list.push(`Texture Resolution: ${textureResolution.value}`);
   } else if (assetType.value === "pointcloud") {
     if (vertexCount.value) list.push(`Point Count: ${vertexCount.value}`);
-  }
-  if (resolutionSpatial.value) {
-    list.push(`3D Spatial Resolution: ${resolutionSpatial.value}`);
   }
   if (photoGsd.value) {
     list.push(`Ground Sampling Distance (GSD): ${photoGsd.value}`);
@@ -2855,6 +2737,12 @@ const computedRepeatedExtents = computed(() => {
   }
   if (accuracyRmse.value) {
     list.push(`Registration Error (RMSE): ${accuracyRmse.value}`);
+  }
+  if (scalingMethod.value) {
+    list.push(`Scaling: ${scalingMethod.value}`);
+  }
+  if (geoEpsg.value) {
+    list.push(`Georeferencing: ${geoEpsg.value}${geoEpsgName.value ? ` (${geoEpsgName.value})` : ""}${geoAccuracy.value ? `, Accuracy: ${geoAccuracy.value}` : ""}`);
   }
   if (
     photoSensor.value &&
@@ -2892,14 +2780,16 @@ const syncStructuredFormFields = () => {
   props.form["accuracy"] = {
     pointAccuracy: accuracyPoint.value || slsAccuracy.value || "",
     registrationRmse: accuracyRmse.value || "",
-    volumetricAccuracy: accuracyVolumetric.value || "",
-    calibrationMethod:
-      accuracyCalibration.value || photoColorTarget.value || "",
+    scalingMethod: scalingMethod.value || "",
+    geoEpsg: geoEpsg.value || "",
+    geoEpsgName: geoEpsgName.value || "",
+    geoAccuracy: geoAccuracy.value || "",
+    calibrationMethod: scalingMethod.value || photoColorTarget.value || "",
   };
   props.form["resolution"] = {
-    spatialResolution: resolutionSpatial.value || "",
     gsd: photoGsd.value || "",
     textureResolution: textureResolution.value || "",
+    textureCount: textureCount.value || "",
     sensorResolution: photoSensor.value || "",
   };
   props.form["softwareList"] = softwareList.value
@@ -2914,6 +2804,7 @@ const syncStructuredFormFields = () => {
 
 const resetLocal3dFields = () => {
   polygonCount.value = "";
+  textureCount.value = "";
   vertexCount.value = "";
   meshCategory.value = "";
   textureResolution.value = "";
@@ -2922,6 +2813,10 @@ const resetLocal3dFields = () => {
   accuracyRmse.value = "";
   accuracyVolumetric.value = "";
   accuracyCalibration.value = "";
+  scalingMethod.value = "";
+  geoEpsg.value = "";
+  geoEpsgName.value = "";
+  geoAccuracy.value = "";
   resolutionSpatial.value = "";
   softwareList.value = [];
   fileSizeValue.value = "";
@@ -2940,21 +2835,27 @@ const loadFromForm = () => {
       accuracyPoint.value = props.form["accuracy"].pointAccuracy;
     if (props.form["accuracy"].registrationRmse)
       accuracyRmse.value = props.form["accuracy"].registrationRmse;
-    if (props.form["accuracy"].volumetricAccuracy)
-      accuracyVolumetric.value = props.form["accuracy"].volumetricAccuracy;
-    if (props.form["accuracy"].calibrationMethod)
-      accuracyCalibration.value = props.form["accuracy"].calibrationMethod;
+    if (props.form["accuracy"].scalingMethod)
+      scalingMethod.value = props.form["accuracy"].scalingMethod;
+    if (props.form["accuracy"].geoEpsg)
+      geoEpsg.value = props.form["accuracy"].geoEpsg;
+    if (props.form["accuracy"].geoEpsgName)
+      geoEpsgName.value = props.form["accuracy"].geoEpsgName;
+    if (props.form["accuracy"].geoAccuracy)
+      geoAccuracy.value = props.form["accuracy"].geoAccuracy;
+    if (!scalingMethod.value && props.form["accuracy"].calibrationMethod)
+      scalingMethod.value = props.form["accuracy"].calibrationMethod;
   }
   if (
     props.form["resolution"] &&
     typeof props.form["resolution"] === "object"
   ) {
-    if (props.form["resolution"].spatialResolution)
-      resolutionSpatial.value = props.form["resolution"].spatialResolution;
     if (props.form["resolution"].gsd)
       photoGsd.value = props.form["resolution"].gsd;
     if (props.form["resolution"].textureResolution)
       textureResolution.value = props.form["resolution"].textureResolution;
+    if (props.form["resolution"].textureCount)
+      textureCount.value = props.form["resolution"].textureCount;
     if (props.form["resolution"].sensorResolution)
       photoSensor.value = props.form["resolution"].sensorResolution;
   }

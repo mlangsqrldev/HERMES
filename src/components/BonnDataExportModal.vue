@@ -94,36 +94,45 @@
             </div>
 
             <div class="form-control">
-              <label class="label py-1">
-                <span class="label-text font-semibold text-xs">
-                  {{
-                    currentLocale === "de"
-                      ? "Ziel-Collection (Dataverse Alias) *"
-                      : "Target Collection (Dataverse Alias) *"
-                  }}
-                </span>
-              </label>
-              <div class="flex gap-1.5 mb-1.5">
+              <div class="flex items-center justify-between">
+                <label class="label py-1">
+                  <span class="label-text font-semibold text-xs">
+                    {{
+                      currentLocale === "de"
+                        ? "Ziel-Collection (Dataverse Alias) *"
+                        : "Target Collection (Dataverse Alias) *"
+                    }}
+                  </span>
+                </label>
                 <button
                   type="button"
-                  class="btn btn-xs"
-                  :class="dataverseAlias === '3D' ? 'btn-primary' : 'btn-outline'"
-                  @click="selectAlias('3D')"
+                  class="btn btn-xs btn-ghost text-primary"
+                  :disabled="isLoadingDataverses"
+                  @click="fetchAvailableDataverses"
                 >
-                  3D
+                  <span v-if="isLoadingDataverses" class="loading loading-spinner loading-xs"></span>
+                  <span v-else>↻ {{ currentLocale === "de" ? "Dataverses laden" : "Load Dataverses" }}</span>
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-xs"
-                  :class="dataverseAlias === 'bcdh' ? 'btn-primary' : 'btn-outline'"
-                  @click="selectAlias('bcdh')"
+              </div>
+              <div class="flex flex-wrap gap-1.5 mb-1.5">
+                <select
+                  v-if="availableDataverses.length > 0"
+                  v-model="dataverseAlias"
+                  @change="fetchAllowedLanguages"
+                  class="select select-bordered select-xs flex-1 min-w-[180px]"
                 >
-                  bcdh
-                </button>
+                  <option
+                    v-for="dv in availableDataverses"
+                    :key="dv.alias"
+                    :value="dv.alias"
+                  >
+                    {{ dv.name }} ({{ dv.alias }})
+                  </option>
+                </select>
                 <input
                   v-model="dataverseAlias"
                   type="text"
-                  class="input input-bordered input-xs flex-1 font-mono"
+                  class="input input-bordered input-xs w-36 font-mono"
                   @blur="fetchAllowedLanguages"
                   placeholder="Alias..."
                 />
@@ -372,6 +381,11 @@ const baseUrl = ref("https://bonndata.uni-bonn.de");
 const apiToken = ref(localStorage.getItem(TOKEN_STORAGE_KEY) || "");
 const showToken = ref(false);
 const dataverseAlias = ref("3D");
+const availableDataverses = ref([
+  { alias: "3D", name: "3D" },
+  { alias: "bcdh", name: "BCDH" },
+]);
+const isLoadingDataverses = ref(false);
 const allowedLanguages = ref([{ locale: "en", title: "English" }]);
 const selectedLanguage = ref("en");
 const isCheckingLangs = ref(false);
@@ -436,12 +450,47 @@ const selectAlias = (alias) => {
   fetchAllowedLanguages();
 };
 
+const fetchAvailableDataverses = async () => {
+  isLoadingDataverses.value = true;
+  try {
+    const headers = {};
+    if (apiToken.value.trim()) {
+      headers["X-Dataverse-key"] = apiToken.value.trim();
+    }
+    const res = await fetch(
+      `${baseUrl.value}/api/search?q=*&type=dataverse&per_page=100`,
+      { headers },
+    );
+    if (res.ok) {
+      const json = await res.json();
+      const items = Array.isArray(json?.data?.items) ? json.data.items : [];
+      const parsed = items
+        .map((it) => ({
+          alias: it.identifier || it.alias || "",
+          name: it.name || it.identifier || "",
+        }))
+        .filter((d) => d.alias);
+      if (parsed.length > 0) {
+        availableDataverses.value = parsed;
+        if (!parsed.some((d) => d.alias === dataverseAlias.value)) {
+          dataverseAlias.value = parsed[0].alias;
+        }
+      }
+    }
+  } catch {
+    // keep fallback list
+  } finally {
+    isLoadingDataverses.value = false;
+  }
+};
+
 watch(
   () => props.isOpen,
   (open) => {
     if (open) {
       uploadError.value = "";
       uploadProgress.value = "";
+      fetchAvailableDataverses();
       fetchAllowedLanguages();
     }
   },

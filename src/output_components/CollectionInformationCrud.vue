@@ -94,14 +94,14 @@
                       :data-tip="
                         getLabel(
                           'id',
-                          'Unique identifier for this data package. No spaces or special characters. Can be an institutional ID, a URI, or a self-chosen string. Once assigned, do not change.',
+                          'Unique identifier for this data package. Can be an institutional ID, a URI, or a self-chosen string. Once assigned, do not change.',
                           'doc',
                         )
                       "
                       v-if="
                         getLabel(
                           'id',
-                          'Unique identifier for this data package. No spaces or special characters. Can be an institutional ID, a URI, or a self-chosen string. Once assigned, do not change.',
+                          'Unique identifier for this data package. Can be an institutional ID, a URI, or a self-chosen string. Once assigned, do not change.',
                           'doc',
                         )
                       "
@@ -109,7 +109,6 @@
                       <button
                         type="button"
                         class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                        :title="getLabel('id', '', 'doc')"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +197,6 @@
                       <button
                         type="button"
                         class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                        :title="getLabel('title', '', 'doc')"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -787,16 +785,18 @@
       </div>
     </div>
 
-    <div class="drawer-side z-[100]">
-      <label
-        for="drawer-collectionInformation"
-        aria-label="close sidebar"
-        class="drawer-overlay"
-      ></label>
+    <Teleport to="body">
       <div
-        class="w-full max-w-lg min-h-full bg-base-100 flex flex-col pointer-events-auto"
+        v-if="isDrawerOpen"
+        class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
+        @mousedown.self="isDrawerOpen = false"
       >
-        <div class="flex-1 overflow-y-auto p-6">
+        <div
+          role="dialog"
+          aria-modal="true"
+          class="w-full max-w-2xl max-h-[90vh] bg-base-100 rounded-2xl shadow-2xl border border-base-300 flex flex-col overflow-hidden pointer-events-auto"
+        >
+          <div class="flex-1 overflow-y-auto p-6">
           <div
             class="flex items-start justify-between mb-6 pb-4 border-b border-base-200"
           >
@@ -1369,9 +1369,10 @@
               </button>
             </div>
           </form>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
   <PersonPickerModal
     :isOpen="isPersonPickerOpen"
@@ -1595,7 +1596,7 @@ const fieldLabels = {
     docEn:
       "Unique identifier for this data package. No spaces or special characters. Can be an institutional ID, a URI, or a self-chosen string. Once assigned, do not change.",
     docDe:
-      "Eindeutiger Bezeichner für dieses Datenpaket. Keine Leerzeichen oder Sonderzeichen. Kann eine institutionelle ID, eine URI oder eine selbst gewählte Zeichenkette sein. Einmal vergeben, nicht mehr ändern.",
+      "Eindeutiger Bezeichner für dieses Datenpaket. Kann eine institutionelle ID, eine URI oder eine selbst gewählte Zeichenkette sein. Einmal vergeben, nicht mehr ändern.",
     placEn: "e.g. DE-MUS-814111",
     placDe: "z.B. DE-MUS-814111",
   },

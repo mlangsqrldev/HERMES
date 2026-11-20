@@ -954,14 +954,14 @@
                         :data-tip="
                           getLabel(
                             'appellation.id',
-                            'Inventory number or institutional identifier of the heritage asset (e.g. museum number). Distinct from the Record ID above, which identifies the technical record.',
+                            'Inventory number or institutional identifier of the heritage asset (e.g. museum number). Distinct from the Record ID above. If unknown, use the Unknown button.',
                             'doc',
                           )
                         "
                         v-if="
                           getLabel(
                             'appellation.id',
-                            'Inventory number or institutional identifier of the heritage asset (e.g. museum number). Distinct from the Record ID above, which identifies the technical record.',
+                            'Inventory number or institutional identifier of the heritage asset (e.g. museum number). Distinct from the Record ID above. If unknown, use the Unknown button.',
                             'doc',
                           )
                         "
@@ -988,15 +988,32 @@
                       </div>
                     </div>
 
-                    <input
-                      type="text"
-                      required
-                      v-model="form['appellation.id']"
-                      class="input input-bordered w-full validator"
-                      :placeholder="
-                        getLabel('appellation.id', 'e.g. SK 740', 'plac')
-                      "
-                    />
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="text"
+                        required
+                        v-model="form['appellation.id']"
+                        class="input input-bordered w-full validator"
+                        :placeholder="
+                          getLabel('appellation.id', 'e.g. SK 740', 'plac')
+                        "
+                      />
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm shrink-0"
+                        @click="
+                          form['appellation.id'] =
+                            currentLocale === 'de' ? 'unbekannt' : 'unknown'
+                        "
+                        :title="
+                          currentLocale === 'de'
+                            ? 'Inventar-ID als unbekannt markieren'
+                            : 'Mark inventory ID as unknown'
+                        "
+                      >
+                        {{ currentLocale === "de" ? "Unbekannt" : "Unknown" }}
+                      </button>
+                    </div>
 
                     <div class="validator-hint">{{ t("validationHint") }}</div>
                   </div>
@@ -1787,8 +1804,7 @@
                   <label class="label"
                     ><span class="label-text font-bold capitalize">{{
                       getLabel("provenance", "provenance")
-                    }}</span
-                    ><span class="text-accent font-black">*</span></label
+                    }}</span></label
                   >
 
                   <div
@@ -1952,19 +1968,23 @@
                       </div>
                     </div>
 
-                    <HectorMonumentTypeInput
-                      v-model="form['characters.heritageAssetType']"
-                      :current-locale="currentLocale"
-                    />
+                    <div class="mb-6">
+                      <HectorMonumentTypeInput
+                        v-model="form['characters.heritageAssetType']"
+                        :current-locale="currentLocale"
+                      />
+                    </div>
                   </div>
 
-                  <TemporalSection
-                    v-model="form['characters.temporal']"
-                    :current-locale="currentLocale"
-                    :title="getLabel('characters.temporal', 'Temporal')"
-                    :tooltip="getLabel('characters.temporal', 'Temporal coverage / historical period of the heritage asset.', 'doc')"
-                  />
-                  <div class="form-control w-full mb-6">
+                  <div class="my-6">
+                    <TemporalSection
+                      v-model="form['characters.temporal']"
+                      :current-locale="currentLocale"
+                      :title="getLabel('characters.temporal', 'Temporal')"
+                      :tooltip="getLabel('characters.temporal', 'Temporal coverage / historical period of the heritage asset.', 'doc')"
+                    />
+                  </div>
+                  <div class="form-control w-full mb-6 mt-2">
                     <div class="flex flex-row items-center mb-2">
                       <label class="label p-0 mr-2">
                         <span
@@ -2690,15 +2710,13 @@
                     <thead class="bg-base-200">
                       <tr>
                         <th>
-                          {{ getLabel("references.appellation.id", "id") }}
+                          {{
+                            currentLocale === "de"
+                              ? "Literaturangabe"
+                              : "Bibliographic Reference"
+                          }}
                         </th>
-                        <th>
-                          {{ getLabel("references.appellation.name", "name") }}
-                        </th>
-                        <th>{{ getLabel("references.actors.id", "id") }}</th>
-                        <th>
-                          {{ getLabel("references.actors.name", "name") }}
-                        </th>
+                        <th>DOI</th>
                         <th class="w-24">{{ t("actions") }}</th>
                       </tr>
                     </thead>
@@ -2708,10 +2726,12 @@
                         v-for="(subItem, subIdx) in form['references']"
                         :key="subIdx"
                       >
-                        <td>{{ subItem["appellation.id"] }}</td>
-                        <td>{{ subItem["appellation.name"] }}</td>
-                        <td>{{ subItem["actors.id"] }}</td>
-                        <td>{{ subItem["actors.name"] }}</td>
+                        <td class="whitespace-normal text-xs">
+                          {{ subItem["appellation.name"] || subItem["citation"] || "—" }}
+                        </td>
+                        <td class="font-mono text-xs">
+                          {{ subItem["appellation.id"] || subItem["doi"] || "—" }}
+                        </td>
 
                         <td>
                           <div class="flex gap-1">
@@ -2925,8 +2945,8 @@
                   👤
                   {{
                     currentLocale === "de"
-                      ? "Aus Personen-Pool übernehmen"
-                      : "Fill from Person Pool"
+                      ? "Person wählen"
+                      : "Pick Person"
                   }}
                 </button>
               </div>
@@ -4282,42 +4302,16 @@
                     </div>
                   </div>
 
-                  <select
+                  <input
+                    type="text"
                     v-model="drawerForm['extent']"
-                    class="select select-bordered w-full"
-                  >
-                    <option disabled value="">
-                      {{
-                        currentLocale === "de"
-                          ? getLabel("characters.dimensions.extent", "extent") +
-                            " " +
-                            t("select")
-                          : t("select") +
-                            " " +
-                            getLabel("characters.dimensions.extent", "extent")
-                      }}
-                    </option>
-
-                    <template v-if="currentLocale === 'de'">
-                      <option value="Artefakt">Artefakt</option>
-
-                      <option value="Basis">Basis</option>
-
-                      <option value="Säule">Säule</option>
-
-                      <option value="Sockel">Sockel</option>
-                    </template>
-
-                    <template v-else>
-                      <option value="artifact">artifact</option>
-
-                      <option value="base">base</option>
-
-                      <option value="column">column</option>
-
-                      <option value="pedestal">pedestal</option>
-                    </template>
-                  </select>
+                    class="input input-bordered w-full"
+                    :placeholder="
+                      currentLocale === 'de'
+                        ? 'z. B. Artefakt, Basis, Säule, Sockel (Freitext)'
+                        : 'e.g. artifact, base, column, pedestal (free text)'
+                    "
+                  />
                 </div>
 
                 <div class="form-control w-full mb-4">
@@ -5461,769 +5455,52 @@
             </div>
 
             <div v-if="activeDrawerField === 'references'">
-              <div class="grid grid-cols-1 gap-x-6">
+              <div class="space-y-4">
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  v-if="recentReferences.length > 0"
+                  class="bg-base-200/50 p-3 rounded-lg border border-base-300 space-y-2"
                 >
-                  <div class="items-center flex flex-row">
-                    <label class="label mb-2 pb-0">
-                      <span class="label-text font-bold text-lg capitalize">{{
-                        getLabel("references.appellation", "appellation")
-                      }}</span>
-                    </label>
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'references.appellation',
-                          'The ID and name given to the information source.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'references.appellation',
-                          'The ID and name given to the information source.',
-                          'doc',
-                        )
-                      "
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-base-content/70 block">
+                    {{ currentLocale === "de" ? "Letzte 10 Referenzen (Kürzel-Auswahl):" : "Recent 10 References (Quick Select):" }}
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <button
+                      v-for="(rChip, rIdx) in recentReferences"
+                      :key="rIdx"
+                      type="button"
+                      class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary hover:bg-primary/10 font-normal"
+                      @click="drawerForm['appellation.name'] = rChip.citation || ''; drawerForm['appellation.id'] = rChip.doi || '';"
+                      :title="`${rChip.citation}${rChip.doi ? ` (${rChip.doi})` : ''}`"
                     >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('references.appellation', 'The ID and name given to the information source.', 'doc') }}</div> -->
-
-                  <div class="grid grid-cols-1 gap-x-6">
-                    <div class="form-control w-full mb-4">
-                      <div class="flex flex-row items-center">
-                        <label class="label"
-                          ><span class="label-text font-bold capitalize">{{
-                            getLabel("references.appellation.id", "id")
-                          }}</span
-                          ><span class="text-warning font-black">~</span></label
-                        >
-
-                        <div
-                          @click.stop.prevent
-                          class="tooltip tooltip-accent tooltip-right"
-                          :data-tip="
-                            getLabel(
-                              'references.appellation.id',
-                              'Unique ID or URI assigned to the cited information source.',
-                              'doc',
-                            )
-                          "
-                          v-if="
-                            getLabel(
-                              'references.appellation.id',
-                              'Unique ID or URI assigned to the cited information source.',
-                              'doc',
-                            )
-                          "
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              viewBox="0 0 512 512"
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"
-                            >
-                              <path
-                                d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      <input
-                        type="text"
-                        v-model="drawerForm['appellation.id']"
-                        class="input input-bordered w-full validator"
-                        :placeholder="
-                          getLabel(
-                            'references.appellation.id',
-                            'e.g. https://doi.org/10.11588/diglit.3456',
-                            'plac',
-                          )
-                        "
-                      />
-
-                      <div class="validator-hint">
-                        {{ t("validationHint") }}
-                      </div>
-                    </div>
-
-                    <div class="form-control w-full mb-4">
-                      <div class="flex flex-row items-center">
-                        <label class="label"
-                          ><span class="label-text font-bold capitalize">{{
-                            getLabel("references.appellation.name", "name")
-                          }}</span
-                          ><span class="text-warning font-black">~</span></label
-                        >
-
-                        <div
-                          @click.stop.prevent
-                          class="tooltip tooltip-accent tooltip-right"
-                          :data-tip="
-                            getLabel(
-                              'references.appellation.name',
-                              'The name or title given to the cited information source.',
-                              'doc',
-                            )
-                          "
-                          v-if="
-                            getLabel(
-                              'references.appellation.name',
-                              'The name or title given to the cited information source.',
-                              'doc',
-                            )
-                          "
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              viewBox="0 0 512 512"
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"
-                            >
-                              <path
-                                d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      <input
-                        type="text"
-                        v-model="drawerForm['appellation.name']"
-                        class="input input-bordered w-full validator"
-                        :placeholder="
-                          getLabel(
-                            'references.appellation.name',
-                            'e.g. Description of ancient sculptures excluding the Pergamon finds',
-                            'plac',
-                          )
-                        "
-                      />
-
-                      <div class="validator-hint">
-                        {{ t("validationHint") }}
-                      </div>
-                    </div>
+                      + {{ rChip.shortLabel }}
+                    </button>
                   </div>
                 </div>
 
-                <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
-                >
-                  <div class="items-center flex flex-row">
-                    <label class="label mb-2 pb-0">
-                      <span class="label-text font-bold text-lg capitalize">{{
-                        getLabel("references.actors", "actors")
-                      }}</span>
-                    </label>
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'references.actors',
-                          '(creator, author, contributor, editor, etc.)',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'references.actors',
-                          '(creator, author, contributor, editor, etc.)',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('references.actors', '(creator, author, contributor, editor, etc.)', 'doc') }}</div> -->
-
-                  <div class="grid grid-cols-1 gap-x-6">
-                    <div class="form-control w-full mb-4">
-                      <div class="flex flex-row items-center">
-                        <label class="label"
-                          ><span class="label-text font-bold capitalize">{{
-                            getLabel("references.actors.id", "id")
-                          }}</span></label
-                        >
-
-                        <div
-                          @click.stop.prevent
-                          class="tooltip tooltip-accent tooltip-right"
-                          :data-tip="
-                            getLabel(
-                              'references.actors.id',
-                              'Unique ID of the person or organisation involved in the cited source (e.g. author, publisher).',
-                              'doc',
-                            )
-                          "
-                          v-if="
-                            getLabel(
-                              'references.actors.id',
-                              'Unique ID of the person or organisation involved in the cited source (e.g. author, publisher).',
-                              'doc',
-                            )
-                          "
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              viewBox="0 0 512 512"
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"
-                            >
-                              <path
-                                d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      <input
-                        type="text"
-                        v-model="drawerForm['actors.id']"
-                        class="input input-bordered w-full validator"
-                        :placeholder="
-                          getLabel(
-                            'references.actors.id',
-                            'e.g. https://d-nb.info/gnd/2015909-2',
-                            'plac',
-                          )
-                        "
-                      />
-
-                      <div class="validator-hint">
-                        {{ t("validationHint") }}
-                      </div>
-                    </div>
-
-                    <div class="form-control w-full mb-4">
-                      <div class="flex flex-row items-center">
-                        <label class="label"
-                          ><span class="label-text font-bold capitalize">{{
-                            getLabel("references.actors.name", "name")
-                          }}</span></label
-                        >
-
-                        <div
-                          @click.stop.prevent
-                          class="tooltip tooltip-accent tooltip-right"
-                          :data-tip="
-                            getLabel(
-                              'references.actors.name',
-                              'The name of the person or organization)',
-                              'doc',
-                            )
-                          "
-                          v-if="
-                            getLabel(
-                              'references.actors.name',
-                              'The name of the person or organization)',
-                              'doc',
-                            )
-                          "
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              viewBox="0 0 512 512"
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"
-                            >
-                              <path
-                                d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      <input
-                        type="text"
-                        v-model="drawerForm['actors.name']"
-                        class="input input-bordered w-full validator"
-                        :placeholder="
-                          getLabel('references.actors.name', '', 'plac')
-                        "
-                      />
-
-                      <div class="validator-hint">
-                        {{ t("validationHint") }}
-                      </div>
-                    </div>
-
-                    <div class="form-control w-full mb-4">
-                      <div class="flex flex-row items-center">
-                        <label class="label"
-                          ><span class="label-text font-bold capitalize">{{
-                            getLabel("references.actors.roles", "roles")
-                          }}</span></label
-                        >
-
-                        <div
-                          @click.stop.prevent
-                          class="tooltip tooltip-accent tooltip-right"
-                          :data-tip="
-                            getLabel(
-                              'references.actors.roles',
-                              'The roles of the actor (creator, custodian, repository manager, curator, architect, sculptor, photographer, compiler, etc.). Use of a controlled vocabulary such as the Getty Art and Architecture thesaurus is recommended; the vocabulary used should be indicated using an attribute.',
-                              'doc',
-                            )
-                          "
-                          v-if="
-                            getLabel(
-                              'references.actors.roles',
-                              'The roles of the actor (creator, custodian, repository manager, curator, architect, sculptor, photographer, compiler, etc.). Use of a controlled vocabulary such as the Getty Art and Architecture thesaurus is recommended; the vocabulary used should be indicated using an attribute.',
-                              'doc',
-                            )
-                          "
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              viewBox="0 0 512 512"
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"
-                            >
-                              <path
-                                d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      <select
-                        v-model="drawerForm['actors.roles']"
-                        class="select select-bordered w-full"
-                      >
-                        <option disabled value="">
-                          {{
-                            currentLocale === "de"
-                              ? getLabel("references.actors.roles", "roles") +
-                                " " +
-                                t("select")
-                              : t("select") +
-                                " " +
-                                getLabel("references.actors.roles", "roles")
-                          }}
-                        </option>
-
-                        <template v-if="currentLocale === 'de'">
-                          <option value="Architekt">Architekt</option>
-
-                          <option value="Bearbeiter">Bearbeiter</option>
-
-                          <option value="Betreuer">Betreuer</option>
-
-                          <option value="Bildhauer">Bildhauer</option>
-
-                          <option value="Ersteller">Ersteller</option>
-
-                          <option value="Fotograf">Fotograf</option>
-
-                          <option value="Kurator">Kurator</option>
-
-                          <option value="Repository-Manager">
-                            Repository-Manager
-                          </option>
-                        </template>
-
-                        <template v-else>
-                          <option value="Architect">Architect</option>
-
-                          <option value="Creator">Creator</option>
-
-                          <option value="Curator">Curator</option>
-
-                          <option value="Custodian">Custodian</option>
-
-                          <option value="Editor">Editor</option>
-
-                          <option value="Photographer">Photographer</option>
-
-                          <option value="Repository manager">
-                            Repository manager
-                          </option>
-
-                          <option value="Sculptor">Sculptor</option>
-                        </template>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-control w-full mb-4">
-                  <div class="flex flex-row items-center">
-                    <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
-                        getLabel("references.type", "type")
-                      }}</span></label
-                    >
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'references.type',
-                          'The type of the cited source.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'references.type',
-                          'The type of the cited source.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <select
-                    v-model="drawerForm['type']"
-                    class="select select-bordered w-full"
-                  >
-                    <option disabled value="">
-                      {{
-                        currentLocale === "de"
-                          ? getLabel("references.type", "type") +
-                            " " +
-                            t("select")
-                          : t("select") +
-                            " " +
-                            getLabel("references.type", "type")
-                      }}
-                    </option>
-
-                    <template v-if="currentLocale === 'de'">
-                      <option value="Archiv">Archiv</option>
-
-                      <option value="Artikel">Artikel</option>
-
-                      <option value="Buch">Buch</option>
-
-                      <option value="Datei">Datei</option>
-
-                      <option value="Datensatz">Datensatz</option>
-
-                      <option value="Kapitel">Kapitel</option>
-                    </template>
-
-                    <template v-else>
-                      <option value="Archive">Archive</option>
-
-                      <option value="Article">Article</option>
-
-                      <option value="Book">Book</option>
-
-                      <option value="Chapter">Chapter</option>
-
-                      <option value="File">File</option>
-
-                      <option value="Record">Record</option>
-                    </template>
-                  </select>
-                </div>
-
-                <div class="form-control w-full mb-4">
-                  <div class="flex flex-row items-center">
-                    <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
-                        getLabel("references.rights", "rights")
-                      }}</span
-                      ><span class="text-accent font-black">*</span></label
-                    >
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'references.rights',
-                          'Rights information relating to this cited source.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'references.rights',
-                          'Rights information relating to this cited source.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <input
-                    type="text"
-                    required
-                    v-model="drawerForm['rights']"
-                    class="input input-bordered w-full validator"
-                    :placeholder="
-                      getLabel(
-                        'references.rights',
-                        'e.g. This object is protected by copyright but freely accessible ...',
-                        'plac',
-                      )
-                    "
-                  />
-
-                  <div class="validator-hint">{{ t("validationHint") }}</div>
-                </div>
-
-                <div class="form-control w-full mb-4">
-                  <div class="flex flex-row items-center">
-                    <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
-                        getLabel("references.note", "note")
-                      }}</span></label
-                    >
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'references.note',
-                          'Additional note on the cited source.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'references.note',
-                          'Additional note on the cited source.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold">
+                      {{ currentLocale === "de" ? "Literaturangabe / Referenz (Freitext)" : "Bibliographic Reference (Full Citation)" }}
+                    </span>
+                  </label>
                   <textarea
-                    v-model="drawerForm['note']"
-                    class="textarea textarea-bordered w-full h-24"
-                    :placeholder="
-                      getLabel(
-                        'references.note',
-                        'e.g. Second, revised edition',
-                        'plac',
-                      )
-                    "
+                    v-model="drawerForm['appellation.name']"
+                    rows="4"
+                    class="textarea textarea-bordered w-full text-sm"
+                    :placeholder="currentLocale === 'de' ? 'z. B. D’Alessio, A.: La sinagoga e la comunità ebraica di Ostia: bilancio archeologico e prospettive di ricerca, in: A. D’Alessio – A. Zevi (Hrsg.), La sinagoga di Ostia antica. 60 anni dalla scoperta, 20 anni di arte in memoria (Rom 2023) 17-26.' : 'e.g. D’Alessio, A.: La sinagoga e la comunità ebraica di Ostia... (Rome 2023) 17-26.'"
                   ></textarea>
                 </div>
 
-                <div class="form-control w-full mb-4">
-                  <div class="flex flex-row items-center">
-                    <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
-                        getLabel("references.link", "link")
-                      }}</span
-                      ><span class="text-warning font-black">~</span></label
-                    >
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'references.link',
-                          'Direct link to the cited resource.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'references.link',
-                          'Direct link to the cited resource.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text font-bold">DOI</span>
+                  </label>
                   <input
-                    type="url"
-                    v-model="drawerForm['link']"
-                    class="input input-bordered w-full"
-                    :placeholder="
-                      getLabel(
-                        'references.link',
-                        'e.g. https://doi.org/10.11588/diglit.3456#0291',
-                        'plac',
-                      )
-                    "
+                    type="text"
+                    v-model="drawerForm['appellation.id']"
+                    class="input input-bordered w-full font-mono text-sm"
+                    placeholder="e.g. 10.11588/diglit.3456 or https://doi.org/..."
                   />
-
-                  <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
               </div>
             </div>
@@ -6641,6 +5918,8 @@ import {
   addOrUpdatePerson,
   addOrUpdateSavedSpatial,
   removeSavedSpatial,
+  recentReferences,
+  recordRecentReference,
   formatGeopoliticalCountry,
   resolveGeopoliticalArea,
   normalizeYearDate,
@@ -11039,6 +10318,10 @@ const saveDrawer = () => {
     if (drawerForm["link"]) {
       drawerForm["link"] = sanitizeDoi(drawerForm["link"]);
     }
+    recordRecentReference({
+      citation: drawerForm["appellation.name"] || "",
+      doi: drawerForm["appellation.id"] || "",
+    });
   }
 
   // Validate and normalize year dates for characters.temporal

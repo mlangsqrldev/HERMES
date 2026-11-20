@@ -333,7 +333,7 @@ export function buildBonnDataJson({
   addDesc(extractLocalizedText(collectionForm.statement));
   for (const h of heritageItems) {
     const hName = extractLocalizedText(h["appellation.name"]);
-    const hDesc = extractLocalizedText(h.description);
+    const hDesc = extractLocalizedText(h["characters.description"] || h.description);
     if (hDesc) addDesc(hName ? `${hName}: ${hDesc}` : hDesc);
   }
   for (const d of digitalItems) {
@@ -343,12 +343,24 @@ export function buildBonnDataJson({
   }
   for (const act of activityItems) {
     const paradata = act.paradata || {};
+    const coList = Array.isArray(act.consistsOf) ? act.consistsOf : [];
+    const getDapText = (id, legacyVal) => {
+      if (legacyVal) return legacyVal;
+      const found = coList.find(
+        (c) =>
+          c &&
+          (c.dapId === id ||
+            String(c["methods#termUID"] || "").endsWith(`/${id}`) ||
+            String(c.hadSpecificPurpose || "").includes(id)),
+      );
+      return found ? extractLocalizedText(found.methods || found.techniques) : "";
+    };
     const dapLines = [
-      paradata.dap1 && `DAP-1 (Material traces): ${paradata.dap1}`,
-      paradata.dap2 && `DAP-2 (Capture & coverage): ${paradata.dap2}`,
-      paradata.dap3 && `DAP-3 (Geometry processing): ${paradata.dap3}`,
-      paradata.dap4 && `DAP-4 (Texture & shaders): ${paradata.dap4}`,
-      paradata.dap5 && `DAP-5 (Imaging balance): ${paradata.dap5}`,
+      getDapText("DAP-1", paradata.dap1) && `DAP-1 (Material traces): ${getDapText("DAP-1", paradata.dap1)}`,
+      getDapText("DAP-2", paradata.dap2) && `DAP-2 (Capture & coverage): ${getDapText("DAP-2", paradata.dap2)}`,
+      getDapText("DAP-3", paradata.dap3) && `DAP-3 (Geometry processing): ${getDapText("DAP-3", paradata.dap3)}`,
+      getDapText("DAP-4", paradata.dap4) && `DAP-4 (Texture & shaders): ${getDapText("DAP-4", paradata.dap4)}`,
+      getDapText("DAP-5", paradata.dap5) && `DAP-5 (Imaging balance): ${getDapText("DAP-5", paradata.dap5)}`,
     ].filter(Boolean);
     if (dapLines.length > 0) {
       addDesc(`Digital Authenticity Profile (DAP):\n${dapLines.join("\n")}`);
@@ -405,22 +417,22 @@ export function buildBonnDataJson({
         ? val.trim()
         : String(val?.label || val?.name || val?._value || "").trim();
     if (!label) return;
-    if (!seenFreeKw.has(label.toLowerCase())) {
+    const kwUri = String(uri || val?.["#termUID"] || val?.uri || val?.id || "").trim();
+    const kwVoc = inferVocabName(kwUri, String(voc || val?.vocabulary || val?.authority || "").trim());
+    if (kwUri || kwVoc) {
+      if (!seenKw.has(label.toLowerCase())) {
+        seenKw.add(label.toLowerCase());
+        const entry = { keywordValue: primitive("keywordValue", label) };
+        if (kwVoc) entry.keywordVocabulary = primitive("keywordVocabulary", kwVoc);
+        if (kwUri)
+          entry.keywordVocabularyURI = primitive("keywordVocabularyURI", kwUri);
+        keywords.push(entry);
+      }
+    } else if (!seenFreeKw.has(label.toLowerCase())) {
       seenFreeKw.add(label.toLowerCase());
       freeKeywords.push({
         freeKeywordValue: primitive("freeKeywordValue", label),
       });
-    }
-    const kwUri = String(uri || val?.uri || val?.id || "").trim();
-    const kwVoc = inferVocabName(kwUri, String(voc || val?.vocabulary || val?.authority || "").trim());
-    if ((kwUri || kwVoc) && !seenKw.has(label.toLowerCase())) {
-      seenKw.add(label.toLowerCase());
-      const entry = { keywordValue: primitive("keywordValue", label) };
-      if (kwVoc) entry.keywordVocabulary = primitive("keywordVocabulary", kwVoc);
-      if (kwUri)
-        entry.keywordVocabularyURI = primitive("keywordVocabularyURI", kwUri);
-      keywords.push(entry);
-      pushTopic(label, kwVoc, kwUri, val?.key || "");
     }
   };
 

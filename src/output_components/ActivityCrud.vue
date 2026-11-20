@@ -49,7 +49,8 @@
             </div>
             <button
               type="button"
-              class="btn btn-sm btn-primary gap-1 shadow-xs font-semibold"
+              class="btn btn-xs btn-outline btn-success gap-1 shadow-xs font-semibold"
+              :disabled="!items || items.length === 0"
               @click="startNewRecord"
             >
               <span>+</span>
@@ -1140,20 +1141,12 @@
                       </button>
                     </div>
                   </div>
-                  <span class="text-[11px] text-base-content/60 font-mono">{{
-                    form["eventType#termUID"] || "HECTOR Vocab"
-                  }}</span>
                 </div>
 
                 <!-- Quick Select Chips for Activity Types -->
                 <div class="flex items-center gap-1.5 flex-wrap mb-2">
                   <button
                     v-for="actPreset in [
-                      {
-                        label: '3D-Digitalisierung',
-                        en: '3D Digitisation',
-                        uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_3d_digitisation',
-                      },
                       {
                         label: 'Streifenlicht-Scanning',
                         en: 'Structured Light Scanning',
@@ -1398,23 +1391,6 @@
               >
                 {{ t("cancel") }}
               </button>
-              <button
-                type="button"
-                class="btn btn-outline btn-sm gap-1"
-                @click="saveDraft()"
-                :title="
-                  currentLocale === 'de'
-                    ? 'Unfertigen Datensatz ohne Pflichtfeld-Prüfung zwischenspeichern'
-                    : 'Save incomplete record as draft without required-field check'
-                "
-              >
-                💾
-                {{
-                  currentLocale === "de"
-                    ? "Als Entwurf zwischenspeichern"
-                    : "Save Draft"
-                }}
-              </button>
               <button type="submit" class="btn btn-primary">
                 {{
                   currentLocale === "de"
@@ -1428,16 +1404,18 @@
       </div>
     </div>
 
-    <div class="drawer-side z-[100]">
-      <label
-        for="drawer-activity"
-        aria-label="close sidebar"
-        class="drawer-overlay"
-      ></label>
+    <Teleport to="body">
       <div
-        class="w-full max-w-lg min-h-full bg-base-100 flex flex-col pointer-events-auto"
+        v-if="isDrawerOpen"
+        class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
+        @mousedown.self="isDrawerOpen = false"
       >
-        <div class="flex-1 overflow-y-auto p-6">
+        <div
+          role="dialog"
+          aria-modal="true"
+          class="w-full max-w-2xl max-h-[90vh] bg-base-100 rounded-2xl shadow-2xl border border-base-300 flex flex-col overflow-hidden pointer-events-auto"
+        >
+          <div class="flex-1 overflow-y-auto p-6">
           <div
             class="flex items-start justify-between mb-6 pb-4 border-b border-base-200"
           >
@@ -3644,9 +3622,10 @@
               </button>
             </div>
           </form>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
   <PersonPickerModal
     :isOpen="isPersonPickerOpen"
@@ -3666,20 +3645,22 @@
     @close="isOrgPickerOpen = false"
     @select="handleOrgSelected"
   />
-  <EquipmentPickerModal
-    :isOpen="isEquipmentPickerOpen"
-    mode="select"
-    :locale="currentLocale"
-    @close="isEquipmentPickerOpen = false"
-    @select="handleEquipmentSelected"
-  />
-  <SoftwarePickerModal
-    :isOpen="isSoftwarePickerOpen"
-    mode="select"
-    :locale="currentLocale"
-    @close="isSoftwarePickerOpen = false"
-    @select="handleSoftwareSelected"
-  />
+  <Teleport to="body">
+    <EquipmentPickerModal
+      :isOpen="isEquipmentPickerOpen"
+      mode="select"
+      :locale="currentLocale"
+      @close="isEquipmentPickerOpen = false"
+      @select="handleEquipmentSelected"
+    />
+    <SoftwarePickerModal
+      :isOpen="isSoftwarePickerOpen"
+      mode="select"
+      :locale="currentLocale"
+      @close="isSoftwarePickerOpen = false"
+      @select="handleSoftwareSelected"
+    />
+  </Teleport>
   <dialog ref="templateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">

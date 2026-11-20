@@ -184,8 +184,8 @@
       </div>
     </div>
 
-    <!-- 2. HARDWARE & SOFTWARE KONFIGURATOR -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <!-- 2. HARDWARE / EQUIPMENT KONFIGURATOR -->
+    <div class="grid grid-cols-1 gap-4 mb-4">
       <!-- Left: Hardware Equipment -->
       <div
         class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between"
@@ -232,56 +232,6 @@
             currentLocale === 'de'
               ? 'z. B. Sony A7R V / Nikkor 50mm / Artec Leo'
               : 'e.g. Sony A7R V / Nikkor 50mm / Artec Leo'
-          "
-        />
-      </div>
-
-      <!-- Right: Processing Software & Techniques -->
-      <div
-        class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between"
-      >
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <label
-              class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
-            >
-              <span>💻</span>
-              <span>{{
-                currentLocale === "de"
-                  ? "Verarbeitungs-Software & Pipeline"
-                  : "Processing Software & Pipeline"
-              }}</span>
-            </label>
-          </div>
-
-          <!-- Software Presets -->
-          <div class="flex flex-wrap gap-1.5 mb-3">
-            <button
-              v-for="sw in SOFTWARE_PRESETS"
-              :key="sw"
-              type="button"
-              class="preset-chip"
-              :class="
-                selectedSoftware.includes(sw)
-                  ? 'ring-2 ring-secondary bg-secondary/15 font-bold'
-                  : ''
-              "
-              @click="toggleSoftware(sw)"
-            >
-              <span>{{ selectedSoftware.includes(sw) ? "✓" : "+" }}</span>
-              <span>{{ sw }}</span>
-            </button>
-          </div>
-        </div>
-
-        <input
-          type="text"
-          v-model="customSoftware"
-          class="input input-sm input-bordered w-full text-xs font-mono"
-          :placeholder="
-            currentLocale === 'de'
-              ? 'z. B. RealityCapture, Agisoft Metashape, Blender'
-              : 'e.g. RealityCapture, Agisoft Metashape, Blender'
           "
         />
       </div>

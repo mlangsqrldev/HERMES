@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.31 · 2026-11-17</span
+              >v0.1.32 · 2026-11-20</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -509,6 +509,29 @@
             accept=".zip,.xml,.json"
             @change="importFromBagIt"
           />
+
+          <!-- Global Save All Button -->
+          <button
+            type="button"
+            class="btn btn-sm btn-success text-success-content gap-2 justify-start font-bold shadow-sm hover:brightness-95 transition-all"
+            @click="saveAllSections"
+            :title="
+              currentLocale === 'de'
+                ? 'Alle aktuellen Formulare in Sammlung, Kulturgut, Digitalisat und Aktivitäten speichern'
+                : 'Save all active forms across Collection, Heritage Asset, Digital Resource, and Activities'
+            "
+          >
+            <span>💾</span>
+            <span class="truncate">{{
+              saveAllSuccess
+                ? currentLocale === "de"
+                  ? "Alle gespeichert ✓"
+                  : "All Saved ✓"
+                : currentLocale === "de"
+                  ? "Alle speichern"
+                  : "Save All"
+            }}</span>
+          </button>
 
           <!-- Primäre Aktion: CARARE-Datei laden (öffnet Dateiauswahl-Fenster) -->
 
@@ -3665,6 +3688,32 @@ const removeFileHash = (fileName) => {
       manifestContent += `${hash} data/${relativePath}\n`;
     }
   }
+};
+
+const saveAllSuccess = ref(false);
+const saveAllSections = () => {
+  const comps = [
+    getChildComp(collectionRef),
+    getChildComp(heritageRef),
+    getChildComp(digitalRef),
+    getChildComp(activityRef),
+  ];
+  comps.forEach((c) => {
+    if (c && typeof c.save === "function") {
+      try {
+        if (c.form && "_isDraft" in c.form) {
+          delete c.form._isDraft;
+        }
+        c.save();
+      } catch (e) {
+        console.warn("Save All section warning:", e);
+      }
+    }
+  });
+  saveAllSuccess.value = true;
+  setTimeout(() => {
+    saveAllSuccess.value = false;
+  }, 2500);
 };
 
 const clearAllForms = () => {

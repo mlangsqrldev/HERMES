@@ -38,6 +38,7 @@
               <button
                 type="button"
                 class="btn btn-xs btn-outline btn-success gap-1 shadow-xs font-semibold"
+                :disabled="!items || items.length === 0"
                 @click="addNewDigitalResource"
                 :title="
                   currentLocale === 'de'
@@ -1564,49 +1565,10 @@
               <button
                 v-if="isEditing"
                 type="button"
-                class="btn btn-outline btn-sm gap-1"
-                @click="resetForm()"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                {{ currentLocale === "de" ? "Neuer Datensatz" : "New Record" }}
-              </button>
-              <button
-                v-if="isEditing"
-                type="button"
                 class="btn btn-ghost"
                 @click="resetForm()"
               >
                 {{ t("cancel") }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline btn-sm gap-1"
-                @click="saveDraft()"
-                :title="
-                  currentLocale === 'de'
-                    ? 'Unfertigen Datensatz ohne Pflichtfeld-Prüfung zwischenspeichern'
-                    : 'Save incomplete record as draft without required-field check'
-                "
-              >
-                💾
-                {{
-                  currentLocale === "de"
-                    ? "Als Entwurf zwischenspeichern"
-                    : "Save Draft"
-                }}
               </button>
               <button type="submit" class="btn btn-primary">
                 {{

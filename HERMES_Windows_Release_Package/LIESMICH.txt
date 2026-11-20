@@ -1,11 +1,11 @@
-HERMES — Heritage Metadata Entry System (v0.1.31 · 2026-11-17)
+HERMES — Heritage Metadata Entry System (v0.1.32 · 2026-11-20)
 Wissenschaftliches Erfassungssystem für Archäologie & Museum
 Universität Bonn — Bonn Center for Digital Humanities (BCDH)
 ================================================================
 
 Inhalt dieses Pakets:
 ---------------------
-1. HERMES_v0.1.31_2026-11-17.exe
+1. HERMES_v0.1.32_2026-11-20.exe
    - Portable Standalone-Anwendung (einzige Programmdatei, benötigt keine Installation).
    - Kann direkt per Doppelklick auf jedem 64-Bit Windows-PC (Windows 10 / 11) gestartet werden.
    - Handbuch und Anwendung sind vollständig integriert: Klick auf "Handbuch / Manual" in der Kopfzeile

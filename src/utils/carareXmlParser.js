@@ -259,14 +259,16 @@ export function parseCarareXml(xmlString) {
       colRecord["coverage.temporal"] = getDirectChildren(covEl, "temporal").map(
         (tempEl) => {
           const tsEl = getDirectChild(tempEl, "timeSpan");
-          const pName = getText(tempEl, "periodName");
-          const dDate = getText(tempEl, "displayDate") || pName;
+          const rawPName = getText(tempEl, "periodName");
+          const uriMatch = rawPName.match(/\((https?:\/\/[^\)]+)\)\s*$/);
+          const pName = rawPName.replace(/\s*\(https?:\/\/[^\)]+\)\s*$/, "").trim();
+          const dDate = (getText(tempEl, "displayDate") || pName).replace(/\s*\(https?:\/\/[^\)]+\)\s*$/, "").trim();
           return {
             "timeSpan.startDate": tsEl ? getText(tsEl, "startDate") : "",
             "timeSpan.endDate": tsEl ? getText(tsEl, "endDate") : "",
-            "timeSpan.dateRangeQualifier": tsEl
-              ? getText(tsEl, "dateRangeQualifier")
-              : "",
+            "timeSpan.dateRangeQualifier":
+              (tsEl ? getText(tsEl, "dateRangeQualifier") : "") ||
+              (uriMatch ? uriMatch[1] : ""),
             periodName: pName,
             "periodName#lang": getLang(getDirectChild(tempEl, "periodName"), "de"),
             "periodName#preferred": getPreferred(
@@ -505,13 +507,9 @@ export function parseCarareXml(xmlString) {
         "#termUID": getAttr(m, "termUID"),
       })),
 
-      "characters.inscriptions": fromCharOrDirect("inscriptions").map((i) => ({
-        _value: i.textContent.trim(),
-        "#lang": getLang(i, "de"),
-        "#type": getAttr(i, "type"),
-        "#namespace": getAttr(i, "namespace"),
-        "#preferred": getPreferred(i),
-      })),
+      "characters.inscriptions": fromCharOrDirect("inscriptions")
+        .map((i) => i.textContent.trim())
+        .filter(Boolean),
 
       "characters.dimensions": fromCharOrDirect("dimensions").map((d) => ({
         extent: getText(d, "extent"),
@@ -523,14 +521,18 @@ export function parseCarareXml(xmlString) {
 
       "characters.temporal": fromCharOrDirect("temporal").map((t) => {
         const ts = getDirectChild(t, "timeSpan");
+        const rawPeriod = getText(t, "periodName");
+        const uriMatch = rawPeriod.match(/\((https?:\/\/[^\)]+)\)\s*$/);
+        const cleanPeriod = rawPeriod.replace(/\s*\(https?:\/\/[^\)]+\)\s*$/, "").trim();
+        const rawDisplay = getText(t, "displayDate").replace(/\s*\(https?:\/\/[^\)]+\)\s*$/, "").trim();
         return {
           "timeSpan.startDate": ts ? getText(ts, "startDate") : "",
           "timeSpan.endDate": ts ? getText(ts, "endDate") : "",
-          "timeSpan.dateRangeQualifier": ts
-            ? getText(ts, "dateRangeQualifier")
-            : "",
-          periodName: getText(t, "periodName"),
-          displayDate: getText(t, "displayDate") || getText(t, "periodName"),
+          "timeSpan.dateRangeQualifier":
+            (ts ? getText(ts, "dateRangeQualifier") : "") ||
+            (uriMatch ? uriMatch[1] : ""),
+          periodName: cleanPeriod,
+          displayDate: rawDisplay || cleanPeriod,
         };
       }),
 

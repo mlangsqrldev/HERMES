@@ -1966,3 +1966,94 @@ export const clearAllEquipment = () => {
   savedEquipment.value = [];
   syncEquipmentToStorage();
 };
+
+// Shared Recent Spatial Locations (Last 5 across HeritageAsset, Activity & Collection)
+const RECENT_SPATIAL_KEY = "hermes_recent_spatial_v1";
+const loadJsonArr = (key) => {
+  try {
+    const raw = localStorage.getItem(key);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+export const recentSpatialLocations = ref(loadJsonArr(RECENT_SPATIAL_KEY));
+
+export const recordRecentSpatialLocation = (sp) => {
+  if (!sp || typeof sp !== "object") return;
+  const named = String(sp["locationSet.namedLocation"] || sp.namedLocation || "").trim();
+  const hist = String(sp["locationSet.historicalName"] || sp.historicalName || "").trim();
+  const town = String(sp["locationSet.address.townOrCity"] || sp.townOrCity || "").trim();
+  const country = String(sp["locationSet.address.country"] || sp.country || "").trim();
+  if (!named && !hist && !town) return;
+  const entry = {
+    label: [hist || named, town, country].filter(Boolean).join(", "),
+    "locationSet.namedLocation": named,
+    "locationSet.historicalName": hist,
+    "locationSet.address.townOrCity": town,
+    "locationSet.address.country": country,
+    "locationSet.address.geopoliticalArea": sp["locationSet.geopoliticalArea"] || "",
+    "locationSet.geopoliticalArea": sp["locationSet.geopoliticalArea"] || "",
+    "locationSet.address.postcodeOrZipcode": sp["locationSet.address.postcodeOrZipcode"] || "",
+    "locationSet.address.roadName": sp["locationSet.address.roadName"] || "",
+    "locationSet.address.numberInRoad": sp["locationSet.address.numberInRoad"] || "",
+    "locationSet.address.buildingName": sp["locationSet.address.buildingName"] || "",
+    "locationSet.namedLocation#termUID": sp["locationSet.namedLocation#termUID"] || "",
+    "locationSet.namedLocation#namespace": sp["locationSet.namedLocation#namespace"] || "",
+    "geometry.quickpoint.y": sp["geometry.quickpoint.y"] || "",
+    "geometry.quickpoint.x": sp["geometry.quickpoint.x"] || "",
+    spatialReferenceSystem: sp.spatialReferenceSystem || "",
+  };
+  const filtered = recentSpatialLocations.value.filter(
+    (x) => (x.label || "").toLowerCase() !== entry.label.toLowerCase(),
+  );
+  recentSpatialLocations.value = [entry, ...filtered].slice(0, 5);
+  try {
+    localStorage.setItem(RECENT_SPATIAL_KEY, JSON.stringify(recentSpatialLocations.value));
+  } catch {}
+  addOrUpdateSavedSpatial(entry);
+};
+
+// Shared Recent References (Last 10 bibliographic entries with short code)
+const RECENT_REFS_KEY = "hermes_recent_references_v1";
+export const recentReferences = ref(loadJsonArr(RECENT_REFS_KEY));
+
+export const recordRecentReference = (refObj) => {
+  if (!refObj) return;
+  const citation = String(refObj.citation || refObj._value || refObj.title || "").trim();
+  const doi = String(refObj.doi || refObj["appellation.id"] || "").trim();
+  if (!citation && !doi) return;
+  const shortLabel = citation
+    ? citation.length > 36
+      ? citation.slice(0, 34).trim() + "…"
+      : citation
+    : doi;
+  const entry = { shortLabel, citation, doi };
+  const filtered = recentReferences.value.filter(
+    (x) =>
+      (x.citation || "").toLowerCase() !== citation.toLowerCase() ||
+      (x.doi || "").toLowerCase() !== doi.toLowerCase(),
+  );
+  recentReferences.value = [entry, ...filtered].slice(0, 10);
+  try {
+    localStorage.setItem(RECENT_REFS_KEY, JSON.stringify(recentReferences.value));
+  } catch {}
+};
+
+// Shared Recent Optical Sensor Resolutions (Last 3)
+const RECENT_OPTICAL_SENSOR_KEY = "hermes_recent_optical_sensors_v1";
+export const recentOpticalSensors = ref(loadJsonArr(RECENT_OPTICAL_SENSOR_KEY));
+
+export const recordRecentOpticalSensor = (val) => {
+  const clean = String(val || "").trim();
+  if (!clean) return;
+  const filtered = recentOpticalSensors.value.filter(
+    (x) => x.toLowerCase() !== clean.toLowerCase(),
+  );
+  recentOpticalSensors.value = [clean, ...filtered].slice(0, 3);
+  try {
+    localStorage.setItem(RECENT_OPTICAL_SENSOR_KEY, JSON.stringify(recentOpticalSensors.value));
+  } catch {}
+};

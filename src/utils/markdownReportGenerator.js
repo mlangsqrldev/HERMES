@@ -1323,7 +1323,7 @@ export function generatePdfReport(allData = {}, locale = "de") {
     ],
     [
       isDe ? "Erstellungsdatum & Software" : "Generated On & Software",
-      `${now} • HERMES v0.1.31 (Heritage Metadata Entry System)`,
+      `${now} • HERMES v0.1.32 (Heritage Metadata Entry System)`,
     ],
   ];
 
@@ -2139,7 +2139,7 @@ export function generatePdfReport(allData = {}, locale = "de") {
     doc.line(margin, pageHeight - 12, pageWidth - margin, pageHeight - 12);
 
     doc.text(
-      "HERMES v0.1.31 • Heritage Metadata Entry System • BCDH Universität Bonn",
+      "HERMES v0.1.32 • Heritage Metadata Entry System • BCDH Universität Bonn",
       margin,
       pageHeight - 8,
     );

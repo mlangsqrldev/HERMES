@@ -10,41 +10,6 @@
           {{ items.length }}
         </span>
       </div>
-
-      <div class="flex flex-wrap items-center gap-1.5">
-        <button
-          v-if="mode !== 'historical'"
-          type="button"
-          class="btn btn-xs btn-outline gap-1"
-          @click="showOrgPicker = true"
-        >
-          🏛️
-          {{
-            currentLocale === "de" ? "Organisation wählen" : "Pick Organizations"
-          }}
-        </button>
-        <button
-          v-if="mode !== 'historical'"
-          type="button"
-          class="btn btn-xs btn-outline btn-primary gap-1"
-          @click="showPersonPicker = true"
-        >
-          👤
-          {{
-            currentLocale === "de"
-              ? "Aus Personen-Pool wählen"
-              : "Pick from Person Pool"
-          }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-xs btn-primary gap-1"
-          @click="openAddForm()"
-        >
-          <span>+</span>
-          {{ currentLocale === "de" ? "Neu hinzufügen" : "Add New" }}
-        </button>
-      </div>
     </div>
 
     <!-- Helpful context hint + GND & HECTOR search + Recent 5 for historical creators -->
@@ -531,7 +496,7 @@
                 <span
                   v-for="(role, rIdx) in extractRoles(item)"
                   :key="rIdx"
-                  class="badge badge-xs badge-outline badge-primary font-medium"
+                  class="badge badge-xs badge-outline badge-primary font-medium whitespace-nowrap h-5 px-2"
                 >
                   {{ role }}
                 </span>
@@ -578,6 +543,42 @@
           ? "Noch keine Einträge zugewiesen."
           : "No entries assigned yet."
       }}
+    </div>
+
+    <!-- Bottom Action Buttons (aligned with Collection Title layout) -->
+    <div class="flex flex-wrap items-center gap-1.5 pt-1">
+      <button
+        type="button"
+        class="btn btn-xs btn-primary gap-1"
+        @click="openAddForm()"
+      >
+        <span>+</span>
+        {{ currentLocale === "de" ? "Neu hinzufügen" : "Add New" }}
+      </button>
+      <button
+        v-if="mode !== 'historical'"
+        type="button"
+        class="btn btn-xs btn-outline gap-1"
+        @click="showOrgPicker = true"
+      >
+        🏛️
+        {{
+          currentLocale === "de" ? "Organisation wählen" : "Pick Organization"
+        }}
+      </button>
+      <button
+        v-if="mode !== 'historical'"
+        type="button"
+        class="btn btn-xs btn-outline btn-primary gap-1"
+        @click="showPersonPicker = true"
+      >
+        👤
+        {{
+          currentLocale === "de"
+            ? "Person wählen"
+            : "Pick Person"
+        }}
+      </button>
     </div>
 
     <!-- Person Pool Picker Modal (hidden for historical mode) -->
