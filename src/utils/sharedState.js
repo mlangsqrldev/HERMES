@@ -1,11 +1,27 @@
 import { reactive, ref, watch } from "vue";
 
+const safeSetStorage = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    console.warn(`Failed to write localStorage key "${key}":`, e);
+    return false;
+  }
+};
+
 // 1. Global Metadata Default Language ('de', 'en', 'fr', 'it', 'es')
-const storedLang = localStorage.getItem("hermes_default_meta_lang") || "de";
+const storedLang = (() => {
+  try {
+    return localStorage.getItem("hermes_default_meta_lang") || "de";
+  } catch {
+    return "de";
+  }
+})();
 export const defaultMetadataLanguage = ref(storedLang);
 
 watch(defaultMetadataLanguage, (newVal) => {
-  if (newVal) localStorage.setItem("hermes_default_meta_lang", newVal);
+  if (newVal) safeSetStorage("hermes_default_meta_lang", newVal);
 });
 
 // 2. Global Rights & Licenses
@@ -249,7 +265,7 @@ export const globalRights = reactive({ ...savedRights });
 
 export const saveGlobalRights = (rightsObj) => {
   Object.assign(globalRights, rightsObj);
-  localStorage.setItem("hermes_global_rights", JSON.stringify(globalRights));
+  safeSetStorage("hermes_global_rights", JSON.stringify(globalRights));
 };
 
 export const resetGlobalRights = () => {
@@ -359,17 +375,59 @@ const filterOutDummies = (list) => {
   });
 };
 
+export const isOrganizationEntity = (entry) => {
+  if (!entry || typeof entry !== "object") return false;
+  const rawType = String(entry.type || entry.actorType || "")
+    .trim()
+    .toLowerCase();
+  if (
+    [
+      "organisation",
+      "organization",
+      "corporatebody",
+      "corporate_body",
+      "körperschaft",
+      "koerperschaft",
+      "institution",
+      "museum",
+      "university",
+      "research",
+      "foundation",
+      "archive",
+    ].includes(rawType)
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const normalizeGndId = (val) => {
+  if (!val) return "";
+  return String(val)
+    .trim()
+    .replace(/^https?:\/\/(?:d-nb\.info|lobid\.org)\/gnd\//i, "")
+    .replace(/^gnd:\s*/i, "")
+    .replace(/\/+$/, "")
+    .trim()
+    .toLowerCase();
+};
+
+export const normalizeOrgName = (val) => {
+  if (!val) return "";
+  return String(val)
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+};
+
 const savedPersonsRaw = (() => {
   try {
     const raw = localStorage.getItem("hermes_saved_persons");
     if (raw) {
       const parsed = JSON.parse(raw);
-      const cleaned = filterOutDummies(parsed).filter((p) => {
-        const t = String(p?.type || p?.actorType || "").toLowerCase();
-        return t !== "organisation" && t !== "organization";
-      });
+      const cleaned = filterOutDummies(parsed).filter((p) => !isOrganizationEntity(p));
       if (cleaned.length !== parsed.length) {
-        localStorage.setItem("hermes_saved_persons", JSON.stringify(cleaned));
+        safeSetStorage("hermes_saved_persons", JSON.stringify(cleaned));
       }
       return cleaned;
     }
@@ -488,9 +546,18 @@ const syncPersonsToStorage = () => {
 
 export const addOrUpdatePerson = (person) => {
   if (!person || !person.name) return;
+  if (isOrganizationEntity(person)) return;
   const nameTrimmed = String(person.name).trim();
   if (!nameTrimmed) return;
   const lowerName = nameTrimmed.toLowerCase();
+
+  // Also skip if name matches a known organization in the organizations pool and no personal email is set
+  const knownOrgMatch = (savedOrganizations?.value || []).some(
+    (o) => normalizeOrgName(o?.name) === normalizeOrgName(nameTrimmed),
+  );
+  if (knownOrgMatch && !person.email) {
+    return;
+  }
 
   const idVal = person.id || person["actors.id"] || "";
   const orgVal = person.organization || "";
@@ -498,10 +565,6 @@ export const addOrUpdatePerson = (person) => {
   const phoneVal = person.phone || "";
   const addressVal = person.address || "";
   const typeVal = person.type || person.actorType || "person";
-  const lowerType = String(typeVal).toLowerCase();
-  if (lowerType === "organisation" || lowerType === "organization") {
-    return;
-  }
 
   const existingIndex = savedPersons.value.findIndex(
     (p) => (p.name || "").trim().toLowerCase() === lowerName,
@@ -539,7 +602,12 @@ export const removeSavedPerson = (index) => {
 
 export const updateSavedPerson = (index, person) => {
   if (!person || !person.name) return;
-  savedPersons.value[index] = { ...savedPersons.value[index], ...person };
+  if (isOrganizationEntity(person)) return;
+  savedPersons.value[index] = {
+    ...savedPersons.value[index],
+    ...person,
+    type: person.type || "person",
+  };
   syncPersonsToStorage();
 };
 
@@ -1272,23 +1340,42 @@ const syncOrganizationsToStorage = () => {
   }
 };
 
-export const addOrUpdateOrganization = (org) => {
-  if (!org || !org.name) return;
-  const nameTrimmed = String(org.name).trim();
-  if (!nameTrimmed) return;
-  const lowerName = nameTrimmed.toLowerCase();
+export const findDuplicateOrganization = (org, excludeIndex = -1) => {
+  if (!org) return { index: -1, entry: null, reason: null };
+  const normName = normalizeOrgName(org.name);
+  const normGnd = normalizeGndId(org.gnd || org.uri);
+  const list = savedOrganizations.value || [];
+  for (let i = 0; i < list.length; i++) {
+    if (i === excludeIndex) continue;
+    const o = list[i];
+    if (!o) continue;
+    if (normName && normalizeOrgName(o.name) === normName) {
+      return { index: i, entry: o, reason: "name" };
+    }
+    if (normGnd) {
+      const existingGnd = normalizeGndId(o.gnd || o.uri);
+      if (existingGnd && existingGnd === normGnd) {
+        return { index: i, entry: o, reason: "gnd" };
+      }
+    }
+  }
+  return { index: -1, entry: null, reason: null };
+};
 
-  const existingIdx = savedOrganizations.value.findIndex(
-    (o) =>
-      (o.name || "").trim().toLowerCase() === lowerName ||
-      (org.gnd && o.gnd && String(o.gnd).trim() === String(org.gnd).trim()),
-  );
+export const addOrUpdateOrganization = (org) => {
+  if (!org || !org.name) return { status: "invalid" };
+  const nameTrimmed = String(org.name).trim();
+  if (!nameTrimmed) return { status: "invalid" };
+
+  const cleanGnd = normalizeGndId(org.gnd);
+  const dup = findDuplicateOrganization({ name: nameTrimmed, gnd: cleanGnd, uri: org.uri });
+  const existingIdx = dup.index;
 
   const entry = {
-    id: org.id || (org.gnd ? `ORG-GND-${org.gnd}` : `ORG-${Date.now()}`),
+    id: org.id || (cleanGnd ? `ORG-GND-${cleanGnd}` : `ORG-${Date.now()}`),
     name: nameTrimmed,
-    gnd: org.gnd ? String(org.gnd).trim() : "",
-    uri: org.uri || (org.gnd ? `https://d-nb.info/gnd/${org.gnd}` : ""),
+    gnd: cleanGnd,
+    uri: org.uri || (cleanGnd ? `https://d-nb.info/gnd/${cleanGnd}` : ""),
     country: org.country || "DE",
     city: org.city || org.townOrCity || "",
     townOrCity: org.townOrCity || org.city || "",
@@ -1306,10 +1393,13 @@ export const addOrUpdateOrganization = (org) => {
       ...savedOrganizations.value[existingIdx],
       ...entry,
     };
+    syncOrganizationsToStorage();
+    return { status: "updated", index: existingIdx, entry: savedOrganizations.value[existingIdx] };
   } else {
     savedOrganizations.value.unshift(entry);
+    syncOrganizationsToStorage();
+    return { status: "added", index: 0, entry };
   }
-  syncOrganizationsToStorage();
 };
 
 export const removeSavedOrganization = (index) => {
@@ -1318,12 +1408,56 @@ export const removeSavedOrganization = (index) => {
 };
 
 export const updateSavedOrganization = (index, org) => {
-  if (!org || !org.name) return;
+  if (!org || !org.name) return { status: "invalid" };
+  const nameTrimmed = String(org.name).trim();
+  if (!nameTrimmed) return { status: "invalid" };
+  const cleanGnd = normalizeGndId(org.gnd);
+  const dup = findDuplicateOrganization(
+    { name: nameTrimmed, gnd: cleanGnd, uri: org.uri },
+    index,
+  );
+  if (dup.index > -1) {
+    return { status: "duplicate", duplicateIndex: dup.index, duplicate: dup.entry, reason: dup.reason };
+  }
   savedOrganizations.value[index] = {
     ...savedOrganizations.value[index],
     ...org,
+    name: nameTrimmed,
+    gnd: cleanGnd,
+    uri: org.uri || (cleanGnd ? `https://d-nb.info/gnd/${cleanGnd}` : ""),
   };
   syncOrganizationsToStorage();
+  return { status: "updated", index, entry: savedOrganizations.value[index] };
+};
+
+export const exportPoolsBackup = () => ({
+  version: "1.0",
+  exportedAt: new Date().toISOString(),
+  persons: JSON.parse(JSON.stringify(savedPersons.value || [])),
+  organizations: JSON.parse(JSON.stringify(savedOrganizations.value || [])),
+});
+
+export const importPoolsBackup = (payload) => {
+  if (!payload || typeof payload !== "object") return { persons: 0, organizations: 0 };
+  let orgCount = 0;
+  let personCount = 0;
+  if (Array.isArray(payload.organizations)) {
+    for (const org of payload.organizations) {
+      if (org && org.name) {
+        addOrUpdateOrganization(org);
+        orgCount++;
+      }
+    }
+  }
+  if (Array.isArray(payload.persons)) {
+    for (const p of payload.persons) {
+      if (p && p.name && !isOrganizationEntity(p)) {
+        addOrUpdatePerson(p);
+        personCount++;
+      }
+    }
+  }
+  return { persons: personCount, organizations: orgCount };
 };
 
 export const populateCarareAddressFromOrg = (

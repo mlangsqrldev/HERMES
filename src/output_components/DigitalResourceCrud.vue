@@ -72,6 +72,7 @@
               </thead>
               <tbody>
                 <tr v-for="(item, idx) in items" :key="idx">
+                  <template v-if="item && typeof item === 'object'">
                   <td class="font-mono text-xs max-w-[140px] truncate" :title="String(item['recordInformation.id'] || '')">
                     {{
                       Array.isArray(item["recordInformation.id"])
@@ -141,6 +142,7 @@
                       </button>
                     </div>
                   </td>
+                  </template>
                 </tr>
                 <tr v-if="!items || items.length === 0">
                   <td
@@ -3940,11 +3942,14 @@
     @select="handleOrgSelected"
   />
   <dialog ref="templateModal" class="modal z-[9999]">
-    <div class="modal-box max-w-md">
-      <h3 class="font-bold text-lg mb-6">
+    <div class="modal-box w-11/12 max-w-2xl max-h-[85vh] flex flex-col">
+      <h3 class="font-bold text-lg mb-4 shrink-0">
         {{ currentLocale === "de" ? "Vorlage wählen" : "Choose a Template" }}
       </h3>
-      <form method="dialog" class="flex flex-col gap-3">
+      <form
+        method="dialog"
+        class="flex-1 overflow-y-auto pr-1 flex flex-col gap-2.5 min-h-[100px]"
+      >
         <div
           v-for="(tpl, idx) in templates[activeTemplateField] || []"
           :key="idx"
@@ -3990,10 +3995,10 @@
           {{ t("noItems") }}
         </div>
       </form>
-      <div class="divider my-6">{{ t("or") }}</div>
-      <div class="modal-action w-full mt-0">
+      <div class="divider my-4 shrink-0">{{ t("or") }}</div>
+      <div class="modal-action w-full mt-0 shrink-0">
         <form method="dialog" class="w-full">
-          <button type="button" class="btn btn-primary w-full">
+          <button type="submit" class="btn btn-primary w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -5798,7 +5803,7 @@ const cloneAsWebDerivative = () => {
     ];
   }
 
-  copy["format"] = "model/gltf-binary";
+  copy["format"] = ["model/gltf-binary"];
   copy["type"] = currentLocale.value === "de" ? "3D-Modell" : "3D";
   copy["isFormatOf"] = [baseId];
   copy["isDerivativeOf"] = [baseId];
@@ -5854,7 +5859,12 @@ const save = () => {
       globalRights.metadataRights ||
       "https://creativecommons.org/publicdomain/zero/1.0/deed.de";
   }
-  if (isEditing.value) {
+  if (
+    isEditing.value &&
+    editIndex.value !== null &&
+    editIndex.value >= 0 &&
+    editIndex.value < items.value.length
+  ) {
     items.value[editIndex.value] = JSON.parse(JSON.stringify(form));
   } else {
     items.value.push(JSON.parse(JSON.stringify(form)));
@@ -5873,9 +5883,27 @@ const saveDraft = () => {
 };
 
 const edit = (index) => {
+  const sourceItem = items.value?.[index];
+  if (!sourceItem || typeof sourceItem !== "object") return;
   isEditing.value = true;
   editIndex.value = index;
-  Object.assign(form, JSON.parse(JSON.stringify(items.value[index])));
+  const cloned = JSON.parse(JSON.stringify(sourceItem));
+  if (typeof cloned["format"] === "string") {
+    cloned["format"] = cloned["format"].trim() ? [cloned["format"].trim()] : [];
+  } else if (!Array.isArray(cloned["format"])) {
+    cloned["format"] = [];
+  }
+  if (!Array.isArray(cloned["appellation.name"]) || cloned["appellation.name"].length === 0) {
+    const rawName = typeof cloned["appellation.name"] === "string" ? cloned["appellation.name"] : "";
+    cloned["appellation.name"] = [
+      {
+        _value: rawName,
+        "appellation.name#lang": defaultMetadataLanguage.value || "de",
+        "appellation.name#preferred": true,
+      },
+    ];
+  }
+  Object.assign(form, cloned);
   // Populate preferred languages
   Object.keys(form).forEach((k) => {
     if (k.endsWith("language") && Array.isArray(form[k])) {

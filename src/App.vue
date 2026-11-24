@@ -1055,14 +1055,21 @@
   </main>
 
   <dialog ref="templateModal" class="modal z-[9999]">
-    <div class="modal-box max-w-lg">
-      <div class="flex items-center justify-between mb-3">
+    <div
+      class="modal-box w-11/12 max-w-3xl max-h-[88vh] flex flex-col overflow-hidden p-5"
+    >
+      <div class="flex items-center justify-between mb-3 shrink-0">
         <div>
-          <h3 class="font-bold text-lg leading-tight">
-            {{
-              currentLocale === "de" ? "Vorlagen verwalten" : "Manage Templates"
-            }}
-          </h3>
+          <div class="flex items-center gap-2">
+            <h3 class="font-bold text-lg leading-tight">
+              {{
+                currentLocale === "de" ? "Vorlagen verwalten" : "Manage Templates"
+              }}
+            </h3>
+            <span class="badge badge-sm badge-neutral font-mono">
+              {{ (templates[activeTemplateStep] || []).length }}
+            </span>
+          </div>
 
           <p class="text-xs text-base-content/60 mt-0.5">
             {{
@@ -1082,21 +1089,32 @@
 
       <div
         v-if="templateToastMessage"
-        class="mb-3 px-3 py-2 rounded-xl bg-success/15 border border-success/30 text-success text-xs font-semibold flex items-center gap-2"
+        class="mb-3 px-3 py-2 rounded-xl bg-success/15 border border-success/30 text-success text-xs font-semibold flex items-center gap-2 shrink-0"
       >
         <span>✓</span>
 
         <span>{{ templateToastMessage }}</span>
       </div>
 
-      <!-- JSON Export & Import Toolbar -->
+      <!-- JSON Export & Import Toolbar + Live Filter -->
 
       <div
-        class="flex items-center gap-2 mb-4 p-2.5 rounded-xl bg-base-200/60 border border-base-200"
+        class="flex flex-wrap items-center gap-2 mb-3 p-2.5 rounded-xl bg-base-200/60 border border-base-200 shrink-0"
       >
+        <input
+          type="text"
+          v-model="templateSearchQuery"
+          class="input input-xs input-bordered flex-1 min-w-[180px] bg-base-100"
+          :placeholder="
+            currentLocale === 'de'
+              ? 'Vorlagen durchsuchen...'
+              : 'Filter templates...'
+          "
+        />
+
         <button
           type="button"
-          class="btn btn-xs btn-primary gap-1.5 flex-1 font-semibold text-[11px] shadow-xs"
+          class="btn btn-xs btn-primary gap-1.5 font-semibold text-[11px] shadow-xs"
           @click="exportTemplatesAsJson(activeTemplateStep)"
           :title="
             currentLocale === 'de'
@@ -1113,7 +1131,7 @@
 
         <button
           type="button"
-          class="btn btn-xs btn-secondary gap-1.5 flex-1 font-semibold text-[11px] shadow-xs"
+          class="btn btn-xs btn-secondary gap-1.5 font-semibold text-[11px] shadow-xs"
           @click="triggerImportTemplatesJson"
           :title="
             currentLocale === 'de'
@@ -1139,15 +1157,15 @@
         @change="handleTemplateJsonFileSelected"
       />
 
-      <div class="flex flex-col gap-2 max-h-[340px] overflow-y-auto pr-1">
+      <div class="flex-1 flex flex-col gap-2 min-h-[140px] max-h-[58vh] overflow-y-auto pr-1">
         <div
-          v-for="(tpl, idx) in templates[activeTemplateStep] || []"
-          :key="idx"
-          class="join w-full shadow-2xs border border-base-300 rounded-lg overflow-hidden"
+          v-for="entry in filteredActiveTemplates"
+          :key="entry.idx"
+          class="join w-full shadow-2xs border border-base-300 rounded-lg overflow-hidden shrink-0"
         >
           <button
             class="btn btn-sm btn-ghost justify-start font-normal flex-1 join-item text-xs truncate hover:bg-primary/10"
-            @click="applyTemplate(activeTemplateStep, tpl.data)"
+            @click="applyTemplate(activeTemplateStep, entry.tpl.data)"
             :title="
               currentLocale === 'de'
                 ? 'Diese Vorlage in das Formular laden'
@@ -1156,13 +1174,13 @@
           >
             <span class="mr-1">📋</span>
 
-            <span class="font-medium truncate">{{ tpl.name }}</span>
+            <span class="font-medium truncate">{{ entry.tpl.name }}</span>
           </button>
 
           <button
             type="button"
             class="btn btn-sm btn-ghost join-item px-2.5 text-xs text-base-content/70 hover:text-primary hover:bg-primary/10"
-            @click.prevent="exportSingleTemplate(tpl)"
+            @click.prevent="exportSingleTemplate(entry.tpl)"
             :title="
               currentLocale === 'de'
                 ? 'Nur diese Vorlage als JSON herunterladen'
@@ -1175,7 +1193,7 @@
           <button
             type="button"
             class="btn btn-sm btn-ghost join-item px-2.5 text-error hover:bg-error/10"
-            @click.prevent="confirmDeleteTemplate(activeTemplateStep, idx)"
+            @click.prevent="confirmDeleteTemplate(activeTemplateStep, entry.idx)"
             :title="
               currentLocale === 'de' ? 'Vorlage löschen' : 'Delete template'
             "
@@ -1198,21 +1216,16 @@
         </div>
 
         <div
-          v-if="
-            !(
-              templates[activeTemplateStep] &&
-              templates[activeTemplateStep].length > 0
-            )
-          "
-          class="text-xs italic opacity-50 py-4 text-center"
+          v-if="filteredActiveTemplates.length === 0"
+          class="text-xs italic opacity-50 py-6 text-center"
         >
           {{ t("noItems") }}
         </div>
       </div>
 
-      <div class="divider my-4">{{ t("or") }}</div>
+      <div class="divider my-3 shrink-0">{{ t("or") }}</div>
 
-      <div class="modal-action w-full mt-0">
+      <div class="modal-action w-full mt-0 shrink-0">
         <form method="dialog" class="w-full">
           <button class="btn btn-primary w-full">
             <svg
@@ -1463,6 +1476,14 @@ const activeTemplateStep = ref(null);
 const templates = ref({});
 
 const newTemplateName = ref("");
+const templateSearchQuery = ref("");
+const filteredActiveTemplates = computed(() => {
+  const list = templates.value?.[activeTemplateStep.value] || [];
+  const q = templateSearchQuery.value.trim().toLowerCase();
+  return list
+    .map((tpl, idx) => ({ tpl, idx }))
+    .filter(({ tpl }) => !q || String(tpl?.name || "").toLowerCase().includes(q));
+});
 
 const store = shallowRef(null);
 
@@ -1581,6 +1602,7 @@ const applyGlobalRightsToAll = (rightsObj) => {
 
     if (Array.isArray(comp.items)) {
       comp.items.forEach((item) => {
+        if (!item || typeof item !== "object") return;
         item["recordInformation.metadataRights"] = rightsObj.metadataRights;
         item["rights.copyrightCreditLine"] = rightsObj.copyrightCreditLine;
         item["rights.accessRights"] = rightsObj.accessRights;
@@ -1823,6 +1845,7 @@ const t = (key) =>
 
 const openTemplateModal = (stepId) => {
   activeTemplateStep.value = stepId;
+  templateSearchQuery.value = "";
 
   templateModal.value?.showModal();
 };
@@ -2210,13 +2233,40 @@ const syncPoolsFromTemplate = (tpl, stepKey = "") => {
       return;
     }
     const name = String(p.name || "").trim();
+    const rawType = String(p.type || p.actorType || "")
+      .trim()
+      .toLowerCase();
+    const isOrg = [
+      "organisation",
+      "organization",
+      "corporatebody",
+      "corporate_body",
+      "körperschaft",
+      "koerperschaft",
+      "institution",
+      "museum",
+      "university",
+      "research",
+      "foundation",
+      "archive",
+    ].includes(rawType);
     if (name) {
-      addOrUpdatePerson({
-        name,
-        id: p.id || p.uri || "",
-        organization: p.organization || "",
-        email: p.email || "",
-      });
+      if (isOrg) {
+        addOrUpdateOrganization({
+          name,
+          gnd: p.gnd || "",
+          uri: p.id || p.uri || "",
+          role: p.role || "",
+        });
+      } else {
+        addOrUpdatePerson({
+          name,
+          id: p.id || p.uri || "",
+          organization: p.organization || "",
+          email: p.email || "",
+          type: p.type || p.actorType || "person",
+        });
+      }
     }
     if (p.organization) pushOrgName(p.organization);
   };
@@ -3474,33 +3524,119 @@ onMounted(() => {
     if (el) observer.observe(el);
   });
 
-  // Auto-restore multi-day session draft from localStorage
+  // Auto-restore multi-day session draft from localStorage (with strict per-module sanitization)
   nextTick(() => {
     try {
       const raw = localStorage.getItem("hermes_session_draft_v1");
       if (raw) {
         const saved = JSON.parse(raw);
-        const restoreMod = (compRef, modData) => {
-          const comp = getChildComp(compRef);
-          if (!comp || !modData) return;
-          if (Array.isArray(modData.items) && comp.items) {
-            if (Array.isArray(comp.items)) {
-              comp.items.splice(0, comp.items.length, ...modData.items);
-            } else if (Array.isArray(comp.items.value)) {
-              comp.items.value = modData.items;
+        const defLang = defaultMetadataLanguage.value || "de";
+        const sanitizeRecord = (rec, modKey) => {
+          if (!rec || typeof rec !== "object" || Array.isArray(rec)) return null;
+          const clean = { ...rec };
+          if (modKey === "digital") {
+            if (typeof clean["format"] === "string") {
+              clean["format"] = clean["format"].trim() ? [clean["format"].trim()] : [];
+            } else if (!Array.isArray(clean["format"])) {
+              clean["format"] = [];
+            } else {
+              clean["format"] = clean["format"]
+                .map((f) => (typeof f === "string" ? f : f?._value || ""))
+                .filter(Boolean);
+            }
+            if (!Array.isArray(clean["appellation.name"]) || clean["appellation.name"].length === 0) {
+              const rawName = typeof clean["appellation.name"] === "string" ? clean["appellation.name"] : "";
+              clean["appellation.name"] = [
+                {
+                  _value: rawName,
+                  "appellation.name#lang": defLang,
+                  "appellation.name#preferred": true,
+                },
+              ];
+            } else {
+              clean["appellation.name"] = clean["appellation.name"]
+                .filter((x) => x !== null && x !== undefined)
+                .map((x, i) =>
+                  typeof x === "object"
+                    ? {
+                        _value: String(x._value || ""),
+                        "appellation.name#lang": x["appellation.name#lang"] || defLang,
+                        "appellation.name#preferred":
+                          x["appellation.name#preferred"] ?? i === 0,
+                      }
+                    : {
+                        _value: String(x),
+                        "appellation.name#lang": defLang,
+                        "appellation.name#preferred": i === 0,
+                      },
+                );
+            }
+            if (!Array.isArray(clean["actors"])) clean["actors"] = [];
+            if (!Array.isArray(clean["note"])) clean["note"] = [];
+            if (!Array.isArray(clean["softwareList"])) clean["softwareList"] = [];
+            if (!Array.isArray(clean["extentList"])) clean["extentList"] = [];
+          } else if (modKey === "heritage" || modKey === "activity") {
+            if (!Array.isArray(clean["appellation.name"]) || clean["appellation.name"].length === 0) {
+              const rawName = typeof clean["appellation.name"] === "string" ? clean["appellation.name"] : "";
+              clean["appellation.name"] = [
+                {
+                  _value: rawName,
+                  "appellation.name#lang": defLang,
+                  "appellation.name#preferred": true,
+                },
+              ];
+            }
+          } else if (modKey === "collection") {
+            if (!Array.isArray(clean["contacts"])) clean["contacts"] = [];
+            if (!Array.isArray(clean["title"]) || clean["title"].length === 0) {
+              const rawTitle = typeof clean["title"] === "string" ? clean["title"] : "";
+              clean["title"] = [
+                {
+                  _value: rawTitle,
+                  "title#lang": defLang,
+                  "title#preferred": true,
+                },
+              ];
             }
           }
-          if (modData.form && comp.form) {
-            Object.assign(comp.form, modData.form);
+          return clean;
+        };
+
+        const restoreMod = (compRef, modData, modKey) => {
+          const comp = getChildComp(compRef);
+          if (!comp || !modData || typeof modData !== "object") return;
+          try {
+            if (Array.isArray(modData.items) && comp.items) {
+              const validItems = modData.items
+                .map((it) => sanitizeRecord(it, modKey))
+                .filter(Boolean);
+              if (Array.isArray(comp.items)) {
+                comp.items.splice(0, comp.items.length, ...validItems);
+              } else if (Array.isArray(comp.items.value)) {
+                comp.items.value = validItems;
+              }
+            }
+            if (modData.form && typeof modData.form === "object" && comp.form) {
+              const cleanForm = sanitizeRecord(modData.form, modKey);
+              if (cleanForm) {
+                Object.assign(comp.form, cleanForm);
+              }
+            }
+          } catch (modErr) {
+            console.warn(`Failed to restore HERMES module "${modKey}", resetting module form:`, modErr);
+            comp.resetForm?.(true);
           }
         };
-        restoreMod(collectionRef, saved.collection);
-        restoreMod(heritageRef, saved.heritage);
-        restoreMod(digitalRef, saved.digital);
-        restoreMod(activityRef, saved.activity);
+        restoreMod(collectionRef, saved.collection, "collection");
+        restoreMod(heritageRef, saved.heritage, "heritage");
+        restoreMod(digitalRef, saved.digital, "digital");
+        restoreMod(activityRef, saved.activity, "activity");
       }
     } catch (e) {
-      console.warn("Failed to restore HERMES session draft:", e);
+      console.warn("Failed to restore HERMES session draft, clearing corrupt draft (pools preserved):", e);
+      try {
+        localStorage.removeItem("hermes_session_draft_v1");
+      } catch {}
     }
   });
 });
@@ -3719,11 +3855,14 @@ const saveAllSections = () => {
 const clearAllForms = () => {
   const msg =
     currentLocale.value === "de"
-      ? "Möchten Sie wirklich alle erfassten Daten und Formulare zurücksetzen?"
-      : "Are you sure you want to reset all forms and records?";
+      ? "Möchten Sie wirklich alle erfassten Formulare und den Sitzungsentwurf zurücksetzen?\n\nHinweis: Ihre gespeicherten Personen-, Organisations-, Software- und Geräte-Pools sowie Vorlagen bleiben vollständig erhalten."
+      : "Are you sure you want to reset all forms and the session draft?\n\nNote: Your saved Persons, Organizations, Software, Equipment pools and templates will be preserved.";
   if (typeof window !== "undefined" && !window.confirm(msg)) {
     return;
   }
+  try {
+    localStorage.removeItem("hermes_session_draft_v1");
+  } catch (e) {}
   try {
     resetGlobalRights();
   } catch (e) {}
@@ -5950,6 +6089,8 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
     node.children.forEach(sortChildrenBySchema);
   };
 
+  let refFallbackCounter = 0;
+
   const cleanAndValidateNode = (node, parentName = "", parentNode = null) => {
     const fallbackLang =
       defaultMetadataLanguage.value || currentLocale.value || "de";
@@ -6081,8 +6222,13 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
         if (!idChild) {
           idChild = node.getOrCreateChild("id");
 
-          idChild.text =
-            parentRecId || String(nameChild.text).trim() || "ID-001";
+          if (parentName === "references") {
+            refFallbackCounter += 1;
+            idChild.text = `REF-${refFallbackCounter}`;
+          } else {
+            idChild.text =
+              parentRecId || String(nameChild.text).trim() || "ID-001";
+          }
         }
       }
     }
@@ -7168,6 +7314,7 @@ const rawLiveCarareXml = ref("");
 let debounceXmlTimer = null;
 
 const updateLiveXmlDebounced = () => {
+  if (!showSideXmlPreview.value) return;
   if (debounceXmlTimer) clearTimeout(debounceXmlTimer);
 
   debounceXmlTimer = setTimeout(() => {
@@ -7176,8 +7323,18 @@ const updateLiveXmlDebounced = () => {
     } catch (e) {
       rawLiveCarareXml.value = `<!-- XML preview error: ${e.message} -->`;
     }
-  }, 300);
+  }, 600);
 };
+
+watch(showSideXmlPreview, (isVisible) => {
+  if (isVisible) {
+    try {
+      rawLiveCarareXml.value = buildXmlString("carare");
+    } catch (e) {
+      rawLiveCarareXml.value = `<!-- XML preview error: ${e.message} -->`;
+    }
+  }
+});
 
 // Immediate first build
 

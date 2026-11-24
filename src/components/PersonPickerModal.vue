@@ -38,8 +38,8 @@
                     ? "Zentraler Datenpool für Akteure, Kontakte und Urheber. Neue Einträge stehen sofort allen Formularen zur Verfügung."
                     : "Central pool for actors, contacts and creators. New entries are instantly available everywhere."
                   : currentLocale === "de"
-                    ? "Wählen Sie eine oder mehrere Personen/Organisationen zur Übernahme in den aktuellen Datensatz."
-                    : "Select one or more persons/organisations to add to the current record."
+                    ? "Wählen Sie eine oder mehrere Personen zur Übernahme in den aktuellen Datensatz."
+                    : "Select one or more persons to add to the current record."
               }}
             </p>
           </div>
@@ -493,6 +493,41 @@
           </div>
 
           <button
+            type="button"
+            class="btn btn-xs btn-outline border-base-300 gap-1"
+            @click="handleExportPoolsBackup"
+            :title="
+              currentLocale === 'de'
+                ? 'Personen- und Organisations-Pools als JSON-Backup sichern'
+                : 'Export persons & organizations pools as JSON backup'
+            "
+          >
+            ⬇️
+            {{ currentLocale === "de" ? "Pools sichern" : "Backup Pools" }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-xs btn-outline border-base-300 gap-1"
+            @click="poolBackupInput?.click()"
+            :title="
+              currentLocale === 'de'
+                ? 'Gesicherte Personen- & Organisations-Pools aus JSON laden'
+                : 'Import persons & organizations pools from JSON backup'
+            "
+          >
+            ⬆️
+            {{ currentLocale === "de" ? "Pools laden" : "Restore Pools" }}
+          </button>
+          <input
+            ref="poolBackupInput"
+            type="file"
+            accept=".json,application/json"
+            class="hidden"
+            @change="handleImportPoolsBackup"
+          />
+
+          <button
             v-if="savedPersons.length > 0"
             type="button"
             class="btn btn-xs btn-ghost text-error hover:bg-error/10 gap-1 border border-error/30"
@@ -561,6 +596,9 @@ import {
   removeSavedPerson,
   updateSavedPerson,
   clearAllPersons,
+  isOrganizationEntity,
+  exportPoolsBackup,
+  importPoolsBackup,
 } from "../utils/sharedState.js";
 
 const props = defineProps({
@@ -666,7 +704,7 @@ const confirmDeletePerson = (person) => {
 };
 
 const filteredPersons = computed(() => {
-  let list = savedPersons.value || [];
+  let list = (savedPersons.value || []).filter((p) => p && !isOrganizationEntity(p));
 
   if (filterType.value !== "all") {
     list = list.filter((p) => {
@@ -748,6 +786,33 @@ const confirmSelection = () => {
 
   emit("select", formattedOutput);
   emitClose();
+};
+
+const poolBackupInput = ref(null);
+
+const handleExportPoolsBackup = () => {
+  const backup = exportPoolsBackup();
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `hermes_pools_backup_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+const handleImportPoolsBackup = async (event) => {
+  const file = event?.target?.files?.[0];
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    importPoolsBackup(parsed);
+  } catch (e) {
+    console.warn("Failed to import pools backup:", e);
+  }
+  event.target.value = "";
 };
 
 const handleClearAllPersons = () => {

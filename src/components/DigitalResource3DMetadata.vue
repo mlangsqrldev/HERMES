@@ -1086,7 +1086,7 @@
         </span>
 
         <div
-          v-for="(f, fIdx) in formats"
+          v-for="(f, fIdx) in normalizedFormats"
           :key="fIdx"
           class="badge badge-neutral gap-1.5 py-2.5 px-2.5"
         >
@@ -1101,7 +1101,7 @@
         </div>
 
         <span
-          v-if="!formats || formats.length === 0"
+          v-if="normalizedFormats.length === 0"
           class="text-xs italic text-base-content/40"
         >
           {{
@@ -2317,13 +2317,27 @@ const FORMATS_RAW_2D = [
 
 const customFormatInput = ref("");
 
+const normalizedFormats = computed(() => {
+  if (Array.isArray(props.formats)) {
+    return props.formats
+      .map((f) => (typeof f === "string" ? f : f?._value || f?.label || ""))
+      .map((s) => String(s).trim())
+      .filter(Boolean);
+  }
+  if (typeof props.formats === "string" && props.formats.trim()) {
+    return [props.formats.trim()];
+  }
+  return [];
+});
+
 const isFormatSelected = (val) => {
-  if (!props.formats || !Array.isArray(props.formats)) return false;
-  return props.formats.some((f) => f.toLowerCase().includes(val.toLowerCase()));
+  const target = String(val || "").toLowerCase();
+  if (!target) return false;
+  return normalizedFormats.value.some((f) => f.toLowerCase().includes(target));
 };
 
 const toggleFormat = (fmt) => {
-  const current = [...(props.formats || [])];
+  const current = [...normalizedFormats.value];
   const idx = current.findIndex(
     (f) =>
       f.toLowerCase() === fmt.mime.toLowerCase() ||
@@ -2338,7 +2352,7 @@ const toggleFormat = (fmt) => {
 };
 
 const removeFormat = (idx) => {
-  const current = [...(props.formats || [])];
+  const current = [...normalizedFormats.value];
   current.splice(idx, 1);
   emit("update:formats", current);
 };
@@ -2346,7 +2360,7 @@ const removeFormat = (idx) => {
 const addCustomFormat = () => {
   const val = customFormatInput.value.trim();
   if (!val) return;
-  const current = [...(props.formats || [])];
+  const current = [...normalizedFormats.value];
   if (!current.includes(val)) {
     current.push(val);
     emit("update:formats", current);

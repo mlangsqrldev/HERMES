@@ -302,7 +302,7 @@
           />
         </div>
 
-        <!-- Single Role input for historical & contact -->
+        <!-- Single Role select + optional custom input for contact -->
         <div
           v-if="!isMultiRole"
           :class="mode === 'contact' ? 'md:col-span-2' : 'md:col-span-3'"
@@ -312,24 +312,46 @@
               {{ currentLocale === "de" ? "Rolle" : "Role" }}
             </span>
           </label>
-          <input
-            type="text"
-            v-model="draft.singleRole"
-            :list="datalistId"
-            class="input input-sm input-bordered w-full bg-base-100"
-            :placeholder="
-              mode === 'historical'
-                ? currentLocale === 'de'
-                  ? 'z. B. Bildhauer, Architekt, Maler, Werkstatt...'
-                  : 'e.g. Sculptor, Architect, Painter...'
-                : currentLocale === 'de'
-                  ? 'z. B. Datenlieferant, Kurator, Katalogisierer...'
-                  : 'e.g. Data Provider, Curator, Cataloguer...'
-            "
-          />
-          <datalist :id="datalistId">
-            <option v-for="r in suggestedRoles" :key="r" :value="r" />
-          </datalist>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <select
+              v-model="selectedSingleRoleOption"
+              @change="onSingleRoleSelectChange"
+              class="select select-sm select-bordered w-full bg-base-100"
+            >
+              <option value="">
+                {{
+                  currentLocale === "de"
+                    ? "— Rolle auswählen —"
+                    : "— Select role —"
+                }}
+              </option>
+              <option v-for="r in suggestedRoles" :key="r" :value="r">
+                {{ r }}
+              </option>
+              <option value="__custom__">
+                {{
+                  currentLocale === "de"
+                    ? "Sonstige / Eigene Rolle eingeben…"
+                    : "Other / Enter custom role…"
+                }}
+              </option>
+            </select>
+            <input
+              v-if="selectedSingleRoleOption === '__custom__'"
+              type="text"
+              v-model="draft.singleRole"
+              class="input input-sm input-bordered w-full bg-base-100"
+              :placeholder="
+                mode === 'historical'
+                  ? currentLocale === 'de'
+                    ? 'z. B. Bildhauer, Architekt, Maler, Werkstatt...'
+                    : 'e.g. Sculptor, Architect, Painter...'
+                  : currentLocale === 'de'
+                    ? 'Eigene Rolle eingeben (z. B. Projektkoordination)...'
+                    : 'Enter custom role...'
+              "
+            />
+          </div>
         </div>
 
         <!-- Multi-Role Chips + Custom Input for Activity -->
@@ -732,8 +754,19 @@ const suggestedRoles = computed(() => {
 const showForm = ref(false);
 const editingIndex = ref(null);
 const customRoleInput = ref("");
+const selectedSingleRoleOption = ref("");
 const showPersonPicker = ref(false);
 const showOrgPicker = ref(false);
+
+const onSingleRoleSelectChange = () => {
+  if (selectedSingleRoleOption.value === "__custom__") {
+    if (suggestedRoles.value.includes(draft.singleRole)) {
+      draft.singleRole = "";
+    }
+  } else {
+    draft.singleRole = selectedSingleRoleOption.value;
+  }
+};
 
 const draft = reactive({
   name: "",
@@ -778,6 +811,7 @@ const resetDraft = () => {
   draft.singleRole = "";
   draft.rolesList = [];
   customRoleInput.value = "";
+  selectedSingleRoleOption.value = "";
 };
 
 const openAddForm = () => {
@@ -797,6 +831,11 @@ const openEditForm = (idx) => {
   draft.email = item.email || "";
   const roles = extractRoles(item);
   draft.singleRole = roles[0] || "";
+  selectedSingleRoleOption.value = !draft.singleRole
+    ? ""
+    : suggestedRoles.value.includes(draft.singleRole)
+      ? draft.singleRole
+      : "__custom__";
   draft.rolesList = [...roles];
   customRoleInput.value = "";
   showForm.value = true;

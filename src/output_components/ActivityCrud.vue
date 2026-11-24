@@ -3159,8 +3159,7 @@
                         />
                         <a
                           href="https://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/"
-                          target="_blank"
-                          rel="noopener"
+                          @click.prevent="openExternalUrl('https://vocabs.bcdh.uni-bonn.de/hector_3d_documentation/')"
                           class="text-xs link link-hover text-primary opacity-80 hover:opacity-100"
                         >
                           HECTOR ↗
@@ -3271,8 +3270,7 @@
                       </span>
                       <a
                         href="https://cv.iptc.org/newscodes/digitalsourcetype/"
-                        target="_blank"
-                        rel="noopener"
+                        @click.prevent="openExternalUrl('https://cv.iptc.org/newscodes/digitalsourcetype/')"
                         class="text-xs link link-hover text-secondary opacity-80 hover:opacity-100"
                       >
                         IPTC ↗
@@ -3662,11 +3660,14 @@
     />
   </Teleport>
   <dialog ref="templateModal" class="modal z-[9999]">
-    <div class="modal-box max-w-md">
-      <h3 class="font-bold text-lg mb-6">
+    <div class="modal-box w-11/12 max-w-2xl max-h-[85vh] flex flex-col">
+      <h3 class="font-bold text-lg mb-4 shrink-0">
         {{ currentLocale === "de" ? "Vorlage wählen" : "Choose a Template" }}
       </h3>
-      <form method="dialog" class="flex flex-col gap-3">
+      <form
+        method="dialog"
+        class="flex-1 overflow-y-auto pr-1 flex flex-col gap-2.5 min-h-[100px]"
+      >
         <div
           v-for="(tpl, idx) in templates[activeTemplateField] || []"
           :key="idx"
@@ -3712,10 +3713,10 @@
           {{ t("noItems") }}
         </div>
       </form>
-      <div class="divider my-6">{{ t("or") }}</div>
-      <div class="modal-action w-full mt-0">
+      <div class="divider my-4 shrink-0">{{ t("or") }}</div>
+      <div class="modal-action w-full mt-0 shrink-0">
         <form method="dialog" class="w-full">
-          <button type="button" class="btn btn-primary w-full">
+          <button type="submit" class="btn btn-primary w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -3798,6 +3799,7 @@ import {
   watch,
 } from "vue";
 import { load } from "@tauri-apps/plugin-store";
+import { openExternalUrl } from "../utils/platform.js";
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";

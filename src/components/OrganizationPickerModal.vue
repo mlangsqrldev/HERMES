@@ -410,6 +410,61 @@
             </div>
           </div>
 
+          <!-- Duplicate Warning Banner -->
+          <div
+            v-if="duplicateAlert"
+            class="mt-3 p-3 rounded-xl bg-warning/15 border border-warning/40 text-xs space-y-2"
+          >
+            <div class="font-bold text-warning flex items-center gap-1.5">
+              <span>⚠️</span>
+              <span>
+                {{
+                  locale === "de"
+                    ? `Duplikat erkannt (${duplicateAlert.reason === "gnd" ? "identische GND-ID" : "identischer Name"}): „${duplicateAlert.entry?.name}“`
+                    : `Duplicate detected (${duplicateAlert.reason === "gnd" ? "same GND ID" : "same name"}): "${duplicateAlert.entry?.name}"`
+                }}
+              </span>
+            </div>
+            <p class="text-base-content/80">
+              {{
+                locale === "de"
+                  ? "Diese Körperschaft existiert bereits im Pool und kann nicht doppelt angelegt werden. Sie können stattdessen den vorhandenen Eintrag aktualisieren oder direkt bearbeiten."
+                  : "This organization already exists in the pool and cannot be added twice. You can update the existing entry or edit it directly."
+              }}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button
+                type="button"
+                class="btn btn-xs btn-warning"
+                @click="overwriteDuplicateEntry"
+              >
+                {{
+                  locale === "de"
+                    ? "Vorhandenen Eintrag aktualisieren"
+                    : "Update Existing Entry"
+                }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-xs btn-outline"
+                @click="editDuplicateEntry"
+              >
+                {{
+                  locale === "de"
+                    ? "Vorhandenen Eintrag öffnen"
+                    : "Open Existing Entry"
+                }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost"
+                @click="duplicateAlert = null"
+              >
+                {{ locale === "de" ? "Schließen" : "Dismiss" }}
+              </button>
+            </div>
+          </div>
+
           <div
             class="flex justify-end gap-2 mt-4 pt-2 border-t border-primary/10"
           >
@@ -614,6 +669,37 @@
             }}</span
           >
           <button
+            type="button"
+            class="btn btn-xs btn-outline border-base-300 gap-1"
+            @click="handleExportPoolsBackup"
+            :title="
+              locale === 'de'
+                ? 'Organisations- und Personen-Pools als JSON-Backup sichern'
+                : 'Export organizations & persons pools as JSON backup'
+            "
+          >
+            ⬇️ {{ locale === "de" ? "Pools sichern" : "Backup Pools" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs btn-outline border-base-300 gap-1"
+            @click="poolBackupInput?.click()"
+            :title="
+              locale === 'de'
+                ? 'Gesicherte Pools aus JSON-Datei wiederherstellen'
+                : 'Restore pools from JSON backup'
+            "
+          >
+            ⬆️ {{ locale === "de" ? "Pools laden" : "Restore Pools" }}
+          </button>
+          <input
+            ref="poolBackupInput"
+            type="file"
+            accept=".json,application/json"
+            class="hidden"
+            @change="handleImportPoolsBackup"
+          />
+          <button
             v-if="savedOrganizations.length > 0"
             type="button"
             class="btn btn-xs btn-ghost text-error hover:bg-error/10 gap-1 border border-error/30"
@@ -655,9 +741,12 @@ import {
   recentOrganizations,
   recordRecentOrganization,
   addOrUpdateOrganization,
+  findDuplicateOrganization,
   removeSavedOrganization,
   updateSavedOrganization,
   clearAllOrganizations,
+  exportPoolsBackup,
+  importPoolsBackup,
 } from "../utils/sharedState.js";
 import { openExternalUrl } from "../utils/platform.js";
 import InstitutionAutocomplete from "./InstitutionAutocomplete.vue";
@@ -688,6 +777,7 @@ const searchQuery = ref("");
 const filterType = ref("all");
 const showAddForm = ref(false);
 const editingIndex = ref(null);
+const duplicateAlert = ref(null);
 
 const formData = reactive({
   id: "",
@@ -723,6 +813,7 @@ const resetFormData = () => {
   formData.organization = "";
   editingIndex.value = null;
   showAddForm.value = false;
+  duplicateAlert.value = null;
 };
 
 const onGndBlur = () => {
@@ -791,14 +882,49 @@ const saveFormData = () => {
   if (!formData.name.trim()) return;
 
   onGndBlur();
+  duplicateAlert.value = null;
+
+  const excludeIdx = editingIndex.value !== null ? editingIndex.value : -1;
+  const dup = findDuplicateOrganization({ ...formData }, excludeIdx);
+  if (dup.index > -1) {
+    duplicateAlert.value = dup;
+    return;
+  }
 
   if (editingIndex.value !== null) {
-    updateSavedOrganization(editingIndex.value, { ...formData });
+    const res = updateSavedOrganization(editingIndex.value, { ...formData });
+    if (res?.status === "duplicate") {
+      duplicateAlert.value = {
+        index: res.duplicateIndex,
+        entry: res.duplicate,
+        reason: res.reason,
+      };
+      return;
+    }
   } else {
     addOrUpdateOrganization({ ...formData });
   }
 
   resetFormData();
+};
+
+const overwriteDuplicateEntry = () => {
+  if (!duplicateAlert.value || duplicateAlert.value.index < 0) return;
+  let targetIdx = duplicateAlert.value.index;
+  if (editingIndex.value !== null && editingIndex.value !== targetIdx) {
+    const oldEditIdx = editingIndex.value;
+    removeSavedOrganization(oldEditIdx);
+    if (oldEditIdx < targetIdx) targetIdx -= 1;
+  }
+  updateSavedOrganization(targetIdx, { ...formData });
+  resetFormData();
+};
+
+const editDuplicateEntry = () => {
+  if (!duplicateAlert.value?.entry) return;
+  const existing = duplicateAlert.value.entry;
+  duplicateAlert.value = null;
+  startEdit(existing);
 };
 
 const formContainerRef = ref(null);
@@ -837,6 +963,33 @@ const selectOrganization = (org) => {
   }
   emit("select", org);
   emitClose();
+};
+
+const poolBackupInput = ref(null);
+
+const handleExportPoolsBackup = () => {
+  const backup = exportPoolsBackup();
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `hermes_pools_backup_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+const handleImportPoolsBackup = async (event) => {
+  const file = event?.target?.files?.[0];
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    importPoolsBackup(parsed);
+  } catch (e) {
+    console.warn("Failed to import pools backup:", e);
+  }
+  event.target.value = "";
 };
 
 const handleClearAllOrganizations = () => {

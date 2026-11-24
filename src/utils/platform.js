@@ -35,10 +35,14 @@ class BrowserStore {
         return JSON.parse(stored);
       }
       if (this.name === "templates.json" && defaultTemplates) {
-        localStorage.setItem(
-          `hermes_${this.name}`,
-          JSON.stringify(defaultTemplates),
-        );
+        try {
+          localStorage.setItem(
+            `hermes_${this.name}`,
+            JSON.stringify(defaultTemplates),
+          );
+        } catch (e) {
+          console.warn("Failed to seed default templates in localStorage:", e);
+        }
         return defaultTemplates;
       }
       return {};
@@ -57,7 +61,11 @@ class BrowserStore {
   async set(key, val) {
     const data = this._getData();
     data[key] = val;
-    localStorage.setItem(`hermes_${this.name}`, JSON.stringify(data));
+    try {
+      localStorage.setItem(`hermes_${this.name}`, JSON.stringify(data));
+    } catch (e) {
+      console.warn(`BrowserStore failed to persist "${this.name}":`, e);
+    }
   }
 
   async save() {

@@ -522,7 +522,7 @@
           </div>
           <div v-else class="space-y-2.5">
             <div
-              v-for="(item, idx) in heritageItems"
+              v-for="(item, idx) in safeHeritageItems"
               :key="idx"
               class="p-3.5 bg-base-200/30 rounded-xl border border-base-300 space-y-2"
             >
@@ -582,7 +582,7 @@
           </div>
           <div v-else class="space-y-2.5">
             <div
-              v-for="(item, idx) in digitalItems"
+              v-for="(item, idx) in safeDigitalItems"
               :key="idx"
               class="p-3.5 bg-base-200/30 rounded-xl border border-base-300 space-y-2"
             >
@@ -702,6 +702,18 @@ const emit = defineEmits(["close", "apply-rights"]);
 
 const activeTab = ref("global");
 
+const safeHeritageItems = computed(() =>
+  Array.isArray(props.heritageItems)
+    ? props.heritageItems.filter((item) => item && typeof item === "object")
+    : [],
+);
+
+const safeDigitalItems = computed(() =>
+  Array.isArray(props.digitalItems)
+    ? props.digitalItems.filter((item) => item && typeof item === "object")
+    : [],
+);
+
 const isCustomLicence = computed(() => {
   if (!globalRights.licence) return false;
   return !CC_LICENCES.some(
@@ -710,12 +722,20 @@ const isCustomLicence = computed(() => {
 });
 
 const emitClose = () => {
-  saveGlobalRights(globalRights);
+  try {
+    saveGlobalRights(globalRights);
+  } catch (e) {
+    console.warn("Could not persist global rights on close:", e);
+  }
   emit("close");
 };
 
 const saveAndApplyGlobal = () => {
-  saveGlobalRights(globalRights);
+  try {
+    saveGlobalRights(globalRights);
+  } catch (e) {
+    console.warn("Could not persist global rights:", e);
+  }
   emit("apply-rights", globalRights);
   emit("close");
 };
