@@ -9588,7 +9588,7 @@ const form = reactive({
 
   spatial: [],
 
-  repositoryLocation: collectionInstitution?.fullLabel || "",
+  repositoryLocation: "",
 
   "repositoryLocation#lang": "",
 
@@ -9629,23 +9629,8 @@ const form = reactive({
   dcRelation: [],
 });
 
-// Automatically prefill repositoryLocation from Collection while untouched by user
-let lastAutoRepoLocation = collectionInstitution.fullLabel || "";
-
-watch(
-  () => collectionInstitution.fullLabel,
-  (newVal) => {
-    if (
-      newVal &&
-      (!form["repositoryLocation"] ||
-        form["repositoryLocation"] === lastAutoRepoLocation)
-    ) {
-      form["repositoryLocation"] = newVal;
-    }
-    lastAutoRepoLocation = newVal || "";
-  },
-  { immediate: true },
-);
+// repositoryLocation is intentionally kept separate from collectionInstitution
+// (the collection and the physical heritage asset can be at different institutions)
 
 // Language Selection Helpers
 
@@ -10863,7 +10848,7 @@ const addNewInGrid = () => {
 
     "characters.temporal": [],
 
-    repositoryLocation: collectionInstitution.value?.fullLabel || "",
+    repositoryLocation: "",
 
     "rights.licence": globalRights?.licence || "",
   };
@@ -11113,8 +11098,7 @@ const saveAndContinueNextPart = () => {
 
   form["spatial"] = preservedSpatial;
 
-  form["repositoryLocation"] =
-    preservedRepo || collectionInstitution?.fullLabel || "";
+  form["repositoryLocation"] = preservedRepo || "";
 
   form["repositoryLocation#lang"] = preservedRepoLang;
 

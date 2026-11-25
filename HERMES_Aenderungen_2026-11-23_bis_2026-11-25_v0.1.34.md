@@ -32,7 +32,7 @@ Das frühere, schwer bedienbare Verknüpfungskonzept wurde durch eine **klare Zw
 
 ### 4. Wichtige Bugfixes in den Modulen — `v0.1.34`
 - **Kulturgut (`HeritageAssetIdentificationCrud.vue`):**
-  - Verstecktes Pflichtfeld `repositoryLocation` blockiert das Speichern nicht mehr; wird automatisch aus `collectionInstitution` vorbelegt.
+  - Verstecktes Pflichtfeld `repositoryLocation` blockiert das Speichern nicht mehr; `repositoryLocation` (Aufbewahrungsort des Kulturguts) und `collectionInstitution` (Einrichtung der Sammlung) bleiben sauber getrennt — keine automatische Vorbelegung, sondern nur optional über den Button **„Aus Sammlung übernehmen“**.
   - Deutlicher Validierungshinweis direkt neben dem Speichern-Button, wenn noch etwas fehlt.
   - Tabellenzeilen sind direkt per Klick editierbar; Maße (`dimensions`) bleiben beim Duplizieren erhalten; englische Einheiten (`Grams`, `Kilograms`, `Meters`, `Millimeters`, `Centimeters`) ergänzt.
   - Barrierefreier Schließen-Button (`✕`) im Drawer.
