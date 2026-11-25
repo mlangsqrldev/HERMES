@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.32 · 2026-11-20</span
+              >v0.1.33 · 2026-11-24</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -806,7 +806,10 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-1" v-if="step.id != 'files'">
+            <div
+              class="flex items-center gap-1"
+              v-if="step.id !== 'files' && step.id !== 'relations'"
+            >
               <div
                 class="tooltip tooltip-left z-30"
                 :data-tip="t('addtemplate')"
@@ -886,6 +889,20 @@
                   if (el) activityRef = el;
                 }
               "
+            />
+
+            <RelationsGraphEditor
+              v-if="step.id === 'relations'"
+              :heritage-items="getChildComp(heritageRef)?.items || []"
+              :digital-items="getChildComp(digitalRef)?.items || []"
+              :activity-items="getChildComp(activityRef)?.items || []"
+              :collection-form="getChildComp(collectionRef)?.form || null"
+              :unsaved-drafts-count="unsavedRelationsDraftsCount"
+              :current-locale="currentLocale"
+              @relations-changed="handleRelationsChanged"
+              @save-drafts="handleSaveDraftsForRelations"
+              @jump-to-step="(stepId) => scrollToSection(stepId)"
+              @edit-record="handleEditRecordFromRelations"
             />
 
             <div v-if="step.id === 'files'" class="space-y-6">
@@ -1379,6 +1396,13 @@ import BonnDataExportModal from "./components/BonnDataExportModal.vue";
 
 import LiveXmlPreview from "./components/LiveXmlPreview.vue";
 
+import RelationsGraphEditor from "./components/RelationsGraphEditor.vue";
+
+import {
+  analyzeRelationsHealth,
+  getRecordId,
+} from "./utils/relationsHelper.js";
+
 import defaultTemplates from "./assets/default_templates.json";
 
 import { parseCarareXml } from "./utils/carareXmlParser.js";
@@ -1538,6 +1562,102 @@ provide("globalRights", globalRights);
 provide("savedContacts", savedContacts);
 
 provide("savedActors", savedActors);
+
+provide("openRelationsEditor", () => {
+  scrollToSection("relations");
+});
+
+const unsavedRelationsDraftsCount = computed(() => {
+  let count = 0;
+  const checkComp = (refVar) => {
+    const comp = getChildComp(refVar);
+    if (!comp || !comp.form) return;
+    if (comp.isEditing) return;
+    const draftId = getRecordId(comp.form);
+    if (!draftId) return;
+    const items = Array.isArray(comp.items) ? comp.items : [];
+    const exists = items.some((it) => getRecordId(it) === draftId);
+    if (!exists) count++;
+  };
+  checkComp(heritageRef);
+  checkComp(digitalRef);
+  checkComp(activityRef);
+  return count;
+});
+
+const RELATION_SYNC_KEYS = [
+  "hasRepresentation",
+  "isRepresentationOf",
+  "isDerivativeOf",
+  "hasDerivative",
+  "wasDigitizedBy",
+  "wasPresentAt",
+  "hasCreated",
+  "hasPart",
+  "isPartOf",
+  "isReplicaOf",
+  "dcRelation",
+];
+
+const handleRelationsChanged = () => {
+  // Keep any currently open CRUD edit form synchronized with item relation edits
+  const comps = [
+    getChildComp(heritageRef),
+    getChildComp(digitalRef),
+    getChildComp(activityRef),
+  ].filter(Boolean);
+
+  for (const comp of comps) {
+    if (
+      comp.isEditing &&
+      comp.editIndex !== null &&
+      comp.editIndex !== undefined &&
+      Array.isArray(comp.items) &&
+      comp.items[comp.editIndex] &&
+      comp.form
+    ) {
+      const sourceItem = comp.items[comp.editIndex];
+      for (const key of RELATION_SYNC_KEYS) {
+        if (Array.isArray(sourceItem[key])) {
+          comp.form[key] = [...sourceItem[key]];
+        }
+      }
+    }
+  }
+};
+
+const handleSaveDraftsForRelations = () => {
+  const trySave = (refVar) => {
+    const comp = getChildComp(refVar);
+    if (!comp || !comp.form || typeof comp.save !== "function") return;
+    const draftId = getRecordId(comp.form);
+    if (!draftId) return;
+    if (comp.isEditing) return;
+    const items = Array.isArray(comp.items) ? comp.items : [];
+    if (!items.some((it) => getRecordId(it) === draftId)) {
+      comp.save();
+    }
+  };
+  trySave(heritageRef);
+  trySave(digitalRef);
+  trySave(activityRef);
+};
+
+const handleEditRecordFromRelations = ({ kind, index }) => {
+  if (kind === "ha") {
+    scrollToSection("heritageAssetIdentification");
+    const comp = getChildComp(heritageRef);
+    if (comp && typeof comp.edit === "function") comp.edit(index);
+  } else if (kind === "dr") {
+    scrollToSection("digitalResource");
+    const comp = getChildComp(digitalRef);
+    if (comp && typeof comp.edit === "function") comp.edit(index);
+  } else if (kind === "act") {
+    scrollToSection("activity");
+    const comp = getChildComp(activityRef);
+    if (comp && typeof comp.edit === "function") comp.edit(index);
+  }
+};
 
 watch(currentLocale, (newLocale) => {
   if (globalRights.licence) {
@@ -2748,6 +2868,12 @@ const steps = [
   },
 
   {
+    id: "relations",
+    en: "Relations",
+    de: "Verknüpfungen",
+  },
+
+  {
     id: "files",
     en: "Archival Package",
     de: "Archivpaket",
@@ -3035,6 +3161,13 @@ const filledStatus = computed(() => {
 const getRecordCount = (groupId) => {
   if (groupId === "files") return Object.keys(fileHashes.value || {}).length;
 
+  if (groupId === "relations") {
+    const ha = getChildComp(heritageRef)?.items || [];
+    const dr = getChildComp(digitalRef)?.items || [];
+    const act = getChildComp(activityRef)?.items || [];
+    return analyzeRelationsHealth(ha, dr, act).totalEdges;
+  }
+
   const comp = getComponentRef(groupId);
 
   if (!comp) return 0;
@@ -3300,6 +3433,48 @@ const getSectionQualityStatus = (stepId) => {
     };
   }
 
+  if (stepId === "relations") {
+    const ha = getChildComp(heritageRef)?.items || [];
+    const dr = getChildComp(digitalRef)?.items || [];
+    const act = getChildComp(activityRef)?.items || [];
+
+    if (ha.length === 0 && dr.length === 0 && act.length === 0) {
+      return {
+        status: "warning",
+        labelDe: "Wartet auf Einträge",
+        labelEn: "Waiting for records",
+        icon: "🟡",
+      };
+    }
+
+    const health = analyzeRelationsHealth(ha, dr, act);
+
+    if (health.missingRequiredCount > 0) {
+      return {
+        status: "warning",
+        labelDe: `${health.missingRequiredCount} unverknüpft`,
+        labelEn: `${health.missingRequiredCount} unlinked`,
+        icon: "🟡",
+      };
+    }
+
+    if (health.totalEdges > 0 || (dr.length === 0 && ha.length > 0)) {
+      return {
+        status: "valid",
+        labelDe: `${health.totalEdges} verknüpft`,
+        labelEn: `${health.totalEdges} linked`,
+        icon: "🟢",
+      };
+    }
+
+    return {
+      status: "warning",
+      labelDe: "Noch unverknüpft",
+      labelEn: "Not linked yet",
+      icon: "🟡",
+    };
+  }
+
   if (stepId === "files") {
     const fileCount = Object.keys(fileHashes.value || {}).length;
 
@@ -3372,8 +3547,12 @@ const generateSHA256 = async (input) => {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
-const scrollToSection = (index) => {
-  if (sectionRefs.value[index]) {
+const scrollToSection = (indexOrId) => {
+  const index =
+    typeof indexOrId === "string"
+      ? steps.findIndex((s) => s.id === indexOrId)
+      : indexOrId;
+  if (index >= 0 && sectionRefs.value[index]) {
     sectionRefs.value[index].scrollIntoView({
       behavior: "smooth",
       block: "start",

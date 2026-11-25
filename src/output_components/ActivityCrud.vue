@@ -1326,16 +1326,21 @@
                 :tooltip="getLabel('spatial', 'Location where this activity took place.', 'doc')"
                 :allow-org-pool="true"
               />
-              <ActivityDcRelations
-                :form="form"
+              <RelationsPanelCollapse
+                :count="countFormRelations(form, 'activity')"
                 :current-locale="currentLocale"
-                :project-heritage-assets="projectHeritageAssets"
-                :project-digital-resources="projectDigitalResources"
-                :other-activities="items"
-                :active-activity-id="
-                  form['recordInformation.id'] || form['appellation.id']
-                "
-              />
+              >
+                <ActivityDcRelations
+                  :form="form"
+                  :current-locale="currentLocale"
+                  :project-heritage-assets="projectHeritageAssets"
+                  :project-digital-resources="projectDigitalResources"
+                  :other-activities="items"
+                  :active-activity-id="
+                    form['recordInformation.id'] || form['appellation.id']
+                  "
+                />
+              </RelationsPanelCollapse>
             </div>
 
             <div
@@ -3806,6 +3811,8 @@ import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
 import EquipmentPickerModal from "../components/EquipmentPickerModal.vue";
 import SoftwarePickerModal from "../components/SoftwarePickerModal.vue";
 import ActivityDcRelations from "../components/ActivityDcRelations.vue";
+import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
+import { countFormRelations } from "../utils/relationsHelper.js";
 import ActivityParadata from "../components/ActivityParadata.vue";
 import ActivityConsistsOf3D from "../components/ActivityConsistsOf3D.vue";
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";

@@ -2775,16 +2775,21 @@
 
               <!-- Unified Dublin Core & CARARE Relations Manager for Heritage Asset -->
 
-              <HeritageAssetDcRelations
-                :form="form"
+              <RelationsPanelCollapse
+                :count="countFormRelations(form, 'heritage')"
                 :current-locale="currentLocale"
-                :project-digital-resources="projectDigitalResources"
-                :project-activities="projectActivities"
-                :other-heritage-assets="items"
-                :active-asset-id="
-                  form['recordInformation.id'] || form['appellation.id']
-                "
-              />
+              >
+                <HeritageAssetDcRelations
+                  :form="form"
+                  :current-locale="currentLocale"
+                  :project-digital-resources="projectDigitalResources"
+                  :project-activities="projectActivities"
+                  :other-heritage-assets="items"
+                  :active-asset-id="
+                    form['recordInformation.id'] || form['appellation.id']
+                  "
+                />
+              </RelationsPanelCollapse>
             </div>
 
             <!-- Form Action Buttons -->
@@ -5902,6 +5907,8 @@ import PlaceAutocomplete from "../components/PlaceAutocomplete.vue";
 import SpatialMapPicker from "../components/SpatialMapPicker.vue";
 
 import HeritageAssetDcRelations from "../components/HeritageAssetDcRelations.vue";
+import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
+import { countFormRelations } from "../utils/relationsHelper.js";
 
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
 

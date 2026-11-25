@@ -1529,16 +1529,22 @@
                 <div class="validator-hint">{{ t("validationHint") }}</div>
               </div>
               <!-- Unified Dublin Core & CARARE Relations Manager for Digital Resource -->
-              <DigitalResourceDcRelations
-                :form="form"
+              <RelationsPanelCollapse
+                :count="countFormRelations(form, 'digital')"
                 :current-locale="currentLocale"
-                :project-heritage-assets="projectHeritageAssets"
-                :project-activities="projectActivities"
-                :other-digital-resources="items"
-                :active-resource-id="
-                  form['recordInformation.id'] || form['appellation.id']
-                "
-              />
+                :missing-required="!(Array.isArray(form['isRepresentationOf']) && form['isRepresentationOf'].length > 0)"
+              >
+                <DigitalResourceDcRelations
+                  :form="form"
+                  :current-locale="currentLocale"
+                  :project-heritage-assets="projectHeritageAssets"
+                  :project-activities="projectActivities"
+                  :other-digital-resources="items"
+                  :active-resource-id="
+                    form['recordInformation.id'] || form['appellation.id']
+                  "
+                />
+              </RelationsPanelCollapse>
             </div>
 
             <div
@@ -4071,6 +4077,8 @@ import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
 import DigitalResourceDcRelations from "../components/DigitalResourceDcRelations.vue";
+import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
+import { countFormRelations } from "../utils/relationsHelper.js";
 import DigitalResource3DMetadata from "../components/DigitalResource3DMetadata.vue";
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
 import PersonAssignmentList from "../components/PersonAssignmentList.vue";

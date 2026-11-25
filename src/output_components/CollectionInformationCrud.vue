@@ -729,15 +729,20 @@
                   />
                 </div>
               </div>
-              <CollectionDcRelations
-                :form="form"
+              <RelationsPanelCollapse
+                :count="countFormRelations(form, 'collection')"
                 :current-locale="currentLocale"
-                :project-heritage-assets="projectHeritageAssets"
-                :project-digital-resources="projectDigitalResources"
-                :project-activities="projectActivities"
-                :other-collections="items"
-                :active-collection-id="form['id']"
-              />
+              >
+                <CollectionDcRelations
+                  :form="form"
+                  :current-locale="currentLocale"
+                  :project-heritage-assets="projectHeritageAssets"
+                  :project-digital-resources="projectDigitalResources"
+                  :project-activities="projectActivities"
+                  :other-collections="items"
+                  :active-collection-id="form['id']"
+                />
+              </RelationsPanelCollapse>
             </div>
             <div
               class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
@@ -1552,6 +1557,8 @@ import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PeriodoAutocomplete from "../components/PeriodoAutocomplete.vue";
 import HectorKeywordInput from "../components/HectorKeywordInput.vue";
 import CollectionDcRelations from "../components/CollectionDcRelations.vue";
+import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
+import { countFormRelations } from "../utils/relationsHelper.js";
 import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
 import CollectionPickerModal from "../components/CollectionPickerModal.vue";
