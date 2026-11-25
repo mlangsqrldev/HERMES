@@ -1,52 +1,5 @@
 <template>
   <div class="relative w-full">
-    <!-- Recently Used Vocabulary Terms (max 20) -->
-    <div v-if="recentTerms && recentTerms.length > 0" class="mb-2">
-      <div class="flex items-center justify-between mb-1">
-        <span
-          class="text-[11px] font-bold uppercase tracking-wider text-base-content/60 flex items-center gap-1"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-3.5 text-primary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          Zuletzt genutzte Begriffe (max. 20):
-        </span>
-        <span class="text-[10px] text-base-content/40"
-          >{{ recentTerms.length }}/20</span
-        >
-      </div>
-
-      <div class="flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1">
-        <button
-          v-for="chip in recentTerms"
-          :key="chip.uri || chip.label"
-          type="button"
-          class="btn btn-xs normal-case font-normal border border-base-300 hover:border-primary hover:bg-primary/10 transition-colors"
-          :class="
-            isTermSelected(chip)
-              ? 'btn-primary font-bold shadow-xs'
-              : 'btn-ghost'
-          "
-          @click.prevent="selectRecentChip(chip)"
-          :title="chip.uri || chip.label"
-        >
-          <span class="text-primary font-bold mr-0.5">+</span>
-          <span>{{ chip.label }}</span>
-        </button>
-      </div>
-    </div>
-
     <!-- Main Loading / Error / Select or Autocomplete -->
     <div
       v-if="loading"

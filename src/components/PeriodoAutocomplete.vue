@@ -173,28 +173,6 @@
       }}</span>
     </div>
 
-    <!-- Last 5 Recently Used Epochs -->
-    <div v-if="recentPeriods.length > 0" class="flex flex-wrap gap-1 mt-1.5 px-0.5">
-      <span
-        class="text-[10px] uppercase font-bold text-primary/80 self-center mr-1"
-      >
-        {{ currentLocale === "de" ? "Zuletzt verwendet:" : "Recently used:" }}
-      </span>
-      <button
-        v-for="rec in recentPeriods"
-        :key="'recent-' + (rec.id || rec.uri || rec.label)"
-        type="button"
-        @click.prevent="selectPeriod(rec)"
-        class="badge badge-sm badge-outline border-primary/40 hover:badge-primary text-[11px] cursor-pointer transition-colors py-0.5 px-2"
-        :title="`${rec.authority || 'PeriodO'}: ${rec.start || '-'} → ${rec.stop || '-'}`"
-      >
-        <span class="mr-0.5 text-[10px]">⏱️</span>
-        <span>{{
-          currentLocale === "de" && rec.labelDe ? rec.labelDe : rec.label
-        }}</span>
-      </button>
-    </div>
-
     <!-- Quick Selection Chips based on active catalog mode -->
     <div class="flex flex-wrap gap-1 mt-1.5 px-0.5">
       <span

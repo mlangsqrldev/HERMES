@@ -154,4 +154,18 @@ describe("CARARE XML Roundtrip Parser", () => {
     expect(step.materials).toContain("Seed: 48213");
     expect(step.equipment).toContain("SDXL");
   });
+
+  it("parses samples/pyramide_gizeh_carare_2.0.6.xml completely", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const xml = fs.readFileSync(
+      path.resolve(process.cwd(), "samples/pyramide_gizeh_carare_2.0.6.xml"),
+      "utf-8",
+    );
+    const parsed = parseCarareXml(xml);
+    expect(parsed.Collection).toHaveLength(1);
+    expect(parsed.HeritageAsset).toHaveLength(10);
+    expect(parsed.DigitalResource).toHaveLength(20);
+    expect(parsed.Activity).toHaveLength(1);
+  });
 });

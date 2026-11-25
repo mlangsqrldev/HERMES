@@ -142,30 +142,6 @@
         </div>
       </div>
 
-      <!-- Last 5 Used Historical Creators -->
-      <div
-        v-if="recentHistoricalCreators.length > 0"
-        class="flex flex-wrap items-center gap-1.5 pt-0.5"
-      >
-        <span class="text-[11px] font-semibold text-base-content/60 mr-1">
-          {{
-            currentLocale === "de"
-              ? "Zuletzt verwendet:"
-              : "Recently used:"
-          }}
-        </span>
-        <button
-          v-for="(rec, recIdx) in recentHistoricalCreators"
-          :key="rec.name + recIdx"
-          type="button"
-          class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary hover:bg-primary/10 gap-1 font-normal"
-          :title="rec.id || rec.name"
-          @click="addHistoricalQuickItem(rec)"
-        >
-          <span class="text-primary font-bold">+</span>
-          <span class="font-medium">{{ rec.name }}</span>
-        </button>
-      </div>
     </div>
 
     <!-- Inline Add / Edit Form -->
@@ -194,7 +170,7 @@
         </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
         <!-- Name -->
         <div>
           <label class="label py-1">
@@ -305,7 +281,7 @@
         <!-- Single Role select + optional custom input for contact -->
         <div
           v-if="!isMultiRole"
-          :class="mode === 'contact' ? 'md:col-span-2' : 'md:col-span-3'"
+          class="sm:col-span-2"
         >
           <label class="label py-1">
             <span class="label-text font-semibold">
@@ -355,7 +331,7 @@
         </div>
 
         <!-- Multi-Role Chips + Custom Input for Activity -->
-        <div v-else class="md:col-span-3 space-y-2">
+        <div v-else class="sm:col-span-2 space-y-2">
           <label class="label py-1">
             <span class="label-text font-semibold">
               {{

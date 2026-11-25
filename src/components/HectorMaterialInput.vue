@@ -2,7 +2,7 @@
   <div class="space-y-3 w-full">
     <!-- 1. Recently Used Materials (max 20) with 1-Click Select -->
     <div
-      v-if="recentMaterials.length > 0"
+      v-if="false && recentMaterials.length > 0"
       class="bg-base-200/50 p-2.5 rounded-lg border border-base-300"
     >
       <div class="flex items-center justify-between mb-1.5">

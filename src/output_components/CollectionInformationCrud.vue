@@ -18,7 +18,7 @@
                 <span>📂</span>
                 {{
                   currentLocale === "de"
-                    ? "Sammlung erfassen (Collection)"
+                    ? "Sammlung erfassen"
                     : "Collection Information"
                 }}
               </h3>
@@ -238,6 +238,16 @@
                             tabindex="0"
                             role="button"
                             class="btn btn-ghost min-w-[80px]"
+                            :aria-label="
+                              currentLocale === 'de'
+                                ? 'Sprache wählen'
+                                : 'Select language'
+                            "
+                            :title="
+                              currentLocale === 'de'
+                                ? 'Sprache wählen'
+                                : 'Select language'
+                            "
                           >
                             <span
                               v-if="item['title#lang'] === 'de'"
@@ -275,13 +285,13 @@
                           </div>
                           <ul
                             tabindex="0"
-                            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32 z-[1]"
+                            class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
                           >
                             <li>
                               <a
                                 @click.prevent="
                                   item['title#lang'] = 'de';
-                                  document.activeElement?.blur();
+                                  blurActiveElement();
                                 "
                               >
                                 <span
@@ -296,7 +306,7 @@
                               <a
                                 @click.prevent="
                                   item['title#lang'] = 'en';
-                                  document.activeElement?.blur();
+                                  blurActiveElement();
                                 "
                               >
                                 <span
@@ -311,7 +321,7 @@
                               <a
                                 @click.prevent="
                                   item['title#lang'] = 'fr';
-                                  document.activeElement?.blur();
+                                  blurActiveElement();
                                 "
                               >
                                 <span
@@ -326,7 +336,7 @@
                               <a
                                 @click.prevent="
                                   item['title#lang'] = 'it';
-                                  document.activeElement?.blur();
+                                  blurActiveElement();
                                 "
                               >
                                 <span
@@ -341,7 +351,7 @@
                               <a
                                 @click.prevent="
                                   item['title#lang'] = 'es';
-                                  document.activeElement?.blur();
+                                  blurActiveElement();
                                 "
                               >
                                 <span
@@ -440,16 +450,7 @@
                     <button
                       type="button"
                       class="btn btn-xs btn-outline btn-primary gap-1"
-                      @click.prevent="
-                        if (!form['title']) {
-                          form['title'] = [];
-                        }
-                        form['title'].push({
-                          _value: '',
-                          'title#lang': defaultMetadataLanguage || 'de',
-                          'title#preferred': form['title'].length === 0,
-                        });
-                      "
+                      @click.prevent="addTitleRow"
                       :title="
                         currentLocale === 'de'
                           ? 'Weiteren Titel hinzufügen'
@@ -1552,7 +1553,10 @@ import {
   onBeforeUnmount,
   watch,
 } from "vue";
-import { load } from "@tauri-apps/plugin-store";
+import { getAppStore } from "../utils/platform";
+const blurActiveElement = () => {
+  if (typeof document !== "undefined") document.activeElement?.blur();
+};
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PeriodoAutocomplete from "../components/PeriodoAutocomplete.vue";
 import HectorKeywordInput from "../components/HectorKeywordInput.vue";
@@ -2512,6 +2516,26 @@ const clearFormContacts = () => {
   form["contacts"] = [];
 };
 
+const addTitleRow = () => {
+  const defLang = defaultMetadataLanguage?.value || "de";
+  if (!Array.isArray(form["title"])) {
+    form["title"] = form["title"]
+      ? [
+          {
+            _value: String(form["title"]),
+            "title#lang": defLang,
+            "title#preferred": true,
+          },
+        ]
+      : [];
+  }
+  form["title"].push({
+    _value: "",
+    "title#lang": defLang,
+    "title#preferred": form["title"].length === 0,
+  });
+};
+
 const recentKeywords = getRecentVocabList("keywords");
 
 const addKeyword = (term) => {
@@ -2815,7 +2839,7 @@ onMounted(async () => {
   formSnapshot.value = JSON.stringify(form);
   window.addEventListener("keydown", handleKeydown);
   try {
-    store.value = await load("templates.json", { autoSave: true });
+    store.value = await getAppStore("templates.json", { autoSave: true });
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
       let tpls = await store.value.get(f);
       if (!tpls || tpls.length === 0) {

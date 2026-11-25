@@ -531,6 +531,9 @@ export function analyzeRelationsHealth(
       linkedAct.add(e.toId);
     } else if (e.type === "createdResource") {
       linkedAct.add(e.toId);
+    } else if (e.type === "partOf" || e.type === "replicaOf") {
+      linkedHa.add(e.fromId);
+      linkedHa.add(e.toId);
     }
   }
 

@@ -11,7 +11,7 @@
         <div
           class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shadow-xs"
         >
-          🎯
+          📷
         </div>
         <div>
           <h4 class="font-bold text-base leading-tight flex items-center gap-2">
@@ -93,7 +93,7 @@
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
         >
-          <span>🎯</span>
+          <span>📷</span>
           <span>{{
             currentLocale === "de"
               ? "1. Primäres 3D-Erfassungsverfahren"

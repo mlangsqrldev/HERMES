@@ -137,186 +137,25 @@
 
       <!-- Body -->
       <div class="p-5 overflow-y-auto space-y-4 flex-1">
-        <!-- TAB 1: GLOBAL -->
-        <div
-          v-if="activeTab === 'global'"
-          class="grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
-          <!-- 1. Metadata Rights -->
-          <div
-            class="p-4 bg-base-200/40 rounded-xl border border-base-300/80 space-y-2.5"
-          >
-            <div
-              class="flex items-center justify-between border-b border-base-300/60 pb-1.5"
-            >
-              <span
-                class="font-bold text-xs uppercase tracking-wider text-base-content/80"
-              >
-                1.
-                {{ locale === "de" ? "Metadaten-Rechte" : "Metadata Rights" }}
-              </span>
-              <span class="badge badge-primary badge-xs">Europeana</span>
-            </div>
-            <p class="text-[11px] text-base-content/60">
-              {{
-                locale === "de"
-                  ? "Gilt für die beschreibenden Metadaten (standardmäßig CC0)."
-                  : "Applies to descriptive metadata records (default: CC0)."
-              }}
-            </p>
-            <div>
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-semibold">
-                  {{
-                    locale === "de" ? "Metadaten-Lizenz:" : "Metadata License:"
-                  }}
-                </span>
-              </label>
-              <input
-                type="text"
-                v-model="globalRights.metadataRights"
-                class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="CC0 1.0 Universal"
-              />
-            </div>
-            <div class="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                class="badge badge-xs cursor-pointer"
-                :class="
-                  globalRights.metadataRights === 'CC0 1.0 Universal'
-                    ? 'badge-primary font-bold'
-                    : 'badge-ghost border border-base-300'
-                "
-                @click="globalRights.metadataRights = 'CC0 1.0 Universal'"
-              >
-                CC0 1.0
-              </button>
-              <button
-                type="button"
-                class="badge badge-xs cursor-pointer"
-                :class="
-                  globalRights.metadataRights === 'Public Domain Mark 1.0'
-                    ? 'badge-primary font-bold'
-                    : 'badge-ghost border border-base-300'
-                "
-                @click="globalRights.metadataRights = 'Public Domain Mark 1.0'"
-              >
-                Public Domain
-              </button>
-            </div>
-          </div>
-
-          <!-- 2. Physical Asset Rights -->
-          <div
-            class="p-4 bg-amber-500/5 rounded-xl border border-amber-500/25 space-y-2.5"
-          >
-            <div
-              class="flex items-center justify-between border-b border-amber-500/20 pb-1.5"
-            >
-              <span
-                class="font-bold text-xs uppercase tracking-wider text-amber-700 dark:text-amber-400"
-              >
-                2.
+        <!-- TAB 1: GLOBAL (Simplified for everyday use) -->
+        <div v-if="activeTab === 'global'" class="space-y-4">
+          <div class="p-4 bg-primary/5 rounded-xl border border-primary/20 space-y-3">
+            <div class="flex items-center justify-between border-b border-primary/15 pb-1.5">
+              <span class="font-bold text-xs uppercase tracking-wider text-primary">
                 {{
                   locale === "de"
-                    ? "Rechte am physischen Kulturgut"
-                    : "Physical Asset Rights"
+                    ? "Basis-Rechte (gelten für das gesamte Projekt)"
+                    : "Core Rights (apply to the entire project)"
                 }}
               </span>
-              <span class="badge badge-warning badge-xs">Original</span>
+              <span class="badge badge-primary badge-outline badge-xs">Standard</span>
             </div>
-            <div>
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-semibold">
-                  {{
-                    locale === "de"
-                      ? "Eigentümer / Credit Line:"
-                      : "Owner / Credit Line:"
-                  }}
-                </span>
-              </label>
-              <input
-                type="text"
-                v-model="globalRights.haCopyrightCreditLine"
-                class="input input-sm input-bordered w-full text-xs"
-                :placeholder="
-                  locale === 'de'
-                    ? 'z.B. Antikensammlung Berlin'
-                    : 'e.g. Antikensammlung Berlin'
-                "
-              />
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="label py-0.5">
-                  <span class="label-text text-xs font-semibold">
-                    {{ locale === "de" ? "Zugang Original:" : "Access:" }}
-                  </span>
-                </label>
-                <select
-                  v-model="globalRights.haAccessRights"
-                  class="select select-sm select-bordered w-full text-xs"
-                >
-                  <option value="">— Standard —</option>
-                  <option value="Öffentlich ausgestellt">
-                    {{
-                      locale === "de"
-                        ? "Öffentlich ausgestellt"
-                        : "On public display"
-                    }}
-                  </option>
-                  <option value="Im Museumsdepot / Eingeschränkt">
-                    {{
-                      locale === "de" ? "Im Museumsdepot" : "In museum depot"
-                    }}
-                  </option>
-                  <option value="Restricted access">Restricted access</option>
-                  <option value="Open access">Open access</option>
-                </select>
-              </div>
-              <div>
-                <label class="label py-0.5">
-                  <span class="label-text text-xs font-semibold">
-                    {{ locale === "de" ? "Reproduktion:" : "Reproduction:" }}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  v-model="globalRights.haReproductionRights"
-                  class="input input-sm input-bordered w-full text-xs"
-                  placeholder="z.B. Fotografie gestattet"
-                />
-              </div>
-            </div>
-          </div>
 
-          <!-- 3. Digital Resource / Collection Rights -->
-          <div
-            class="md:col-span-2 p-4 bg-primary/5 rounded-xl border border-primary/20 space-y-3"
-          >
-            <div
-              class="flex items-center justify-between border-b border-primary/15 pb-1.5"
-            >
-              <span
-                class="font-bold text-xs uppercase tracking-wider text-primary"
-              >
-                3.
-                {{
-                  locale === "de"
-                    ? "Nutzungsrechte (Sammlung & 3D-Modelle)"
-                    : "Usage Rights (Collection & Digital Resources)"
-                }}
-              </span>
-              <span class="badge badge-primary badge-outline badge-xs"
-                >Creative Commons</span
-              >
-            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
-                    {{ locale === "de" ? "Lizenz (URI):" : "License (URI):" }}
+                    {{ locale === "de" ? "Lizenz (3D-Modelle & Sammlung):" : "License (Digital & Collection):" }}
                   </span>
                 </label>
                 <select
@@ -336,27 +175,41 @@
                   </option>
                 </select>
               </div>
+
               <div>
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
-                    {{ locale === "de" ? "Zugangsrechte:" : "Access Rights:" }}
+                    {{ locale === "de" ? "Zugang:" : "Access:" }}
                   </span>
                 </label>
                 <select
                   v-model="globalRights.accessRights"
                   class="select select-sm select-bordered w-full text-xs"
                 >
-                  <option value="Open access">Open access</option>
-                  <option value="Restricted access">Restricted access</option>
+                  <option value="Open access">
+                    {{
+                      locale === "de"
+                        ? "Offener Zugang (Open access)"
+                        : "Open access"
+                    }}
+                  </option>
+                  <option value="Restricted access">
+                    {{
+                      locale === "de"
+                        ? "Eingeschränkter Zugang (Restricted access)"
+                        : "Restricted access"
+                    }}
+                  </option>
                 </select>
               </div>
-              <div>
+
+              <div class="sm:col-span-2">
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
                     {{
                       locale === "de"
-                        ? "Digitalisierungs-Credit:"
-                        : "Digitalisation Credit:"
+                        ? "Rechteinhaber / Credit Line:"
+                        : "Rights Holder / Credit Line:"
                     }}
                   </span>
                 </label>
@@ -364,24 +217,134 @@
                   type="text"
                   v-model="globalRights.copyrightCreditLine"
                   class="input input-sm input-bordered w-full text-xs"
-                  placeholder="z.B. Digitalisierung durch BCDH Uni Bonn"
+                  :placeholder="
+                    locale === 'de'
+                      ? 'z.B. Staatliche Museen zu Berlin, Antikensammlung / BCDH Uni Bonn'
+                      : 'e.g. Antikensammlung Berlin / BCDH University of Bonn'
+                  "
                 />
               </div>
-              <div>
+            </div>
+          </div>
+
+          <!-- Collapsible Advanced Rights -->
+          <div class="rounded-xl border border-base-300 bg-base-200/30 overflow-hidden">
+            <button
+              type="button"
+              class="w-full px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-base-content/75 hover:bg-base-200/50 transition-colors"
+              @click="showAdvancedGlobal = !showAdvancedGlobal"
+            >
+              <span>
+                ⚙️
+                {{
+                  locale === "de"
+                    ? "Erweiterte Rechtefelder (Metadaten-Lizenz, Original-Rechte, Reproduktion)"
+                    : "Advanced Rights Fields (Metadata License, Physical Asset, Reproduction)"
+                }}
+              </span>
+              <span class="badge badge-xs badge-ghost">
+                {{
+                  showAdvancedGlobal
+                    ? locale === "de"
+                      ? "Ausblenden ▲"
+                      : "Hide ▲"
+                    : locale === "de"
+                      ? "Optional ▼"
+                      : "Optional ▼"
+                }}
+              </span>
+            </button>
+
+            <div
+              v-if="showAdvancedGlobal"
+              class="p-4 pt-2 border-t border-base-300 grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <!-- Metadata Rights -->
+              <div class="space-y-2">
+                <span class="font-bold text-[11px] uppercase tracking-wider text-base-content/70 block">
+                  {{ locale === "de" ? "Metadaten-Rechte (Europeana)" : "Metadata Rights (Europeana)" }}
+                </span>
+                <input
+                  type="text"
+                  v-model="globalRights.metadataRights"
+                  class="input input-sm input-bordered w-full font-mono text-xs"
+                  placeholder="CC0 1.0 Universal"
+                />
+                <div class="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    class="badge badge-xs cursor-pointer"
+                    :class="
+                      globalRights.metadataRights === 'CC0 1.0 Universal'
+                        ? 'badge-primary font-bold'
+                        : 'badge-ghost border border-base-300'
+                    "
+                    @click="globalRights.metadataRights = 'CC0 1.0 Universal'"
+                  >
+                    CC0 1.0
+                  </button>
+                  <button
+                    type="button"
+                    class="badge badge-xs cursor-pointer"
+                    :class="
+                      globalRights.metadataRights === 'Public Domain Mark 1.0'
+                        ? 'badge-primary font-bold'
+                        : 'badge-ghost border border-base-300'
+                    "
+                    @click="globalRights.metadataRights = 'Public Domain Mark 1.0'"
+                  >
+                    Public Domain
+                  </button>
+                </div>
+              </div>
+
+              <!-- Physical Asset Rights -->
+              <div class="space-y-2">
+                <span class="font-bold text-[11px] uppercase tracking-wider text-amber-700 dark:text-amber-400 block">
+                  {{ locale === "de" ? "Rechte am physischen Original" : "Physical Asset Rights" }}
+                </span>
+                <input
+                  type="text"
+                  v-model="globalRights.haCopyrightCreditLine"
+                  class="input input-sm input-bordered w-full text-xs"
+                  :placeholder="locale === 'de' ? 'Eigentümer (z.B. Antikensammlung Berlin)' : 'Owner (e.g. Antikensammlung Berlin)'"
+                />
+                <div class="grid grid-cols-2 gap-2">
+                  <select
+                    v-model="globalRights.haAccessRights"
+                    class="select select-sm select-bordered w-full text-xs"
+                  >
+                    <option value="">— {{ locale === "de" ? "Original-Zugang" : "Original Access" }} —</option>
+                    <option value="Öffentlich ausgestellt">
+                      {{ locale === "de" ? "Öffentlich ausgestellt" : "On public display" }}
+                    </option>
+                    <option value="Im Museumsdepot / Eingeschränkt">
+                      {{ locale === "de" ? "Im Museumsdepot" : "In museum depot" }}
+                    </option>
+                    <option value="Restricted access">Restricted access</option>
+                    <option value="Open access">Open access</option>
+                  </select>
+                  <input
+                    type="text"
+                    v-model="globalRights.haReproductionRights"
+                    class="input input-sm input-bordered w-full text-xs"
+                    :placeholder="locale === 'de' ? 'Reproduktion (Original)' : 'Reproduction (Original)'"
+                  />
+                </div>
+              </div>
+
+              <!-- Digital Reproduction Rights -->
+              <div class="md:col-span-2">
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
-                    {{
-                      locale === "de"
-                        ? "Reproduktionsrechte:"
-                        : "Reproduction Rights:"
-                    }}
+                    {{ locale === "de" ? "Reproduktionsrechte (Digitalisate):" : "Reproduction Rights (Digital):" }}
                   </span>
                 </label>
                 <input
                   type="text"
                   v-model="globalRights.reproductionRights"
                   class="input input-sm input-bordered w-full text-xs"
-                  placeholder="z.B. Freie Nutzung für Forschung"
+                  :placeholder="locale === 'de' ? 'z.B. Freie Nutzung für Forschung' : 'e.g. Free use for research'"
                 />
               </div>
             </div>
@@ -701,6 +664,7 @@ const props = defineProps({
 const emit = defineEmits(["close", "apply-rights"]);
 
 const activeTab = ref("global");
+const showAdvancedGlobal = ref(false);
 
 const safeHeritageItems = computed(() =>
   Array.isArray(props.heritageItems)

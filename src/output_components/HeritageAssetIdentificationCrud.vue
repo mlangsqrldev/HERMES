@@ -369,6 +369,7 @@
                 <tr
                   v-for="{ item, originalIndex } in filteredItemsWithIndices"
                   :key="originalIndex"
+                  class="cursor-pointer hover:bg-base-200/40"
                   :class="{
                     'bg-primary/10 font-medium':
                       isEditing && editIndex === originalIndex,
@@ -376,8 +377,9 @@
                     'bg-warning/5':
                       selectedOriginalIndices.includes(originalIndex),
                   }"
+                  @click="edit(originalIndex)"
                 >
-                  <td class="text-center">
+                  <td class="text-center" @click.stop>
                     <input
                       type="checkbox"
                       class="checkbox checkbox-xs"
@@ -483,7 +485,7 @@
                     </div>
                   </td>
 
-                  <td class="text-right">
+                  <td class="text-right" @click.stop>
                     <div class="flex gap-1 justify-end items-center">
                       <button
                         type="button"
@@ -495,7 +497,7 @@
                             : 'Create new 3D model for this heritage asset'
                         "
                       >
-                        🎯 +3D
+                        🖥️ +3D
                       </button>
 
                       <button
@@ -794,47 +796,6 @@
                     <div class="validator-hint">{{ t("validationHint") }}</div>
 
                     <!-- Recently Used Organizations Bar for Source -->
-                    <div
-                      v-if="
-                        recentOrganizations && recentOrganizations.length > 0
-                      "
-                      class="mt-2 p-2 bg-base-200/50 rounded-lg border border-base-300 flex items-center gap-1.5 flex-wrap"
-                    >
-                      <span
-                        class="text-[11px] font-bold text-base-content/60 flex items-center gap-1 mr-1"
-                      >
-                        🕒
-                        {{
-                          currentLocale === "de"
-                            ? "Zuletzt verwendet:"
-                            : "Recently used:"
-                        }}
-                      </span>
-                      <button
-                        v-for="rOrg in recentOrganizations.slice(0, 5)"
-                        :key="'source-rec-' + rOrg.name"
-                        type="button"
-                        class="btn btn-xs gap-1"
-                        :class="
-                          form['recordInformation.source'] === rOrg.name
-                            ? 'btn-primary font-bold shadow-xs'
-                            : 'btn-outline border-base-300'
-                        "
-                        @click.prevent="
-                          form['recordInformation.source'] = rOrg.name
-                        "
-                      >
-                        <span>🏛️</span>
-                        <span class="truncate max-w-[180px]">{{
-                          rOrg.name
-                        }}</span>
-                        <span
-                          v-if="rOrg.country"
-                          class="badge badge-xs badge-ghost font-mono uppercase text-[9px]"
-                          >{{ rOrg.country }}</span
-                        >
-                      </button>
-                    </div>
                   </div>
 
                   <div
@@ -1126,6 +1087,16 @@
                                 tabindex="0"
                                 role="button"
                                 class="btn btn-ghost min-w-[80px]"
+                                :aria-label="
+                                  currentLocale === 'de'
+                                    ? 'Sprache wählen'
+                                    : 'Select language'
+                                "
+                                :title="
+                                  currentLocale === 'de'
+                                    ? 'Sprache wählen'
+                                    : 'Select language'
+                                "
                               >
                                 <span
                                   v-if="item['appellation.name#lang'] === 'de'"
@@ -1181,13 +1152,13 @@
 
                               <ul
                                 tabindex="0"
-                                class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32 z-[1]"
+                                class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
                               >
                                 <li>
                                   <a
                                     @click.prevent="
                                       item['appellation.name#lang'] = 'de';
-                                      document.activeElement?.blur();
+                                      blurActiveElement();
                                     "
                                   >
                                     <span
@@ -1203,7 +1174,7 @@
                                   <a
                                     @click.prevent="
                                       item['appellation.name#lang'] = 'en';
-                                      document.activeElement?.blur();
+                                      blurActiveElement();
                                     "
                                   >
                                     <span
@@ -1219,7 +1190,7 @@
                                   <a
                                     @click.prevent="
                                       item['appellation.name#lang'] = 'fr';
-                                      document.activeElement?.blur();
+                                      blurActiveElement();
                                     "
                                   >
                                     <span
@@ -1235,7 +1206,7 @@
                                   <a
                                     @click.prevent="
                                       item['appellation.name#lang'] = 'it';
-                                      document.activeElement?.blur();
+                                      blurActiveElement();
                                     "
                                   >
                                     <span
@@ -1251,7 +1222,7 @@
                                   <a
                                     @click.prevent="
                                       item['appellation.name#lang'] = 'es';
-                                      document.activeElement?.blur();
+                                      blurActiveElement();
                                     "
                                   >
                                     <span
@@ -2575,10 +2546,9 @@
                   </button>
                 </div>
 
-                <!-- Hidden input for HTML form validation if required -->
+                <!-- Hidden input (no native required so form submit never blocks silently) -->
                 <input
                   type="hidden"
-                  required
                   v-model="form['repositoryLocation']"
                 />
 
@@ -2632,7 +2602,7 @@
                     </svg>
                     {{
                       currentLocale === "de"
-                        ? "Identisch mit Sammlung (Collection)"
+                        ? "Identisch mit Sammlung"
                         : "Identical to Collection"
                     }}
                   </span>
@@ -2809,6 +2779,13 @@
 
               <div class="flex flex-wrap items-center gap-2">
                 <span
+                  v-if="validationErrorMessage"
+                  class="badge badge-error text-error-content font-semibold px-3 py-3 text-xs gap-1"
+                >
+                  ⚠️ {{ validationErrorMessage }}
+                </span>
+
+                <span
                   v-if="saveSuccessBadge"
                   class="badge badge-success text-success-content font-bold px-3 py-3 text-xs gap-1"
                 >
@@ -2925,11 +2902,14 @@
               </div>
             </div>
 
-            <label
-              for="drawer-heritageAssetIdentification"
-              class="btn btn-circle btn-ghost btn-sm drawer-overlay"
-              >✕</label
+            <button
+              type="button"
+              class="btn btn-circle btn-ghost btn-sm"
+              :aria-label="currentLocale === 'de' ? 'Schließen' : 'Close'"
+              @click="closeDrawer()"
             >
+              ✕
+            </button>
           </div>
 
           <form
@@ -4505,15 +4485,15 @@
                     </template>
 
                     <template v-else>
-                      <option value="Gramm">Gramm</option>
+                      <option value="Gramm">Grams</option>
 
-                      <option value="Kilogramm">Kilogramm</option>
+                      <option value="Kilogramm">Kilograms</option>
 
-                      <option value="Meter">Meter</option>
+                      <option value="Meter">Meters</option>
 
-                      <option value="Millimeter">Millimeter</option>
+                      <option value="Millimeter">Millimeters</option>
 
-                      <option value="Zentimeter">Zentimeter</option>
+                      <option value="Zentimeter">Centimeters</option>
                     </template>
                   </select>
                 </div>
@@ -5461,27 +5441,6 @@
 
             <div v-if="activeDrawerField === 'references'">
               <div class="space-y-4">
-                <div
-                  v-if="recentReferences.length > 0"
-                  class="bg-base-200/50 p-3 rounded-lg border border-base-300 space-y-2"
-                >
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-base-content/70 block">
-                    {{ currentLocale === "de" ? "Letzte 10 Referenzen (Kürzel-Auswahl):" : "Recent 10 References (Quick Select):" }}
-                  </span>
-                  <div class="flex flex-wrap gap-1.5">
-                    <button
-                      v-for="(rChip, rIdx) in recentReferences"
-                      :key="rIdx"
-                      type="button"
-                      class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary hover:bg-primary/10 font-normal"
-                      @click="drawerForm['appellation.name'] = rChip.citation || ''; drawerForm['appellation.id'] = rChip.doi || '';"
-                      :title="`${rChip.citation}${rChip.doi ? ` (${rChip.doi})` : ''}`"
-                    >
-                      + {{ rChip.shortLabel }}
-                    </button>
-                  </div>
-                </div>
-
                 <div class="form-control w-full">
                   <label class="label">
                     <span class="label-text font-bold">
@@ -5882,7 +5841,10 @@ import {
   watch,
 } from "vue";
 
-import { load } from "@tauri-apps/plugin-store";
+import { getAppStore } from "../utils/platform";
+const blurActiveElement = () => {
+  if (typeof document !== "undefined") document.activeElement?.blur();
+};
 
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 
@@ -9864,9 +9826,19 @@ const formSnapshot = ref("");
 const isFormDirty = () =>
   formSnapshot.value !== "" && JSON.stringify(form) !== formSnapshot.value;
 
+const validationErrorMessage = ref("");
+
 const handleInvalid = (event) => {
   const el = event?.target;
   if (!el) return;
+  const labelText =
+    el.closest(".form-control")?.querySelector(".label-text")?.textContent?.trim() ||
+    el.getAttribute("placeholder") ||
+    (currentLocale.value === "de" ? "Pflichtfeld" : "Required field");
+  validationErrorMessage.value =
+    currentLocale.value === "de"
+      ? `Bitte ausfüllen: ${labelText}`
+      : `Please fill: ${labelText}`;
   let parent = el.closest("details");
   while (parent) {
     parent.open = true;
@@ -9909,7 +9881,7 @@ onMounted(async () => {
   window.addEventListener("keydown", handleKeydown);
 
   try {
-    store.value = await load("templates.json", { autoSave: true });
+    store.value = await getAppStore("templates.json", { autoSave: true });
 
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
       let tpls = await store.value.get(f);
@@ -10450,6 +10422,7 @@ const removeDrawerItem = (field, index) => {
 const saveSuccessBadge = ref(false);
 
 const save = () => {
+  validationErrorMessage.value = "";
   if (!form["recordInformation.id"]) {
     form["recordInformation.id"] =
       form["appellation.id"] || `HA-${Date.now().toString(36).toUpperCase()}`;
@@ -10836,10 +10809,7 @@ const smartDuplicate = (index) => {
     }
   }
 
-  // Clear object-unique fields (dimensions, inscriptions, relations)
-
-  item["characters.dimensions"] = [];
-
+  // Clear object-unique fields (inscriptions, relations); keep dimensions on clone so multi-part monuments inherit measurements
   item["characters.inscriptions"] = [];
 
   item["hasRepresentation"] = [];
@@ -10893,7 +10863,7 @@ const addNewInGrid = () => {
 
     "characters.temporal": [],
 
-    repositoryLocation: "",
+    repositoryLocation: collectionInstitution.value?.fullLabel || "",
 
     "rights.licence": globalRights?.licence || "",
   };

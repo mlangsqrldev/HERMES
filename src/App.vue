@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.33 · 2026-11-24</span
+              >v0.1.34 · 2026-11-25</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -3703,121 +3703,10 @@ onMounted(() => {
     if (el) observer.observe(el);
   });
 
-  // Auto-restore multi-day session draft from localStorage (with strict per-module sanitization)
-  nextTick(() => {
-    try {
-      const raw = localStorage.getItem("hermes_session_draft_v1");
-      if (raw) {
-        const saved = JSON.parse(raw);
-        const defLang = defaultMetadataLanguage.value || "de";
-        const sanitizeRecord = (rec, modKey) => {
-          if (!rec || typeof rec !== "object" || Array.isArray(rec)) return null;
-          const clean = { ...rec };
-          if (modKey === "digital") {
-            if (typeof clean["format"] === "string") {
-              clean["format"] = clean["format"].trim() ? [clean["format"].trim()] : [];
-            } else if (!Array.isArray(clean["format"])) {
-              clean["format"] = [];
-            } else {
-              clean["format"] = clean["format"]
-                .map((f) => (typeof f === "string" ? f : f?._value || ""))
-                .filter(Boolean);
-            }
-            if (!Array.isArray(clean["appellation.name"]) || clean["appellation.name"].length === 0) {
-              const rawName = typeof clean["appellation.name"] === "string" ? clean["appellation.name"] : "";
-              clean["appellation.name"] = [
-                {
-                  _value: rawName,
-                  "appellation.name#lang": defLang,
-                  "appellation.name#preferred": true,
-                },
-              ];
-            } else {
-              clean["appellation.name"] = clean["appellation.name"]
-                .filter((x) => x !== null && x !== undefined)
-                .map((x, i) =>
-                  typeof x === "object"
-                    ? {
-                        _value: String(x._value || ""),
-                        "appellation.name#lang": x["appellation.name#lang"] || defLang,
-                        "appellation.name#preferred":
-                          x["appellation.name#preferred"] ?? i === 0,
-                      }
-                    : {
-                        _value: String(x),
-                        "appellation.name#lang": defLang,
-                        "appellation.name#preferred": i === 0,
-                      },
-                );
-            }
-            if (!Array.isArray(clean["actors"])) clean["actors"] = [];
-            if (!Array.isArray(clean["note"])) clean["note"] = [];
-            if (!Array.isArray(clean["softwareList"])) clean["softwareList"] = [];
-            if (!Array.isArray(clean["extentList"])) clean["extentList"] = [];
-          } else if (modKey === "heritage" || modKey === "activity") {
-            if (!Array.isArray(clean["appellation.name"]) || clean["appellation.name"].length === 0) {
-              const rawName = typeof clean["appellation.name"] === "string" ? clean["appellation.name"] : "";
-              clean["appellation.name"] = [
-                {
-                  _value: rawName,
-                  "appellation.name#lang": defLang,
-                  "appellation.name#preferred": true,
-                },
-              ];
-            }
-          } else if (modKey === "collection") {
-            if (!Array.isArray(clean["contacts"])) clean["contacts"] = [];
-            if (!Array.isArray(clean["title"]) || clean["title"].length === 0) {
-              const rawTitle = typeof clean["title"] === "string" ? clean["title"] : "";
-              clean["title"] = [
-                {
-                  _value: rawTitle,
-                  "title#lang": defLang,
-                  "title#preferred": true,
-                },
-              ];
-            }
-          }
-          return clean;
-        };
-
-        const restoreMod = (compRef, modData, modKey) => {
-          const comp = getChildComp(compRef);
-          if (!comp || !modData || typeof modData !== "object") return;
-          try {
-            if (Array.isArray(modData.items) && comp.items) {
-              const validItems = modData.items
-                .map((it) => sanitizeRecord(it, modKey))
-                .filter(Boolean);
-              if (Array.isArray(comp.items)) {
-                comp.items.splice(0, comp.items.length, ...validItems);
-              } else if (Array.isArray(comp.items.value)) {
-                comp.items.value = validItems;
-              }
-            }
-            if (modData.form && typeof modData.form === "object" && comp.form) {
-              const cleanForm = sanitizeRecord(modData.form, modKey);
-              if (cleanForm) {
-                Object.assign(comp.form, cleanForm);
-              }
-            }
-          } catch (modErr) {
-            console.warn(`Failed to restore HERMES module "${modKey}", resetting module form:`, modErr);
-            comp.resetForm?.(true);
-          }
-        };
-        restoreMod(collectionRef, saved.collection, "collection");
-        restoreMod(heritageRef, saved.heritage, "heritage");
-        restoreMod(digitalRef, saved.digital, "digital");
-        restoreMod(activityRef, saved.activity, "activity");
-      }
-    } catch (e) {
-      console.warn("Failed to restore HERMES session draft, clearing corrupt draft (pools preserved):", e);
-      try {
-        localStorage.removeItem("hermes_session_draft_v1");
-      } catch {}
-    }
-  });
+  // Always start with clean, empty forms on launch (do not auto-fill previous session drafts)
+  try {
+    localStorage.removeItem("hermes_session_draft_v1");
+  } catch {}
 });
 
 let sessionSaveTimer = null;

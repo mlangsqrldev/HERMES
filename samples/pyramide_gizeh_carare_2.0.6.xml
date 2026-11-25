@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<carareWrap xmlns="http://www.carare.eu/carareSchema">
+  <carare id="COL-GIZEH-01">
+    <collectionInformation>
+      <id>COL-GIZEH-01</id>
+      <title lang="de" preferred="true">Pyramidenkomplex Gizeh</title>
+      <title lang="en" preferred="false">Giza Pyramid Complex</title>
+      <source lang="de">Ägyptologisches Institut / BCDH Universität Bonn</source>
+      <contacts>
+        <name>Valentina Salcedo</name>
+        <role>Dokumentation</role>
+        <organization>Universität Bonn — BCDH</organization>
+      </contacts>
+      <statement lang="de">Vollständiger archäologischer Referenzdatensatz: Pyramide mit Grabkammer, vierteiligem Sarkophag, Mumie sowie Kanopenkasten mit Inhalt. Alle 10 Kulturgüter besitzen jeweils eine Master-Datei und ein Low-Poly-Webmodell aus einer gemeinsamen Dokumentationskampagne.</statement>
+      <keywords lang="de">Pyramide</keywords>
+      <keywords lang="de">Grabkammer</keywords>
+      <keywords lang="de">Altes Reich</keywords>
+      <rights>
+        <copyrightCreditLine>Ägyptologisches Institut / BCDH Universität Bonn</copyrightCreditLine>
+        <accessRights>Open access</accessRights>
+        <licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence>
+      </rights>
+      <creation>
+        <createdOn>2026-11-25</createdOn>
+      </creation>
+      <coverage>
+        <temporal>
+          <timeSpan>
+            <startDate>-2686</startDate>
+            <endDate>-2160</endDate>
+          </timeSpan>
+          <periodName lang="de">Altes Reich</periodName>
+          <displayDate lang="de">2686 – 2160 v. Chr.</displayDate>
+        </temporal>
+        <spatial>
+          <locationSet>
+            <namedLocation lang="de">Gizeh, Ägypten</namedLocation>
+            <historicalName lang="de">Gizeh-Plateau</historicalName>
+            <geopoliticalArea lang="de">Ägypten</geopoliticalArea>
+          </locationSet>
+          <geometry>
+            <quickpoint>
+              <x>31.1342</x>
+              <y>29.9792</y>
+            </quickpoint>
+          </geometry>
+        </spatial>
+      </coverage>
+    </collectionInformation>
+  </carare>
+
+  <!-- 1. PYRAMIDE -->
+  <carare id="HA-PYRAMIDE">
+    <heritageAssetIdentification>
+      <recordInformation>
+        <id>HA-PYRAMIDE</id>
+        <source>Ägyptologisches Institut / BCDH Universität Bonn</source>
+      </recordInformation>
+      <appellation>
+        <id>GIZEH-PYR-01</id>
+        <name lang="de" preferred="true">Pyramide (Hauptbauwerk)</name>
+      </appellation>
+      <description lang="de">Monumentale Kalksteinpyramide des Alten Reiches mit integrierter unterirdischer Grabkammer.</description>
+      <generalType>monument</generalType>
+      <characters>
+        <heritageAssetType lang="de">Pyramide</heritageAssetType>
+        <materials lang="de">Kalkstein</materials>
+        <temporal>
+          <timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan>
+          <periodName lang="de">Altes Reich</periodName>
+          <displayDate lang="de">2686 – 2160 v. Chr.</displayDate>
+        </temporal>
+        <dimensions>
+          <extent>Gesamtobjekt</extent>
+          <measurementType>Höhe</measurementType>
+          <value>138.5</value>
+          <units>Meter</units>
+        </dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <references>
+        <appellation>
+          <name>Lehner, M.: The Complete Pyramids (London 1997)</name>
+          <id>https://doi.org/10.60507/FK2/GIZEH01</id>
+        </appellation>
+      </references>
+      <spatial>
+        <locationSet>
+          <namedLocation lang="de">Gizeh, Ägypten</namedLocation>
+          <geopoliticalArea lang="de">Ägypten</geopoliticalArea>
+        </locationSet>
+        <geometry><quickpoint><x>31.1342</x><y>29.9792</y></quickpoint></geometry>
+      </spatial>
+      <relations>
+        <hasPart>HA-GRAB</hasPart>
+        <hasRepresentation>DR-PYRAMIDE-MASTER</hasRepresentation>
+        <hasRepresentation>DR-PYRAMIDE-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 2. GRABKAMMER -->
+  <carare id="HA-GRAB">
+    <heritageAssetIdentification>
+      <recordInformation>
+        <id>HA-GRAB</id>
+        <source>Ägyptologisches Institut / BCDH Universität Bonn</source>
+      </recordInformation>
+      <appellation>
+        <id>GIZEH-GRAB-01</id>
+        <name lang="de" preferred="true">Grabkammer in der Pyramide</name>
+      </appellation>
+      <description lang="de">Zentrale Grabkammer im Inneren der Pyramide mit Sarkophag, Mumie und Kanopenkasten.</description>
+      <generalType>monument</generalType>
+      <characters>
+        <heritageAssetType lang="de">Grabkammer</heritageAssetType>
+        <materials lang="de">Granit</materials>
+        <temporal>
+          <timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan>
+          <periodName lang="de">Altes Reich</periodName>
+        </temporal>
+        <dimensions>
+          <extent>Innenraum</extent>
+          <measurementType>Länge</measurementType>
+          <value>10.5</value>
+          <units>Meter</units>
+        </dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-PYRAMIDE</isPartOf>
+        <hasPart>HA-SARKOPHAG</hasPart>
+        <hasPart>HA-MUMIE</hasPart>
+        <hasPart>HA-KANOPENKASTEN</hasPart>
+        <hasRepresentation>DR-GRAB-MASTER</hasRepresentation>
+        <hasRepresentation>DR-GRAB-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 3. SARKOPHAG (GESAMT) -->
+  <carare id="HA-SARKOPHAG">
+    <heritageAssetIdentification>
+      <recordInformation>
+        <id>HA-SARKOPHAG</id>
+        <source>Ägyptologisches Institut / BCDH Universität Bonn</source>
+      </recordInformation>
+      <appellation>
+        <id>GIZEH-SARK-00</id>
+        <name lang="de" preferred="true">Granitsarkophag (4-teilig)</name>
+      </appellation>
+      <description lang="de">Vierteiliger roter Granitsarkophag aus der Grabkammer.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Sarkophag</heritageAssetType>
+        <materials lang="de">Granit</materials>
+        <temporal>
+          <timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan>
+          <periodName lang="de">Altes Reich</periodName>
+        </temporal>
+        <dimensions>
+          <extent>Gesamtobjekt</extent>
+          <measurementType>Höhe</measurementType>
+          <value>105</value>
+          <units>Zentimeter</units>
+        </dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-GRAB</isPartOf>
+        <hasPart>HA-SARKOPHAG-T1</hasPart>
+        <hasPart>HA-SARKOPHAG-T2</hasPart>
+        <hasPart>HA-SARKOPHAG-T3</hasPart>
+        <hasPart>HA-SARKOPHAG-T4</hasPart>
+        <hasRepresentation>DR-SARKOPHAG-MASTER</hasRepresentation>
+        <hasRepresentation>DR-SARKOPHAG-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 4-7. SARKOPHAG TEILE 1-4 -->
+  <carare id="HA-SARKOPHAG-T1">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-SARKOPHAG-T1</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-SARK-T1</id><name lang="de" preferred="true">Sarkophag – Teil 1 (Wanne)</name></appellation>
+      <description lang="de">Unterteil / Wanne des vierteiligen Granitsarkophags.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Sarkophag-Fragment</heritageAssetType>
+        <materials lang="de">Granit</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Teilstück 1</extent><measurementType>Höhe</measurementType><value>80</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-SARKOPHAG</isPartOf>
+        <hasRepresentation>DR-SARKOPHAG-T1-MASTER</hasRepresentation>
+        <hasRepresentation>DR-SARKOPHAG-T1-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <carare id="HA-SARKOPHAG-T2">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-SARKOPHAG-T2</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-SARK-T2</id><name lang="de" preferred="true">Sarkophag – Teil 2 (Deckel)</name></appellation>
+      <description lang="de">Deckelplatte des vierteiligen Granitsarkophags.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Sarkophag-Fragment</heritageAssetType>
+        <materials lang="de">Granit</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Teilstück 2</extent><measurementType>Höhe</measurementType><value>25</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-SARKOPHAG</isPartOf>
+        <hasRepresentation>DR-SARKOPHAG-T2-MASTER</hasRepresentation>
+        <hasRepresentation>DR-SARKOPHAG-T2-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <carare id="HA-SARKOPHAG-T3">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-SARKOPHAG-T3</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-SARK-T3</id><name lang="de" preferred="true">Sarkophag – Teil 3 (Kopfseite)</name></appellation>
+      <description lang="de">Fragmentierte Kopfseite des Granitsarkophags.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Sarkophag-Fragment</heritageAssetType>
+        <materials lang="de">Granit</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Teilstück 3</extent><measurementType>Breite</measurementType><value>95</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-SARKOPHAG</isPartOf>
+        <hasRepresentation>DR-SARKOPHAG-T3-MASTER</hasRepresentation>
+        <hasRepresentation>DR-SARKOPHAG-T3-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <carare id="HA-SARKOPHAG-T4">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-SARKOPHAG-T4</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-SARK-T4</id><name lang="de" preferred="true">Sarkophag – Teil 4 (Fußseite)</name></appellation>
+      <description lang="de">Fragmentierte Fußseite des Granitsarkophags.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Sarkophag-Fragment</heritageAssetType>
+        <materials lang="de">Granit</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Teilstück 4</extent><measurementType>Breite</measurementType><value>95</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-SARKOPHAG</isPartOf>
+        <hasRepresentation>DR-SARKOPHAG-T4-MASTER</hasRepresentation>
+        <hasRepresentation>DR-SARKOPHAG-T4-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 8. MUMIE -->
+  <carare id="HA-MUMIE">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-MUMIE</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-MUMIE-01</id><name lang="de" preferred="true">Mumie aus der Grabkammer</name></appellation>
+      <description lang="de">Einbalsamierter Leichnam in Leinenbinden aus dem Granitsarkophag der Grabkammer.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Mumie</heritageAssetType>
+        <materials lang="de">Organisches Material / Leinen</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Gesamtobjekt</extent><measurementType>Länge</measurementType><value>168</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-GRAB</isPartOf>
+        <hasRepresentation>DR-MUMIE-MASTER</hasRepresentation>
+        <hasRepresentation>DR-MUMIE-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 9. KANOPENKASTEN -->
+  <carare id="HA-KANOPENKASTEN">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-KANOPENKASTEN</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-KANOP-01</id><name lang="de" preferred="true">Kanopenkasten</name></appellation>
+      <description lang="de">Viergeteilter Alabaster-Kanopenkasten aus der Grabkammer.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Kanopenkasten</heritageAssetType>
+        <materials lang="de">Alabaster</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Gesamtobjekt</extent><measurementType>Höhe</measurementType><value>52</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-GRAB</isPartOf>
+        <hasPart>HA-KANOPEN-INHALT</hasPart>
+        <hasRepresentation>DR-KANOPENKASTEN-MASTER</hasRepresentation>
+        <hasRepresentation>DR-KANOPENKASTEN-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 10. KANOPENKASTEN INHALT -->
+  <carare id="HA-KANOPEN-INHALT">
+    <heritageAssetIdentification>
+      <recordInformation><id>HA-KANOPEN-INHALT</id><source>Ägyptologisches Institut / BCDH Universität Bonn</source></recordInformation>
+      <appellation><id>GIZEH-KANOP-INH-01</id><name lang="de" preferred="true">Inhalt des Kanopenkastens (4 Kanopenkrüge)</name></appellation>
+      <description lang="de">Vier Alabaster-Kanopenkrüge mit einbalsamierten Organpaketen im Kanopenkasten.</description>
+      <generalType>object</generalType>
+      <characters>
+        <heritageAssetType lang="de">Kanopenkrug</heritageAssetType>
+        <materials lang="de">Alabaster</materials>
+        <temporal><timeSpan><startDate>-2686</startDate><endDate>-2160</endDate></timeSpan><periodName lang="de">Altes Reich</periodName></temporal>
+        <dimensions><extent>Ensemble (4 Gefäße)</extent><measurementType>Höhe</measurementType><value>34</value><units>Zentimeter</units></dimensions>
+      </characters>
+      <repositoryLocation>Gizeh-Plateau, Ägypten</repositoryLocation>
+      <relations>
+        <isPartOf>HA-KANOPENKASTEN</isPartOf>
+        <hasRepresentation>DR-KANOPEN-INHALT-MASTER</hasRepresentation>
+        <hasRepresentation>DR-KANOPEN-INHALT-LP</hasRepresentation>
+        <wasDigitizedBy>ACT-GIZEH-SCAN</wasDigitizedBy>
+      </relations>
+    </heritageAssetIdentification>
+  </carare>
+
+  <!-- 20 DIGITAL RESOURCES: JE 1 MASTER + 1 LOW-POLY -->
+  <carare id="DR-PYRAMIDE-MASTER"><digitalResource><recordInformation><id>DR-PYRAMIDE-MASTER</id></recordInformation><appellation><id>DR-PYRAMIDE-MASTER</id><name lang="de" preferred="true">Pyramide – Master-Punktwolke (E57)</name></appellation><type>3D-Modell</type><format>application/x-e57</format><formatDetails>TLS Laserscan: Leica RTC360 | EPSG:32636 (WGS 84 / UTM zone 36N)</formatDetails><extent>2450 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/pyramide_master.e57</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-PYRAMIDE</isRepresentationOf><hasDerivative>DR-PYRAMIDE-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-PYRAMIDE-LP"><digitalResource><recordInformation><id>DR-PYRAMIDE-LP</id></recordInformation><appellation><id>DR-PYRAMIDE-LP</id><name lang="de" preferred="true">Pyramide – Low-Poly Webmodell (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly, 150000 Polygone, 4K PBR</formatDetails><extent>18 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/pyramide_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-PYRAMIDE</isRepresentationOf><isDerivativeOf>DR-PYRAMIDE-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-GRAB-MASTER"><digitalResource><recordInformation><id>DR-GRAB-MASTER</id></recordInformation><appellation><id>DR-GRAB-MASTER</id><name lang="de" preferred="true">Grabkammer – Master-Punktwolke (E57)</name></appellation><type>3D-Modell</type><format>application/x-e57</format><formatDetails>TLS Laserscan: Leica RTC360 | EPSG:32636</formatDetails><extent>1420 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/grab_master.e57</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-GRAB</isRepresentationOf><hasDerivative>DR-GRAB-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-GRAB-LP"><digitalResource><recordInformation><id>DR-GRAB-LP</id></recordInformation><appellation><id>DR-GRAB-LP</id><name lang="de" preferred="true">Grabkammer – Low-Poly Webmodell (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly, 120000 Polygone</formatDetails><extent>14 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/grab_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-GRAB</isRepresentationOf><isDerivativeOf>DR-GRAB-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-SARKOPHAG-MASTER"><digitalResource><recordInformation><id>DR-SARKOPHAG-MASTER</id></recordInformation><appellation><id>DR-SARKOPHAG-MASTER</id><name lang="de" preferred="true">Sarkophag – Master-Mesh (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly, 12000000 Polygone</formatDetails><extent>680 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG</isRepresentationOf><hasDerivative>DR-SARKOPHAG-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-SARKOPHAG-LP"><digitalResource><recordInformation><id>DR-SARKOPHAG-LP</id></recordInformation><appellation><id>DR-SARKOPHAG-LP</id><name lang="de" preferred="true">Sarkophag – Low-Poly Webmodell (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly, 80000 Polygone</formatDetails><extent>9 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG</isRepresentationOf><isDerivativeOf>DR-SARKOPHAG-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-SARKOPHAG-T1-MASTER"><digitalResource><recordInformation><id>DR-SARKOPHAG-T1-MASTER</id></recordInformation><appellation><id>DR-SARKOPHAG-T1-MASTER</id><name lang="de" preferred="true">Sarkophag Teil 1 – Master (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly</formatDetails><extent>320 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t1_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T1</isRepresentationOf><hasDerivative>DR-SARKOPHAG-T1-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-SARKOPHAG-T1-LP"><digitalResource><recordInformation><id>DR-SARKOPHAG-T1-LP</id></recordInformation><appellation><id>DR-SARKOPHAG-T1-LP</id><name lang="de" preferred="true">Sarkophag Teil 1 – Low-Poly (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly</formatDetails><extent>5 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t1_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T1</isRepresentationOf><isDerivativeOf>DR-SARKOPHAG-T1-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-SARKOPHAG-T2-MASTER"><digitalResource><recordInformation><id>DR-SARKOPHAG-T2-MASTER</id></recordInformation><appellation><id>DR-SARKOPHAG-T2-MASTER</id><name lang="de" preferred="true">Sarkophag Teil 2 – Master (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly</formatDetails><extent>210 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t2_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T2</isRepresentationOf><hasDerivative>DR-SARKOPHAG-T2-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-SARKOPHAG-T2-LP"><digitalResource><recordInformation><id>DR-SARKOPHAG-T2-LP</id></recordInformation><appellation><id>DR-SARKOPHAG-T2-LP</id><name lang="de" preferred="true">Sarkophag Teil 2 – Low-Poly (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly</formatDetails><extent>4 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t2_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T2</isRepresentationOf><isDerivativeOf>DR-SARKOPHAG-T2-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-SARKOPHAG-T3-MASTER"><digitalResource><recordInformation><id>DR-SARKOPHAG-T3-MASTER</id></recordInformation><appellation><id>DR-SARKOPHAG-T3-MASTER</id><name lang="de" preferred="true">Sarkophag Teil 3 – Master (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly</formatDetails><extent>180 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t3_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T3</isRepresentationOf><hasDerivative>DR-SARKOPHAG-T3-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-SARKOPHAG-T3-LP"><digitalResource><recordInformation><id>DR-SARKOPHAG-T3-LP</id></recordInformation><appellation><id>DR-SARKOPHAG-T3-LP</id><name lang="de" preferred="true">Sarkophag Teil 3 – Low-Poly (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly</formatDetails><extent>4 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t3_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T3</isRepresentationOf><isDerivativeOf>DR-SARKOPHAG-T3-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-SARKOPHAG-T4-MASTER"><digitalResource><recordInformation><id>DR-SARKOPHAG-T4-MASTER</id></recordInformation><appellation><id>DR-SARKOPHAG-T4-MASTER</id><name lang="de" preferred="true">Sarkophag Teil 4 – Master (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly</formatDetails><extent>175 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t4_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T4</isRepresentationOf><hasDerivative>DR-SARKOPHAG-T4-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-SARKOPHAG-T4-LP"><digitalResource><recordInformation><id>DR-SARKOPHAG-T4-LP</id></recordInformation><appellation><id>DR-SARKOPHAG-T4-LP</id><name lang="de" preferred="true">Sarkophag Teil 4 – Low-Poly (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly</formatDetails><extent>4 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/sarkophag_t4_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-SARKOPHAG-T4</isRepresentationOf><isDerivativeOf>DR-SARKOPHAG-T4-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-MUMIE-MASTER"><digitalResource><recordInformation><id>DR-MUMIE-MASTER</id></recordInformation><appellation><id>DR-MUMIE-MASTER</id><name lang="de" preferred="true">Mumie – Master-Mesh (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly, 8000000 Polygone</formatDetails><extent>490 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/mumie_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-MUMIE</isRepresentationOf><hasDerivative>DR-MUMIE-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-MUMIE-LP"><digitalResource><recordInformation><id>DR-MUMIE-LP</id></recordInformation><appellation><id>DR-MUMIE-LP</id><name lang="de" preferred="true">Mumie – Low-Poly Webmodell (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly, 65000 Polygone</formatDetails><extent>8 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/mumie_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-MUMIE</isRepresentationOf><isDerivativeOf>DR-MUMIE-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-KANOPENKASTEN-MASTER"><digitalResource><recordInformation><id>DR-KANOPENKASTEN-MASTER</id></recordInformation><appellation><id>DR-KANOPENKASTEN-MASTER</id><name lang="de" preferred="true">Kanopenkasten – Master-Mesh (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly</formatDetails><extent>310 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/kanopenkasten_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-KANOPENKASTEN</isRepresentationOf><hasDerivative>DR-KANOPENKASTEN-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-KANOPENKASTEN-LP"><digitalResource><recordInformation><id>DR-KANOPENKASTEN-LP</id></recordInformation><appellation><id>DR-KANOPENKASTEN-LP</id><name lang="de" preferred="true">Kanopenkasten – Low-Poly (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly</formatDetails><extent>6 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/kanopenkasten_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-KANOPENKASTEN</isRepresentationOf><isDerivativeOf>DR-KANOPENKASTEN-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <carare id="DR-KANOPEN-INHALT-MASTER"><digitalResource><recordInformation><id>DR-KANOPEN-INHALT-MASTER</id></recordInformation><appellation><id>DR-KANOPEN-INHALT-MASTER</id><name lang="de" preferred="true">Kanopen-Inhalt – Master-Mesh (OBJ)</name></appellation><type>3D-Modell</type><format>model/obj</format><formatDetails>3D-Mesh: High-Poly</formatDetails><extent>280 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/kanopen_inhalt_master.obj</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-KANOPEN-INHALT</isRepresentationOf><hasDerivative>DR-KANOPEN-INHALT-LP</hasDerivative></relations></digitalResource></carare>
+  <carare id="DR-KANOPEN-INHALT-LP"><digitalResource><recordInformation><id>DR-KANOPEN-INHALT-LP</id></recordInformation><appellation><id>DR-KANOPEN-INHALT-LP</id><name lang="de" preferred="true">Kanopen-Inhalt – Low-Poly (GLB)</name></appellation><type>3D-Modell</type><format>model/gltf-binary</format><formatDetails>3D-Mesh: Low-Poly</formatDetails><extent>6 MB</extent><link>https://bonndata.uni-bonn.de/example/gizeh/kanopen_inhalt_lp.glb</link><rights><licence>https://creativecommons.org/licenses/by/4.0/deed.de</licence><accessRights>Open access</accessRights></rights><relations><isRepresentationOf>HA-KANOPEN-INHALT</isRepresentationOf><isDerivativeOf>DR-KANOPEN-INHALT-MASTER</isDerivativeOf></relations></digitalResource></carare>
+
+  <!-- 1 GEMEINSAME AKTIVITÄT FÜR ALLE OBJEKTE & DIGITALISATE -->
+  <carare id="ACT-GIZEH-SCAN">
+    <activity>
+      <recordInformation>
+        <id>ACT-GIZEH-SCAN</id>
+        <source>Ägyptologisches Institut / BCDH Universität Bonn</source>
+      </recordInformation>
+      <appellation>
+        <id>ACT-GIZEH-SCAN</id>
+        <name lang="de" preferred="true">3D-Dokumentationskampagne Gizeh</name>
+      </appellation>
+      <eventType>Laserscanning (TLS) &amp; Photogrammetrie</eventType>
+      <description lang="de">Gemeinsame 3D-Erfassungskampagne für Pyramide, Grabkammer, Sarkophag (4 Teile), Mumie und Kanopenkasten samt Inhalt inkl. Ableitung der Low-Poly-Webmodelle.</description>
+      <temporal>
+        <timeSpan><startDate>2026-11-01</startDate><endDate>2026-11-10</endDate></timeSpan>
+        <displayDate lang="de">01.–10.11.2026</displayDate>
+      </temporal>
+      <spatial>
+        <locationSet><namedLocation lang="de">Gizeh, Ägypten</namedLocation><geopoliticalArea lang="de">Ägypten</geopoliticalArea></locationSet>
+      </spatial>
+      <relations>
+        <wasPresentAt>HA-PYRAMIDE</wasPresentAt>
+        <wasPresentAt>HA-GRAB</wasPresentAt>
+        <wasPresentAt>HA-SARKOPHAG</wasPresentAt>
+        <wasPresentAt>HA-SARKOPHAG-T1</wasPresentAt>
+        <wasPresentAt>HA-SARKOPHAG-T2</wasPresentAt>
+        <wasPresentAt>HA-SARKOPHAG-T3</wasPresentAt>
+        <wasPresentAt>HA-SARKOPHAG-T4</wasPresentAt>
+        <wasPresentAt>HA-MUMIE</wasPresentAt>
+        <wasPresentAt>HA-KANOPENKASTEN</wasPresentAt>
+        <wasPresentAt>HA-KANOPEN-INHALT</wasPresentAt>
+        <hasCreated>DR-PYRAMIDE-MASTER</hasCreated>
+        <hasCreated>DR-PYRAMIDE-LP</hasCreated>
+        <hasCreated>DR-GRAB-MASTER</hasCreated>
+        <hasCreated>DR-GRAB-LP</hasCreated>
+        <hasCreated>DR-SARKOPHAG-MASTER</hasCreated>
+        <hasCreated>DR-SARKOPHAG-LP</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T1-MASTER</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T1-LP</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T2-MASTER</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T2-LP</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T3-MASTER</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T3-LP</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T4-MASTER</hasCreated>
+        <hasCreated>DR-SARKOPHAG-T4-LP</hasCreated>
+        <hasCreated>DR-MUMIE-MASTER</hasCreated>
+        <hasCreated>DR-MUMIE-LP</hasCreated>
+        <hasCreated>DR-KANOPENKASTEN-MASTER</hasCreated>
+        <hasCreated>DR-KANOPENKASTEN-LP</hasCreated>
+        <hasCreated>DR-KANOPEN-INHALT-MASTER</hasCreated>
+        <hasCreated>DR-KANOPEN-INHALT-LP</hasCreated>
+      </relations>
+    </activity>
+  </carare>
+</carareWrap>

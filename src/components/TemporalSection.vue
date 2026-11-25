@@ -171,6 +171,7 @@
     <Teleport to="body">
       <dialog
         v-if="isModalOpen"
+        open
         class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
       >
       <div

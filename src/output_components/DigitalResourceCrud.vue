@@ -355,47 +355,6 @@
                     <div class="validator-hint">{{ t("validationHint") }}</div>
 
                     <!-- Recently Used Organizations Bar -->
-                    <div
-                      v-if="
-                        recentOrganizations && recentOrganizations.length > 0
-                      "
-                      class="mt-2 p-2 bg-base-200/50 rounded-lg border border-base-300 flex items-center gap-1.5 flex-wrap"
-                    >
-                      <span
-                        class="text-[11px] font-bold text-base-content/60 flex items-center gap-1 mr-1"
-                      >
-                        🕒
-                        {{
-                          currentLocale === "de"
-                            ? "Zuletzt verwendet:"
-                            : "Recently used:"
-                        }}
-                      </span>
-                      <button
-                        v-for="rOrg in recentOrganizations.slice(0, 5)"
-                        :key="'source-rec-' + rOrg.name"
-                        type="button"
-                        class="btn btn-xs gap-1"
-                        :class="
-                          form['recordInformation.source'] === rOrg.name
-                            ? 'btn-primary font-bold shadow-xs'
-                            : 'btn-outline border-base-300'
-                        "
-                        @click.prevent="
-                          form['recordInformation.source'] = rOrg.name
-                        "
-                      >
-                        <span>🏛️</span>
-                        <span class="truncate max-w-[180px]">{{
-                          rOrg.name
-                        }}</span>
-                        <span
-                          v-if="rOrg.country"
-                          class="badge badge-xs badge-ghost font-mono uppercase text-[9px]"
-                          >{{ rOrg.country }}</span
-                        >
-                      </button>
-                    </div>
                   </div>
                   <div
                     class="col-span-full border border-base-300 bg-base-100/50 p-3.5 rounded-box mb-3 mt-1"
@@ -652,6 +611,16 @@
                               tabindex="0"
                               role="button"
                               class="btn btn-ghost min-w-[80px]"
+                              :aria-label="
+                                currentLocale === 'de'
+                                  ? 'Sprache wählen'
+                                  : 'Select language'
+                              "
+                              :title="
+                                currentLocale === 'de'
+                                  ? 'Sprache wählen'
+                                  : 'Select language'
+                              "
                             >
                               <span
                                 v-if="item['appellation.name#lang'] === 'de'"
@@ -701,13 +670,13 @@
                             </div>
                             <ul
                               tabindex="0"
-                              class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32 z-[1]"
+                              class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
                             >
                               <li>
                                 <a
                                   @click.prevent="
                                     item['appellation.name#lang'] = 'de';
-                                    document.activeElement?.blur();
+                                    blurActiveElement();
                                   "
                                 >
                                   <span
@@ -722,7 +691,7 @@
                                 <a
                                   @click.prevent="
                                     item['appellation.name#lang'] = 'en';
-                                    document.activeElement?.blur();
+                                    blurActiveElement();
                                   "
                                 >
                                   <span
@@ -737,7 +706,7 @@
                                 <a
                                   @click.prevent="
                                     item['appellation.name#lang'] = 'fr';
-                                    document.activeElement?.blur();
+                                    blurActiveElement();
                                   "
                                 >
                                   <span
@@ -752,7 +721,7 @@
                                 <a
                                   @click.prevent="
                                     item['appellation.name#lang'] = 'it';
-                                    document.activeElement?.blur();
+                                    blurActiveElement();
                                   "
                                 >
                                   <span
@@ -767,7 +736,7 @@
                                 <a
                                   @click.prevent="
                                     item['appellation.name#lang'] = 'es';
-                                    document.activeElement?.blur();
+                                    blurActiveElement();
                                   "
                                 >
                                   <span
@@ -4072,7 +4041,10 @@
 <script setup>
 import { getTooltipText } from "../utils/tooltips.js";
 import { ref, reactive, inject, shallowRef, onMounted, watch } from "vue";
-import { load } from "@tauri-apps/plugin-store";
+import { getAppStore } from "../utils/platform";
+const blurActiveElement = () => {
+  if (typeof document !== "undefined") document.activeElement?.blur();
+};
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
@@ -5449,7 +5421,7 @@ const newTemplateName = ref("");
 
 onMounted(async () => {
   try {
-    store.value = await load("templates.json", { autoSave: true });
+    store.value = await getAppStore("templates.json", { autoSave: true });
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
       let tpls = await store.value.get(f);
       if (!tpls || tpls.length === 0) {

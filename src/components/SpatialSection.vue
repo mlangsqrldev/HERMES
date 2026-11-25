@@ -46,25 +46,6 @@
       </button>
     </div>
 
-    <!-- Shared Recent 5 Spatial Locations -->
-    <div
-      v-if="recentSpatialLocations.length > 0"
-      class="bg-base-200/40 p-2.5 rounded-lg border border-base-200 mb-3 flex flex-wrap items-center gap-1.5"
-    >
-      <span class="text-[11px] font-bold uppercase tracking-wider text-base-content/60 mr-1">
-        {{ currentLocale === "de" ? "Zuletzt genutzte Orte:" : "Recent Locations:" }}
-      </span>
-      <button
-        v-for="(locChip, lIdx) in recentSpatialLocations"
-        :key="lIdx"
-        type="button"
-        class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary hover:bg-primary/10 font-normal"
-        @click="applyRecentSpatial(locChip)"
-      >
-        + {{ locChip.label }}
-      </button>
-    </div>
-
     <!-- Entries Table -->
     <div v-if="items.length > 0" class="overflow-x-auto rounded-xl border border-base-200">
       <table class="table table-zebra table-sm w-full">
@@ -167,6 +148,7 @@
     <Teleport to="body">
       <dialog
         v-if="isModalOpen"
+        open
         class="modal modal-open z-[9999] bg-black/45 backdrop-blur-xs"
       >
       <div

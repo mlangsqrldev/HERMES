@@ -1001,9 +1001,9 @@
       <div class="space-y-2 mb-2.5">
         <!-- 3D Formate -->
         <div class="flex flex-wrap items-center gap-1.5">
-          <span class="text-[11px] font-bold text-base-content/50 w-24"
-            >3D-Modelle:</span
-          >
+          <span class="text-[11px] font-bold text-base-content/50 w-24">{{
+            currentLocale === "de" ? "3D-Modelle:" : "3D Models:"
+          }}</span>
           <button
             v-for="fmt in FORMATS_3D"
             :key="fmt.code"
@@ -1026,9 +1026,9 @@
 
         <!-- Punktwolken-Formate -->
         <div class="flex flex-wrap items-center gap-1.5">
-          <span class="text-[11px] font-bold text-base-content/50 w-24"
-            >Punktwolken:</span
-          >
+          <span class="text-[11px] font-bold text-base-content/50 w-24">{{
+            currentLocale === "de" ? "Punktwolken:" : "Point Clouds:"
+          }}</span>
           <button
             v-for="fmt in FORMATS_POINTCLOUD"
             :key="fmt.code"
@@ -1051,9 +1051,9 @@
 
         <!-- RAW-Bilder & Texturen -->
         <div class="flex flex-wrap items-center gap-1.5">
-          <span class="text-[11px] font-bold text-base-content/50 w-24"
-            >RAW & Textur:</span
-          >
+          <span class="text-[11px] font-bold text-base-content/50 w-24">{{
+            currentLocale === "de" ? "RAW & Textur:" : "RAW & Textures:"
+          }}</span>
           <button
             v-for="fmt in FORMATS_RAW_2D"
             :key="fmt.code"
@@ -1415,7 +1415,7 @@
                 v-model="accuracyPoint"
                 @input="onFieldChanged"
                 class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 0.05 mm"
+                :placeholder="currentLocale === 'de' ? 'z.B. 0.05 mm' : 'e.g. 0.05 mm'"
               />
             </div>
           </div>
@@ -1451,7 +1451,7 @@
                 v-model="accuracyRmse"
                 @input="onFieldChanged"
                 class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 0.018 mm ICP-RMSE (0.32 px)"
+                :placeholder="currentLocale === 'de' ? 'z.B. 0.018 mm ICP-RMSE (0.32 px)' : 'e.g. 0.018 mm ICP-RMSE (0.32 px)'"
               />
             </div>
           </div>
@@ -1478,17 +1478,30 @@
             <div class="space-y-2">
               <div class="flex flex-wrap gap-1.5">
                 <button
-                  v-for="sc in ['Maßstab', 'Tachymeter', 'GNSS', 'Targets']"
-                  :key="sc"
+                  v-for="sc in [
+                    { de: 'Maßstab', en: 'Scale bar' },
+                    { de: 'Tachymeter', en: 'Total station' },
+                    { de: 'GNSS', en: 'GNSS' },
+                    { de: 'Targets', en: 'Targets' },
+                  ]"
+                  :key="sc.de"
                   type="button"
                   class="btn btn-xs"
-                  :class="scalingMethod === sc ? 'btn-primary' : 'btn-outline border-base-300'"
+                  :class="
+                    scalingMethod === sc.de || scalingMethod === sc.en
+                      ? 'btn-primary'
+                      : 'btn-outline border-base-300'
+                  "
                   @click="
-                    scalingMethod = scalingMethod === sc ? '' : sc;
+                    const val = currentLocale === 'de' ? sc.de : sc.en;
+                    scalingMethod =
+                      scalingMethod === sc.de || scalingMethod === sc.en
+                        ? ''
+                        : val;
                     onFieldChanged();
                   "
                 >
-                  {{ sc }}
+                  {{ currentLocale === "de" ? sc.de : sc.en }}
                 </button>
               </div>
               <input
@@ -1527,7 +1540,7 @@
                   v-model="geoEpsg"
                   @input="onFieldChanged"
                   class="input input-sm input-bordered join-item w-full font-mono text-xs"
-                  placeholder="z. B. EPSG:25832"
+                  :placeholder="currentLocale === 'de' ? 'z. B. EPSG:25832' : 'e.g. EPSG:25832'"
                 />
                 <button
                   type="button"
@@ -1604,7 +1617,7 @@
                 v-model="photoGsd"
                 @input="onFieldChanged"
                 class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 0.12 mm/px"
+                :placeholder="currentLocale === 'de' ? 'z.B. 0.12 mm/px' : 'e.g. 0.12 mm/px'"
               />
             </div>
           </div>
@@ -1641,7 +1654,7 @@
                 v-model="textureResolution"
                 @input="onFieldChanged"
                 class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 8192×8192 px (8K)"
+                :placeholder="currentLocale === 'de' ? 'z.B. 8192×8192 px (8K)' : 'e.g. 8192×8192 px (8K)'"
               />
               <div class="flex flex-wrap gap-1.5 mt-2">
                 <button
@@ -1693,28 +1706,8 @@
                 @input="onFieldChanged"
                 @blur="recordRecentOpticalSensor(photoSensor)"
                 class="input input-sm input-bordered w-full font-mono text-xs"
-                placeholder="z.B. 45.7 MP"
+                :placeholder="currentLocale === 'de' ? 'z.B. 45.7 MP' : 'e.g. 45.7 MP'"
               />
-              <div
-                v-if="recentOpticalSensors.length > 0"
-                class="flex flex-wrap items-center gap-1.5 mt-2"
-              >
-                <span class="text-[10px] font-bold uppercase text-base-content/50">
-                  {{ currentLocale === "de" ? "Zuletzt:" : "Recent:" }}
-                </span>
-                <button
-                  v-for="res in recentOpticalSensors"
-                  :key="res"
-                  type="button"
-                  class="preset-chip font-mono"
-                  @click="
-                    photoSensor = res;
-                    onFieldChanged();
-                  "
-                >
-                  {{ res }}
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -2502,25 +2495,55 @@ const geoEpsgName = ref("");
 const geoAccuracy = ref("");
 const isLookingUpEpsg = ref(false);
 
+const COMMON_EPSG_NAMES = {
+  4326: "WGS 84",
+  3857: "WGS 84 / Pseudo-Mercator",
+  25832: "ETRS89 / UTM zone 32N",
+  25833: "ETRS89 / UTM zone 33N",
+  31467: "DHDN / 3-degree Gauss-Kruger zone 3",
+  31468: "DHDN / 3-degree Gauss-Kruger zone 4",
+  32632: "WGS 84 / UTM zone 32N",
+  32633: "WGS 84 / UTM zone 33N",
+  32634: "WGS 84 / UTM zone 34N",
+};
+
 const lookupEpsgOnline = async () => {
   const raw = geoEpsg.value.trim().replace(/^epsg:/i, "");
   if (!raw) return;
   isLookingUpEpsg.value = true;
   geoEpsgName.value = "";
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
   try {
-    const res = await fetch(`https://epsg.io/?q=${encodeURIComponent(raw)}&format=json`);
-    if (res.ok) {
-      const data = await res.json();
-      const hit = Array.isArray(data.results) ? data.results[0] : null;
-      if (hit) {
-        geoEpsg.value = `EPSG:${hit.code}`;
-        geoEpsgName.value = hit.name || "";
+    if (/^\d+$/.test(raw)) {
+      const res = await fetch(
+        `https://spatialreference.org/ref/epsg/${encodeURIComponent(raw)}/projjson.json`,
+        { signal: controller.signal },
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.name) {
+          geoEpsg.value = `EPSG:${raw}`;
+          geoEpsgName.value = data.name;
+          onFieldChanged();
+          return;
+        }
+      }
+      if (COMMON_EPSG_NAMES[raw]) {
+        geoEpsg.value = `EPSG:${raw}`;
+        geoEpsgName.value = COMMON_EPSG_NAMES[raw];
         onFieldChanged();
       }
     }
   } catch (e) {
     console.warn("EPSG lookup failed:", e);
+    if (COMMON_EPSG_NAMES[raw]) {
+      geoEpsg.value = `EPSG:${raw}`;
+      geoEpsgName.value = COMMON_EPSG_NAMES[raw];
+      onFieldChanged();
+    }
   } finally {
+    clearTimeout(timeoutId);
     isLookingUpEpsg.value = false;
   }
 };
@@ -2988,7 +3011,10 @@ const generateSummaries = () => {
     const geoBits = [meshCategory.value];
     if (polygonCount.value) geoBits.push(polygonCount.value);
     if (vertexCount.value) geoBits.push(vertexCount.value);
-    parts.push(`3D-Mesh: ${geoBits.filter(Boolean).join(", ")}`);
+    const geoJoined = geoBits.filter(Boolean).join(", ");
+    if (geoJoined) {
+      parts.push(`3D-Mesh: ${geoJoined}`);
+    }
 
     // Textures
     const mapLabels = selectedMaps.value.map((m) => {
