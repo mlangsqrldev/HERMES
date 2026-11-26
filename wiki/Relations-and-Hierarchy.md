@@ -1,12 +1,12 @@
 # Relations & Object Hierarchy
 
-Instead of forcing users to enter Dublin Core / CARARE relation IDs piecemeal while filling out forms, HERMES collapses the inline `*DcRelations` panels inside Modules 1–4 (`RelationsPanelCollapse.vue`) and centralizes linking in **Step 5: Relations (`RelationsGraphEditor.vue`)**.
+Instead of forcing users to enter Dublin Core / CARARE relation IDs piecemeal while filling out forms, HERMES keeps Modules 1–4 completely free of inline relation panels and centralizes all linking exclusively in **Step 5: Relations (`RelationsGraphEditor.vue`)**.
 
 ---
 
-## 1. The Two-List Assignment Interface (`v0.1.34`)
+## 1. The Unified Assignment Interface (`v0.1.36`)
 
-Step 5 presents two structured sections that stay readable even with 30–100+ records:
+Step 5 presents three clean, uniform sections that stay readable even with 30–100+ records:
 
 ### Section 1 — Heritage Asset Hierarchy (`hasPart` / `isPartOf`)
 Every saved Heritage Asset appears as a row with a dropdown allowing you to define whether it is:
@@ -53,6 +53,6 @@ All bidirectional mutations are implemented in `src/utils/relationsHelper.js`:
 
 ---
 
-## 4. Inline Expert View & External Links
+## 4. Collection External References (`dcRelation`)
 
-Each of Modules 1–4 still includes a compact collapsed bar (`RelationsPanelCollapse.vue`) showing the current record's link count, a jump button straight to Step 5, and an expandable **Advanced / External Links** toggle for entering external URIs (Arachne, Zenon, DAI, DOIs, or custom `dcRelation` entries).
+In **Section 3 of Step 5**, users can add or remove external URIs, DOIs, or related collection identifiers directly on the project's `<collectionInformation>` record. In strict conformance with CARARE 2.0.6 XSD, only `<dcRelation>` elements are written on Collection records.

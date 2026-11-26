@@ -44,7 +44,7 @@
         />
         <ul
           tabindex="0"
-          class="dropdown-content z-[50] menu p-2 shadow bg-base-100 rounded-box w-full max-h-64 overflow-y-auto border border-base-200"
+          class="dropdown-content z-[50] menu p-2 shadow bg-base-100 rounded-xl w-full max-h-64 overflow-y-auto border border-base-200"
           v-show="showDropdown"
         >
           <li v-for="term in filteredTerms" :key="term.uri">

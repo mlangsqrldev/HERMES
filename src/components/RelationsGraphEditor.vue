@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-4">
-    <!-- Top Hero Bar with KPIs -->
+    <!-- Top Summary Bar with KPIs -->
     <div
-      class="rounded-2xl border-2 border-base-content/20 bg-gradient-to-r from-primary/10 via-base-100 to-emerald-500/10 p-4 shadow-sm"
+      class="rounded-xl border border-base-300 bg-base-100 p-4 shadow-2xs"
     >
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-1.5 min-w-0 flex-1">
@@ -100,13 +100,13 @@
       </button>
     </div>
 
-    <!-- Full-Width Stacked 2-Panel Layout so long titles never truncate or overlap -->
-    <div class="grid grid-cols-1 gap-5 items-start">
+    <!-- Full-Width Stacked Panels -->
+    <div class="grid grid-cols-1 gap-4 items-start">
       <!-- PANEL 1: HERITAGE ASSET HIERARCHY -->
       <div
-        class="rounded-2xl border-2 border-sky-500/75 bg-base-100 overflow-hidden shadow-md"
+        class="rounded-xl border border-base-300 bg-base-100 overflow-hidden shadow-2xs"
       >
-        <div class="px-4 py-3 bg-sky-500/5 border-b border-base-200 flex items-center justify-between gap-2">
+        <div class="px-4 py-3 bg-base-200/40 border-b border-base-200 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
             <span class="text-base">🏛️</span>
             <div>
@@ -179,9 +179,9 @@
 
       <!-- PANEL 2: DIGITAL RESOURCES ASSIGNMENT -->
       <div
-        class="rounded-2xl border-2 border-emerald-500/75 bg-base-100 overflow-hidden shadow-md"
+        class="rounded-xl border border-base-300 bg-base-100 overflow-hidden shadow-2xs"
       >
-        <div class="px-4 py-3 bg-emerald-500/5 border-b border-base-200 flex items-center justify-between gap-2">
+        <div class="px-4 py-3 bg-base-200/40 border-b border-base-200 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
             <span class="text-base">🖥️</span>
             <div>
@@ -274,7 +274,7 @@
                 </label>
                 <select
                   class="select select-sm select-bordered w-full pr-8 text-[13px] border-base-300 transition-colors"
-                  :class="dr.masterId ? 'bg-violet-100 text-violet-950 font-semibold dark:bg-violet-900/50 dark:text-violet-100' : 'bg-slate-100 text-slate-800 dark:bg-base-200 dark:text-base-content'"
+                  :class="dr.masterId ? 'bg-violet-100 text-violet-950 font-semibold dark:bg-violet-900/50 dark:text-violet-100' : 'bg-base-100'"
                   :value="dr.masterId"
                   @change="setDrMaster(dr, $event.target.value)"
                 >
@@ -314,6 +314,87 @@
           </div>
         </div>
       </div>
+
+      <!-- PANEL 3: COLLECTION DC-RELATIONS (CARARE 2.0.6 strictly dcRelation only) -->
+      <div
+        v-if="collectionForm"
+        class="rounded-xl border border-base-300 bg-base-100 overflow-hidden shadow-2xs"
+      >
+        <div class="px-4 py-3 bg-base-200/40 border-b border-base-200 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📂</span>
+            <div>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-base-content/85">
+                {{
+                  currentLocale === "de"
+                    ? "3. Sammlung – Externe Verweise (dcRelation)"
+                    : "3. Collection – External References (dcRelation)"
+                }}
+              </h4>
+              <p class="text-[11px] text-base-content/60">
+                {{
+                  currentLocale === "de"
+                    ? "Optionale DOIs, Katalog-URLs oder verwandte Sammlungen (CARARE 2.0.6 erlaubt hier ausschließlich dcRelation)"
+                    : "Optional DOIs, catalog URLs, or related collections (CARARE 2.0.6 allows dcRelation only)"
+                }}
+              </p>
+            </div>
+          </div>
+          <span class="badge badge-sm badge-ghost font-mono">{{ collectionDcRelations.length }}</span>
+        </div>
+
+        <div class="p-4 space-y-3">
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
+            <input
+              type="text"
+              v-model="newCollectionDcRelation"
+              @keydown.enter.prevent="addCollectionDcRelation"
+              class="input input-sm input-bordered w-full bg-base-100 font-mono text-xs"
+              :placeholder="
+                currentLocale === 'de'
+                  ? 'https://doi.org/10.xxxx/... oder Sammlungs-URI eingeben'
+                  : 'Enter https://doi.org/10.xxxx/... or collection URI'
+              "
+            />
+            <button
+              type="button"
+              class="btn btn-sm btn-outline btn-primary shrink-0"
+              :disabled="!newCollectionDcRelation.trim()"
+              @click="addCollectionDcRelation"
+            >
+              + {{ currentLocale === "de" ? "Hinzufügen" : "Add" }}
+            </button>
+          </div>
+
+          <div
+            v-if="collectionDcRelations.length > 0"
+            class="divide-y divide-base-200 rounded-lg border border-base-200 bg-base-100"
+          >
+            <div
+              v-for="(relVal, rIdx) in collectionDcRelations"
+              :key="rIdx"
+              class="px-3 py-2 flex items-center justify-between gap-2 text-xs"
+            >
+              <span class="font-mono truncate text-base-content/85" :title="relVal">{{ relVal }}</span>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost text-error hover:bg-error/10 shrink-0"
+                @click="removeCollectionDcRelation(rIdx)"
+                :title="currentLocale === 'de' ? 'Entfernen' : 'Remove'"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          <p v-else class="text-xs text-base-content/50 italic">
+            {{
+              currentLocale === "de"
+                ? "Keine externen Sammlungsverweise hinterlegt."
+                : "No external collection references added."
+            }}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -351,6 +432,42 @@ const emit = defineEmits([
 
 const statusBanner = ref(null);
 const revision = ref(0);
+const newCollectionDcRelation = ref("");
+
+const collectionDcRelations = computed(() => {
+  void revision.value;
+  const raw = props.collectionForm?.dcRelation;
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item) =>
+      typeof item === "object" && item !== null ? item._value || item.value || "" : String(item || ""),
+    )
+    .map((s) => s.trim())
+    .filter(Boolean);
+});
+
+const addCollectionDcRelation = () => {
+  if (!props.collectionForm) return;
+  const val = newCollectionDcRelation.value.trim();
+  if (!val) return;
+  const current = [...collectionDcRelations.value];
+  if (!current.includes(val)) {
+    current.push(val);
+    props.collectionForm.dcRelation = current;
+    revision.value++;
+    emit("relations-changed");
+  }
+  newCollectionDcRelation.value = "";
+};
+
+const removeCollectionDcRelation = (idx) => {
+  if (!props.collectionForm) return;
+  const current = [...collectionDcRelations.value];
+  current.splice(idx, 1);
+  props.collectionForm.dcRelation = current;
+  revision.value++;
+  emit("relations-changed");
+};
 
 const health = computed(() => {
   void revision.value;

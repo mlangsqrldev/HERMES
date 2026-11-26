@@ -7,6 +7,16 @@
   name: "corporate";
   default: false;
   --color-accent: oklch(67.271% 0.167 35.791);
+  --radius-box: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-selector: 0.5rem;
+}
+@plugin "daisyui/theme" {
+  name: "business";
+  default: false;
+  --radius-box: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-selector: 0.5rem;
 }
 
 @theme {

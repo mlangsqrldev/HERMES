@@ -17,6 +17,10 @@ Consolidated release history for **HERMES (Heritage Metadata Entry System)**.
   - Fixed `bonndataExporter.js` (excluded historical creators from modern authors, fixed `[object Object]` publications, added `CC BY-ND` / `CC BY-NC-ND`, country vocabulary mapping, and geospatial extraction).
   - Fixed sidebar workflow progress (`N/6` instead of `N/5`), sidebar sub-entry IDs, global `Ctrl+S` shortcut, `beforeunload` unsaved-session guard, and BagIt `tagmanifest-sha256.txt` (`manifest-sha256.txt` hash included).
   - Fixed Tailwind v4 + DaisyUI v5 Dark Mode (`@custom-variant dark` + `[data-theme="business"]`), modal scrolling in `OrganizationPickerModal.vue`, 3D dropzone bubbling, and exposed **"Save & Next"** on Heritage Assets.
+- **UI & Design System Unification**:
+  - Standardized DaisyUI theme radii (`--radius-box: 0.75rem`, `--radius-field: 0.5rem`, `--radius-selector: 0.5rem`) and unified all form boxes across Steps 1–5 to consistent `rounded-xl`, `bg-base-100`, and `1px border-base-300` (removing grey inner form wrappers and mixed `rounded-box`/`rounded-2xl` corners).
+  - Made all 4 sticky Save action bars uniformly rounded on all 4 corners (`rounded-xl border border-base-300`).
+  - Removed all inline relation panels and *Expertenansicht* collapses from Steps 1–4; all linking (including Collection `dcRelation` external references) now lives exclusively at the bottom in Step 5 (`RelationsGraphEditor.vue`).
 - **Security Hardening**:
   - Eliminated XSS sinks in `LiveXmlPreview.vue` and `SpatialMapPicker.vue`.
   - Restricted `openExternalUrl()` to `https:`, `http:`, and `mailto:`.

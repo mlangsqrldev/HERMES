@@ -9,7 +9,7 @@
 
     <div class="drawer-content">
       <div class="container mx-auto p-4 max-w-7xl">
-        <div class="bg-base-200 p-6 rounded-box shadow-sm mb-10">
+        <div class="space-y-4">
           <div
             class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-2 border-b border-base-300"
           >
@@ -26,7 +26,7 @@
           </div>
           <!-- CARARE 2.0.6 Single Collection Status Banner -->
           <div
-            class="mb-6 p-4 rounded-2xl bg-base-100 border border-base-300 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+            class="mb-5 p-4 rounded-xl bg-base-100 border border-base-300 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
           >
             <div class="flex items-center gap-3">
               <div
@@ -165,7 +165,7 @@
                 <div class="validator-hint">{{ t("validationHint") }}</div>
               </div>
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div
                   class="flex justify-between items-center mb-4 pb-2 border-b border-base-200"
@@ -218,7 +218,7 @@
                   </div>
                 </div>
                 <div class="p-4 pt-0">
-                  <ul class="list bg-base-100 rounded-box shadow-md w-full">
+                  <ul class="list bg-base-100 rounded-xl shadow-md w-full">
                     <li
                       v-for="(item, idx) in form['title']"
                       :key="idx"
@@ -286,7 +286,7 @@
                           </div>
                           <ul
                             tabindex="0"
-                            class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
+                            class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-xl w-36 min-w-[9rem] z-[60]"
                           >
                             <li>
                               <a
@@ -556,7 +556,7 @@
               </div>
               <!-- Contacts Table in Collection Information -->
               <div
-                class="col-span-full border border-base-200 bg-base-100 p-4 rounded-xl mt-2 mb-4 shadow-xs"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <PersonAssignmentList
                   v-model="form['contacts']"
@@ -589,7 +589,7 @@
                 :recommended="true"
               />
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-3.5 rounded-box mb-3 mt-1"
+                class="col-span-full border border-base-300 bg-base-100 p-4 rounded-xl mb-4 shadow-2xs"
               >
                 <div class="grid grid-cols-1 gap-x-4">
                   <div class="form-control w-full mb-1">
@@ -680,7 +680,7 @@
                 />
               </div>
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -731,58 +731,32 @@
                   />
                 </div>
               </div>
-              <RelationsPanelCollapse
-                :count="countFormRelations(form, 'collection')"
-                :current-locale="currentLocale"
-              >
-                <CollectionDcRelations
-                  :form="form"
-                  :current-locale="currentLocale"
-                  :project-heritage-assets="projectHeritageAssets"
-                  :project-digital-resources="projectDigitalResources"
-                  :project-activities="projectActivities"
-                  :other-collections="items"
-                  :active-collection-id="form['id']"
-                />
-              </RelationsPanelCollapse>
             </div>
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
+              class="sticky bottom-3 z-20 bg-base-100/95 backdrop-blur-md border border-base-300 py-3 px-4 mt-6 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-2"
             >
-              <span
-                v-if="saveSuccessBadge"
-                class="badge badge-success gap-1 text-white py-3 px-3 transition-all animate-bounce"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
-              </span>
               <button
                 type="button"
-                class="btn btn-ghost"
+                class="btn btn-ghost text-error hover:bg-error/10"
                 @click="resetForm(true)"
               >
                 {{ t("cancel") }}
               </button>
-              <button type="submit" class="btn btn-primary">
-                {{
-                  currentLocale === "de"
-                    ? "Sammlungsinformationen speichern"
-                    : "Save Collection Information"
-                }}
-              </button>
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  v-if="saveSuccessBadge"
+                  class="badge badge-success gap-1 text-success-content font-semibold py-3 px-3 transition-all"
+                >
+                  ✓ {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
+                </span>
+                <button type="submit" class="btn btn-primary">
+                  {{
+                    currentLocale === "de"
+                      ? "Sammlungsinformationen speichern"
+                      : "Save Collection Information"
+                  }}
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -1558,9 +1532,6 @@ const blurActiveElement = () => {
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PeriodoAutocomplete from "../components/PeriodoAutocomplete.vue";
 import HectorKeywordInput from "../components/HectorKeywordInput.vue";
-import CollectionDcRelations from "../components/CollectionDcRelations.vue";
-import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
-import { countFormRelations } from "../utils/relationsHelper.js";
 import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
 import CollectionPickerModal from "../components/CollectionPickerModal.vue";

@@ -1,7 +1,7 @@
 <template>
   <div
     id="act-dap"
-    class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm scroll-mt-24"
+    class="col-span-full border border-base-300 bg-base-100 rounded-xl p-4 sm:p-5 mb-5 shadow-2xs scroll-mt-24"
   >
     <!-- Header -->
     <div
@@ -107,7 +107,7 @@
       <div
         v-for="dim in DAP_DIMENSIONS"
         :key="dim.id"
-        class="p-4 rounded-xl border bg-base-200/30 transition-colors"
+        class="p-4 rounded-xl border bg-base-200/35 transition-colors"
         :class="
           hasDimContent(dim.id)
             ? 'border-success/40 bg-success/5'

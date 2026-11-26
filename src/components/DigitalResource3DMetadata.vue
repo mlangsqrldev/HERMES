@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-md transition-all"
+    class="border border-base-300 bg-base-100 rounded-xl p-4 sm:p-5 mb-5 shadow-2xs transition-all"
   >
     <!-- Header with 3D / Methodology Badge -->
     <div
@@ -86,7 +86,7 @@
     </div>
 
     <!-- 1. RESSOURCEN- & ASSET-TYP -->
-    <div class="mb-5 p-3.5 bg-base-200/40 rounded-xl border border-base-300">
+    <div class="mb-4 p-4 bg-base-200/35 rounded-xl border border-base-200">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
@@ -134,7 +134,7 @@
       v-if="
         acquisitionMethod === 'photogrammetry' || acquisitionMethod === 'hybrid'
       "
-      class="p-4 bg-secondary/5 rounded-xl border border-secondary/25 mb-5"
+      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
     >
       <div class="flex items-center justify-between mb-3">
         <div
@@ -186,7 +186,7 @@
               showCameraDropdown &&
               (cameraSuggestions.length > 0 || isSearchingCamera)
             "
-            class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-56 overflow-y-auto"
+            class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-xl shadow-xl border border-base-300 max-h-56 overflow-y-auto"
           >
             <div
               v-if="isSearchingCamera"
@@ -411,7 +411,7 @@
     <!-- ============================================================ -->
     <div
       v-if="acquisitionMethod === 'sls' || acquisitionMethod === 'hybrid'"
-      class="p-4 bg-primary/5 rounded-xl border border-primary/25 mb-5"
+      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
     >
       <div class="flex items-center justify-between mb-3">
         <div
@@ -464,7 +464,7 @@
             v-if="
               showSlsDropdown && (slsSuggestions.length > 0 || isSearchingSls)
             "
-            class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-56 overflow-y-auto"
+            class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-xl shadow-xl border border-base-300 max-h-56 overflow-y-auto"
           >
             <div
               v-if="isSearchingSls"
@@ -697,7 +697,7 @@
     <!-- ============================================================ -->
     <div
       v-if="acquisitionMethod === 'tls' || acquisitionMethod === 'hybrid'"
-      class="p-4 bg-accent/5 rounded-xl border border-accent/25 mb-5"
+      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
     >
       <div class="flex items-center justify-between mb-3">
         <div
@@ -750,7 +750,7 @@
             v-if="
               showTlsDropdown && (tlsSuggestions.length > 0 || isSearchingTls)
             "
-            class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-56 overflow-y-auto"
+            class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-xl shadow-xl border border-base-300 max-h-56 overflow-y-auto"
           >
             <div
               v-if="isSearchingTls"
@@ -977,7 +977,7 @@
     <!-- ============================================================ -->
     <!-- SECTION 3: DATEIFORMATE (CARARE <format>)                    -->
     <!-- ============================================================ -->
-    <div class="mb-5 p-3.5 bg-base-200/30 rounded-xl border border-base-200">
+    <div class="mb-4 p-4 bg-base-200/35 rounded-xl border border-base-200">
       <div class="flex items-center justify-between mb-2">
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5"
@@ -1139,7 +1139,7 @@
     <!-- ============================================================ -->
     <div
       v-if="assetType === 'mesh' || assetType === 'pointcloud'"
-      class="p-4 bg-base-200/40 rounded-xl border border-base-200 mb-5"
+      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
     >
       <div
         class="font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5 mb-3"
@@ -1340,7 +1340,7 @@
     <!-- ============================================================ -->
     <!-- SECTION 4B: METROLOGY — ACCURACY & RESOLUTION (DAP/SCHEMA)   -->
     <!-- ============================================================ -->
-    <div class="p-5 bg-info/5 rounded-2xl border border-info/25 mb-5">
+    <div class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4">
       <div
         class="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3 border-b border-info/20"
       >
@@ -1719,7 +1719,7 @@
     <!-- SECTION 5: FILE SIZE                                         -->
     <!-- ============================================================ -->
     <div
-      class="p-3.5 bg-base-200/30 rounded-xl border border-base-200 mb-5"
+      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
       data-xml-tag="extent"
     >
       <div class="max-w-md">

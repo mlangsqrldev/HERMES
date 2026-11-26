@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
+  <div class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs">
     <!-- Header -->
     <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-base-200">
       <div class="flex flex-row items-center gap-1.5 min-w-0">

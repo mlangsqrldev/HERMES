@@ -140,7 +140,7 @@
         <!-- Autocomplete Suggestions Dropdown -->
         <div
           v-if="showDropdown && (suggestions.length > 0 || isSearching)"
-          class="absolute left-0 top-full mt-2 w-80 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-64 overflow-y-auto"
+          class="absolute left-0 top-full mt-2 w-80 max-w-[90vw] z-[100] bg-base-100 rounded-xl shadow-xl border border-base-300 max-h-64 overflow-y-auto"
         >
           <div
             v-if="isSearching"

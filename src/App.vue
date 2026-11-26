@@ -274,7 +274,7 @@
         <!-- Navigation Card -->
 
         <div
-          class="glass-panel rounded-2xl p-4 shadow-lg border border-base-200/80 flex flex-col gap-4 overflow-hidden min-w-0"
+          class="glass-panel rounded-2xl p-4 shadow-sm border border-base-300/80 flex flex-col gap-4 overflow-hidden min-w-0"
         >
           <div
             class="flex items-center justify-between pb-2 border-b border-base-200/70"
@@ -496,7 +496,7 @@
         <!-- Actions & Export Card -->
 
         <div
-          class="glass-panel rounded-2xl p-4 shadow-lg border border-base-200/80 flex flex-col gap-2.5"
+          class="glass-panel rounded-2xl p-4 shadow-sm border border-base-300/80 flex flex-col gap-2.5"
         >
           <div class="flex items-center justify-between gap-2 px-1">
             <span
@@ -764,7 +764,7 @@
           :data-index="index"
           :data-step-id="step.id"
           @focusin="handleFormInteraction($event, step.id)"
-          class="modern-card bg-base-100 shadow-md border border-base-200/80 rounded-2xl overflow-x-clip transition-all duration-300 scroll-mt-20"
+          class="modern-card bg-base-100 shadow-sm border border-base-300/80 rounded-2xl overflow-x-clip transition-all duration-300 scroll-mt-20"
         >
           <!-- Card Header (non-sticky to prevent overlapping fields during scroll) -->
 

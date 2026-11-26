@@ -12,7 +12,7 @@
         <!-- Quality Dashboard, Batch Controls & Table/Grid Container -->
 
         <div
-          class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+          class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
         >
           <!-- Top Row: Title, Record Count & Mode Toggle -->
 
@@ -269,7 +269,7 @@
 
                 <ul
                   tabindex="0"
-                  class="dropdown-content z-30 menu p-1 shadow-lg bg-base-100 text-base-content rounded-box w-64 border border-base-300 text-xs"
+                  class="dropdown-content z-30 menu p-1 shadow-lg bg-base-100 text-base-content rounded-xl w-64 border border-base-300 text-xs"
                 >
                   <li v-for="lic in CC_LICENCES" :key="lic.code">
                     <a
@@ -565,7 +565,7 @@
           </div>
         </div>
 
-        <div class="bg-base-200 p-6 rounded-box shadow-sm mb-10">
+        <div class="space-y-4">
           <div class="flex flex-wrap items-center justify-between mb-4 gap-2">
             <div class="flex items-center gap-3">
               <h3 class="text-xl font-bold flex items-center gap-2">
@@ -586,7 +586,7 @@
           <form @submit.prevent="delete form._isDraft; save()" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -805,7 +805,7 @@
                   </div>
 
                   <div
-                    class="col-span-full border border-base-300 bg-base-100/50 p-3.5 rounded-box mb-3 mt-1"
+                    class="col-span-full border border-base-300 bg-base-100 p-4 rounded-xl mb-4 shadow-2xs"
                   >
                     <div class="grid grid-cols-1 gap-x-4">
                       <div class="form-control w-full mb-1">
@@ -883,7 +883,7 @@
 
                       <!-- Contacts Table in Creation -->
                       <div
-                        class="col-span-full border border-base-200 bg-base-100 p-4 rounded-xl mt-2 mb-2 shadow-xs"
+                        class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                       >
                         <PersonAssignmentList
                           v-model="form['recordInformation.creation.contacts']"
@@ -903,7 +903,7 @@
               </div>
 
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-3.5 rounded-box mb-3 mt-1"
+                class="col-span-full border border-base-300 bg-base-100 p-4 rounded-xl mb-4 shadow-2xs"
               >
                 <div class="grid grid-cols-1 gap-x-4">
                   <div class="form-control w-full mb-2">
@@ -1158,7 +1158,7 @@
 
                               <ul
                                 tabindex="0"
-                                class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
+                                class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-xl w-36 min-w-[9rem] z-[60]"
                               >
                                 <li>
                                   <a
@@ -1454,7 +1454,7 @@
               </div>
 
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <PersonAssignmentList
                   v-model="form['actors']"
@@ -1465,7 +1465,7 @@
               </div>
 
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -1838,7 +1838,7 @@
               </div>
 
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -2100,7 +2100,7 @@
                       </div>
                     </div>
 
-                    <ul class="list bg-base-100 rounded-box shadow-md w-full">
+                    <ul class="list bg-base-100 rounded-xl shadow-md w-full">
                       <li
                         v-for="(subItem, subIdx) in form[
                           'characters.inscriptions'
@@ -2494,7 +2494,7 @@
                 <!-- Selected Repository Location Display Badge -->
                 <div
                   v-if="form['repositoryLocation']"
-                  class="p-3 bg-base-200 rounded-xl border border-primary/30 flex items-center justify-between gap-3 shadow-xs my-2"
+                  class="p-3 bg-base-200/35 rounded-xl border border-base-200 flex items-center justify-between gap-3 my-2"
                 >
                   <div class="flex items-center gap-2.5 min-w-0">
                     <span class="text-xl">🏛️</span>
@@ -2616,7 +2616,7 @@
               </div>
 
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div
                   class="flex justify-between items-center mb-4 pb-2 border-b border-base-200"
@@ -2749,29 +2749,12 @@
                 </div>
               </div>
 
-              <!-- Unified Dublin Core & CARARE Relations Manager for Heritage Asset -->
-
-              <RelationsPanelCollapse
-                :count="countFormRelations(form, 'heritage')"
-                :current-locale="currentLocale"
-              >
-                <HeritageAssetDcRelations
-                  :form="form"
-                  :current-locale="currentLocale"
-                  :project-digital-resources="projectDigitalResources"
-                  :project-activities="projectActivities"
-                  :other-heritage-assets="items"
-                  :active-asset-id="
-                    form['recordInformation.id'] || form['appellation.id']
-                  "
-                />
-              </RelationsPanelCollapse>
             </div>
 
             <!-- Form Action Buttons -->
 
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex flex-wrap justify-between items-center gap-3"
+              class="sticky bottom-3 z-20 bg-base-100/95 backdrop-blur-md border border-base-300 py-3 px-4 mt-6 rounded-xl shadow-md flex flex-wrap justify-between items-center gap-3"
             >
               <div>
                 <button
@@ -3600,7 +3583,7 @@
             <div v-if="activeDrawerField === 'characters.temporal'">
               <div class="grid grid-cols-1 gap-x-6">
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                 >
                   <div class="items-center flex flex-row">
                     <label class="label mb-2 pb-0">
@@ -4653,7 +4636,7 @@
             <div v-if="activeDrawerField === 'spatial'">
               <div class="grid grid-cols-1 gap-x-6">
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                 >
                   <div class="items-center flex flex-row">
                     <label class="label mb-2 pb-0">
@@ -4983,7 +4966,7 @@
                 </div>
 
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                 >
                   <div class="items-center flex flex-row">
                     <label class="label mb-2 pb-0">
@@ -5094,7 +5077,7 @@
                     </div>
 
                     <div
-                      class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                      class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                     >
                       <div class="items-center flex flex-row">
                         <label class="label mb-2 pb-0">
@@ -5679,7 +5662,7 @@
             </div>
 
             <div
-              class="sticky bottom-0 bg-base-100/95 backdrop-blur-md border-t border-base-200 pt-3 pb-2 px-4 mt-6 z-20"
+              class="sticky bottom-0 bg-base-100/95 backdrop-blur-md border border-base-300 rounded-xl p-3 mt-6 z-20 shadow-sm"
             >
               <button type="submit" class="btn btn-primary w-full shadow-md">
                 {{ t("saveToList") }}
@@ -5890,10 +5873,6 @@ import InstitutionAutocomplete from "../components/InstitutionAutocomplete.vue";
 import PlaceAutocomplete from "../components/PlaceAutocomplete.vue";
 
 import SpatialMapPicker from "../components/SpatialMapPicker.vue";
-
-import HeritageAssetDcRelations from "../components/HeritageAssetDcRelations.vue";
-import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
-import { countFormRelations } from "../utils/relationsHelper.js";
 
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
 

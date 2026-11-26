@@ -10,7 +10,7 @@
     <div class="drawer-content">
       <div class="container mx-auto p-4 max-w-7xl">
         <div
-          class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+          class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
         >
           <div
             class="flex flex-wrap justify-between items-center mb-4 pb-2 border-b border-base-200 gap-2"
@@ -157,7 +157,7 @@
           </div>
         </div>
 
-        <div class="bg-base-200 p-6 rounded-box shadow-sm mb-10">
+        <div class="space-y-4">
           <h3 class="text-xl font-bold mb-4 capitalize">
             {{ isEditing ? t("edit") : t("add") }}
             {{ getLabel("digitalResource", "digitalResource") }}
@@ -165,7 +165,7 @@
           <form @submit.prevent="delete form._isDraft; save()" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -357,7 +357,7 @@
                     <!-- Recently Used Organizations Bar -->
                   </div>
                   <div
-                    class="col-span-full border border-base-300 bg-base-100/50 p-3.5 rounded-box mb-3 mt-1"
+                    class="col-span-full border border-base-300 bg-base-100 p-4 rounded-xl mb-4 shadow-2xs"
                   >
                     <div class="grid grid-cols-1 gap-x-4">
                       <div class="form-control w-full mb-1">
@@ -433,7 +433,7 @@
 
                       <!-- Contacts Table in Creation -->
                       <div
-                        class="col-span-full border border-base-200 bg-base-100 p-4 rounded-xl mt-2 mb-2 shadow-xs"
+                        class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                       >
                         <PersonAssignmentList
                           v-model="form['recordInformation.creation.contacts']"
@@ -452,7 +452,7 @@
                 </div>
               </div>
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -580,7 +580,7 @@
                       </button>
                     </div>
 
-                    <ul class="list bg-base-100 rounded-box shadow-md w-full">
+                    <ul class="list bg-base-100 rounded-xl shadow-md w-full">
                       <li
                         v-for="(item, idx) in form['appellation.name']"
                         :key="idx"
@@ -670,7 +670,7 @@
                             </div>
                             <ul
                               tabindex="0"
-                              class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
+                              class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-xl w-36 min-w-[9rem] z-[60]"
                             >
                               <li>
                                 <a
@@ -963,7 +963,7 @@
               </div>
 
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <PersonAssignmentList
                   v-model="form['actors']"
@@ -1062,7 +1062,7 @@
                 </select>
               </div>
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div
                   class="flex justify-between items-center mb-4 pb-2 border-b border-base-200"
@@ -1497,63 +1497,36 @@
                 />
                 <div class="validator-hint">{{ t("validationHint") }}</div>
               </div>
-              <!-- Unified Dublin Core & CARARE Relations Manager for Digital Resource -->
-              <RelationsPanelCollapse
-                :count="countFormRelations(form, 'digital')"
-                :current-locale="currentLocale"
-                :missing-required="!(Array.isArray(form['isRepresentationOf']) && form['isRepresentationOf'].length > 0)"
-              >
-                <DigitalResourceDcRelations
-                  :form="form"
-                  :current-locale="currentLocale"
-                  :project-heritage-assets="projectHeritageAssets"
-                  :project-activities="projectActivities"
-                  :other-digital-resources="items"
-                  :active-resource-id="
-                    form['recordInformation.id'] || form['appellation.id']
-                  "
-                />
-              </RelationsPanelCollapse>
             </div>
 
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
+              class="sticky bottom-3 z-20 bg-base-100/95 backdrop-blur-md border border-base-300 py-3 px-4 mt-6 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-2"
             >
-              <span
-                v-if="saveSuccessBadge"
-                class="badge badge-success gap-1 text-white py-3 px-3 transition-all animate-bounce"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              <div>
+                <button
+                  v-if="isEditing"
+                  type="button"
+                  class="btn btn-ghost text-error hover:bg-error/10"
+                  @click="resetForm()"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
-              </span>
-              <button
-                v-if="isEditing"
-                type="button"
-                class="btn btn-ghost"
-                @click="resetForm()"
-              >
-                {{ t("cancel") }}
-              </button>
-              <button type="submit" class="btn btn-primary">
-                {{
-                  currentLocale === "de"
-                    ? "Digitalisat speichern"
-                    : "Save Digital Resource"
-                }}
-              </button>
+                  {{ t("cancel") }}
+                </button>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  v-if="saveSuccessBadge"
+                  class="badge badge-success gap-1 text-success-content font-semibold py-3 px-3 transition-all"
+                >
+                  ✓ {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
+                </span>
+                <button type="submit" class="btn btn-primary">
+                  {{
+                    currentLocale === "de"
+                      ? "Digitalisat speichern"
+                      : "Save Digital Resource"
+                  }}
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -1952,7 +1925,7 @@
                   <div class="validator-hint">{{ t("validationEmail") }}</div>
                 </div>
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                 >
                   <div class="items-center flex flex-row">
                     <label class="label mb-2 pb-0">
@@ -4048,9 +4021,6 @@ const blurActiveElement = () => {
 import SkosmosAutocomplete from "../components/SkosmosAutocomplete.vue";
 import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
-import DigitalResourceDcRelations from "../components/DigitalResourceDcRelations.vue";
-import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
-import { countFormRelations } from "../utils/relationsHelper.js";
 import DigitalResource3DMetadata from "../components/DigitalResource3DMetadata.vue";
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
 import PersonAssignmentList from "../components/PersonAssignmentList.vue";

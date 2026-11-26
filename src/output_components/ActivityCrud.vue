@@ -11,7 +11,7 @@
       <div class="container mx-auto p-4 max-w-7xl">
         <!-- Campaign Umbrella Information Banner -->
         <div
-          class="col-span-full mb-4 p-4 rounded-2xl bg-gradient-to-r from-primary/10 via-base-100 to-secondary/10 border border-primary/20 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+          class="col-span-full mb-5 p-4 rounded-xl bg-base-100 border border-base-300 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
         >
           <div class="flex items-start gap-3">
             <span class="text-2xl">📷</span>
@@ -37,7 +37,7 @@
         </div>
 
         <div
-          class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+          class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
         >
           <div
             class="flex justify-between items-center mb-4 pb-2 border-b border-base-200"
@@ -170,7 +170,7 @@
 
         <div
           ref="formContainerRef"
-          class="bg-base-200 p-6 rounded-box shadow-sm mb-10 transition-all"
+          class="space-y-4"
           :class="{ 'ring-2 ring-primary/60': isEditing }"
         >
           <div class="flex items-center justify-between mb-4">
@@ -193,7 +193,7 @@
           <form @submit.prevent="delete form._isDraft; save()" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -398,7 +398,7 @@
                     <div class="validator-hint">{{ t("validationHint") }}</div>
                   </div>
                   <div
-                    class="col-span-full border border-base-300 bg-base-100/50 p-3.5 rounded-box mb-3 mt-1"
+                    class="col-span-full border border-base-300 bg-base-100 p-4 rounded-xl mb-4 shadow-2xs"
                   >
                     <div class="grid grid-cols-1 gap-x-4">
                       <div class="form-control w-full mb-1">
@@ -474,7 +474,7 @@
 
                       <!-- Contacts Table in Creation -->
                       <div
-                        class="col-span-full border border-base-200 bg-base-100 p-4 rounded-xl mt-2 mb-2 shadow-xs"
+                        class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                       >
                         <PersonAssignmentList
                           v-model="form['recordInformation.creation.contacts']"
@@ -493,7 +493,7 @@
                 </div>
               </div>
               <div
-                class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="items-center flex flex-row">
                   <label class="label mb-2 pb-0">
@@ -619,7 +619,7 @@
                       </button>
                     </div>
                     <div class="p-4 pt-0">
-                      <ul class="list bg-base-100 rounded-box shadow-md w-full">
+                      <ul class="list bg-base-100 rounded-xl shadow-md w-full">
                         <li
                           v-for="(item, idx) in form['appellation.name']"
                           :key="idx"
@@ -705,7 +705,7 @@
                               </div>
                               <ul
                                 tabindex="0"
-                                class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-box w-36 min-w-[9rem] z-[60]"
+                                class="dropdown-content menu p-2 shadow-xl bg-base-100 border border-base-300 rounded-xl w-36 min-w-[9rem] z-[60]"
                               >
                                 <li>
                                   <a
@@ -1184,7 +1184,7 @@
               <!-- Campaign Umbrella Information Banner -->
               <div
                 id="act-actors"
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm scroll-mt-24"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs scroll-mt-24"
               >
                 <PersonAssignmentList
                   v-model="form['actors']"
@@ -1213,7 +1213,7 @@
 
               <!-- Activity Time Span (From–To Date for the entire activity/campaign) -->
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-base-200">
                   <div class="flex flex-row items-center gap-1.5">
@@ -1297,83 +1297,44 @@
                 :allow-org-pool="true"
                 :max-items="1"
               />
-              <RelationsPanelCollapse
-                :count="countFormRelations(form, 'activity')"
-                :current-locale="currentLocale"
-              >
-                <ActivityDcRelations
-                  :form="form"
-                  :current-locale="currentLocale"
-                  :project-heritage-assets="projectHeritageAssets"
-                  :project-digital-resources="projectDigitalResources"
-                  :other-activities="items"
-                  :active-activity-id="
-                    form['recordInformation.id'] || form['appellation.id']
-                  "
-                />
-              </RelationsPanelCollapse>
             </div>
 
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
+              class="sticky bottom-3 z-20 bg-base-100/95 backdrop-blur-md border border-base-300 py-3 px-4 mt-6 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-2"
             >
-              <span
-                v-if="saveSuccessBadge"
-                class="badge badge-success gap-1 text-white py-3 px-3 transition-all animate-bounce"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  v-if="isEditing"
+                  type="button"
+                  class="btn btn-ghost text-error hover:bg-error/10"
+                  @click="resetForm()"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
-              </span>
-              <button
-                v-if="isEditing"
-                type="button"
-                class="btn btn-outline btn-sm gap-1"
-                @click="resetForm()"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  {{ t("cancel") }}
+                </button>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  v-if="saveSuccessBadge"
+                  class="badge badge-success gap-1 text-success-content font-semibold py-3 px-3 transition-all"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                {{ currentLocale === "de" ? "Neuer Datensatz" : "New Record" }}
-              </button>
-              <button
-                v-if="isEditing"
-                type="button"
-                class="btn btn-ghost"
-                @click="resetForm()"
-              >
-                {{ t("cancel") }}
-              </button>
-              <button type="submit" class="btn btn-primary">
-                {{
-                  currentLocale === "de"
-                    ? "Aktivität speichern"
-                    : "Save Activity"
-                }}
-              </button>
+                  ✓ {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
+                </span>
+                <button
+                  v-if="isEditing"
+                  type="button"
+                  class="btn btn-outline btn-sm gap-1"
+                  @click="resetForm()"
+                >
+                  + {{ currentLocale === "de" ? "Neuer Datensatz" : "New Record" }}
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  {{
+                    currentLocale === "de"
+                      ? "Aktivität speichern"
+                      : "Save Activity"
+                  }}
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -1778,7 +1739,7 @@
                   <div class="validator-hint">{{ t("validationEmail") }}</div>
                 </div>
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                 >
                   <div class="items-center flex flex-row">
                     <label class="label mb-2 pb-0">
@@ -2256,7 +2217,7 @@
             <div v-if="activeDrawerField === 'temporal'">
               <div class="grid grid-cols-1 gap-x-6">
                 <div
-                  class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
+                  class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
                 >
                   <div class="items-center flex flex-row">
                     <label class="label mb-2 pb-0">
@@ -3784,9 +3745,6 @@ import PersonPickerModal from "../components/PersonPickerModal.vue";
 import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
 import EquipmentPickerModal from "../components/EquipmentPickerModal.vue";
 import SoftwarePickerModal from "../components/SoftwarePickerModal.vue";
-import ActivityDcRelations from "../components/ActivityDcRelations.vue";
-import RelationsPanelCollapse from "../components/RelationsPanelCollapse.vue";
-import { countFormRelations } from "../utils/relationsHelper.js";
 import ActivityParadata from "../components/ActivityParadata.vue";
 import ActivityConsistsOf3D from "../components/ActivityConsistsOf3D.vue";
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";

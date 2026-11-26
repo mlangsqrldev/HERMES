@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+    class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
   >
     <!-- Header -->
     <div

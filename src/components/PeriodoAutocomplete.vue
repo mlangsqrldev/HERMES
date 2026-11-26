@@ -203,7 +203,7 @@
     <!-- Dropdown Results Panel -->
     <div
       v-if="isOpen && (displayedPeriods.length > 0 || isLiveSearching)"
-      class="absolute left-0 right-0 z-50 mt-1 max-h-84 overflow-y-auto rounded-2xl border border-base-300 bg-base-100 shadow-2xl p-1.5 backdrop-blur-xl"
+      class="absolute left-0 right-0 z-50 mt-1 max-h-84 overflow-y-auto rounded-xl border border-base-300 bg-base-100 shadow-xl p-1.5 backdrop-blur-xl"
     >
       <div
         class="px-2 py-1 text-[11px] font-semibold text-base-content/50 uppercase tracking-wider flex justify-between items-center border-b border-base-200 mb-1"

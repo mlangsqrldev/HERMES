@@ -1,6 +1,6 @@
 <template>
   <div
-    class="spatial-map-picker w-full rounded-2xl border border-base-300 bg-base-100 overflow-hidden shadow-sm flex flex-col"
+    class="spatial-map-picker w-full rounded-xl border border-base-300 bg-base-100 overflow-hidden shadow-2xs flex flex-col"
   >
     <!-- Map Toolbar Header -->
     <div

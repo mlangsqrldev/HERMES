@@ -1,7 +1,7 @@
 <template>
   <div
     id="act-3d"
-    class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm scroll-mt-24"
+    class="col-span-full border border-base-300 bg-base-100 rounded-xl p-4 sm:p-5 mb-5 shadow-2xs scroll-mt-24"
   >
     <!-- Header -->
     <div
@@ -88,7 +88,7 @@
     </div>
 
     <!-- 1. METHOD SELECTION -->
-    <div class="mb-4 p-3.5 bg-base-200/40 rounded-xl border border-base-200">
+    <div class="mb-4 p-4 bg-base-200/35 rounded-xl border border-base-200">
       <div class="flex items-center justify-between mb-2">
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
@@ -188,7 +188,7 @@
     <div class="grid grid-cols-1 gap-4 mb-4">
       <!-- Left: Hardware Equipment -->
       <div
-        class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between"
+        class="p-4 bg-base-200/35 rounded-xl border border-base-200 flex flex-col justify-between"
       >
         <div>
           <div class="flex items-center justify-between mb-2">
