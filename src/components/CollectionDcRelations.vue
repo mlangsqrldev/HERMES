@@ -73,7 +73,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <!-- 1. Contained Heritage Assets (hasPart) -->
+        <!-- 1. Contained Heritage Assets (dcRelation) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >
@@ -84,8 +84,8 @@
               <span>🏛️</span>
               {{
                 currentLocale === "de"
-                  ? "Kulturgüter (hasPart)"
-                  : "Heritage Assets (hasPart)"
+                  ? "Kulturgüter (dcRelation)"
+                  : "Heritage Assets (dcRelation)"
               }}
             </span>
             <span
@@ -127,7 +127,7 @@
           </div>
         </div>
 
-        <!-- 2. Digitale Ressourcen (hasPart / isFormatOf) -->
+        <!-- 2. Digital Resources (dcRelation) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >
@@ -138,8 +138,8 @@
               <span>🧊</span>
               {{
                 currentLocale === "de"
-                  ? "Digitalisate (hasPart)"
-                  : "Digital Resources (hasPart)"
+                  ? "Digitalisate (dcRelation)"
+                  : "Digital Resources (dcRelation)"
               }}
             </span>
             <span
@@ -183,7 +183,7 @@
           </div>
         </div>
 
-        <!-- 3. Activities (wasDigitizedBy) -->
+        <!-- 3. Activities (dcRelation) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >
@@ -194,8 +194,8 @@
               <span>📸</span>
               {{
                 currentLocale === "de"
-                  ? "Aktivitäten (wasDigitizedBy)"
-                  : "Activities (wasDigitizedBy)"
+                  ? "Aktivitäten (dcRelation)"
+                  : "Activities (dcRelation)"
               }}
             </span>
             <span
