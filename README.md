@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/stack-Tauri%202%20%C2%B7%20Vue%203%20%C2%B7%20Rust-16795f?style=flat-square" alt="Tauri 2 · Vue 3 · Rust" />
   <img src="https://img.shields.io/badge/languages-DE%20%7C%20EN-5b47a8?style=flat-square" alt="Bilingual DE / EN" />
   <img src="https://img.shields.io/badge/funded%20by-NFDI4Objects-004b93?style=flat-square" alt="Funded by NFDI4Objects" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2f855a?style=flat-square" alt="License: MIT" /></a>
 </p>
 
 <p align="center">
@@ -105,3 +106,9 @@ For platform-specific native prerequisites (`libwebkit2gtk-4.1-dev`, Xcode Comma
 **HERMES** is developed at the **[Bonn Center for Digital Humanities (BCDH)](https://www.bcdh.uni-bonn.de/)**, University of Bonn.
 
 This project is funded by the **Deutsche Forschungsgemeinschaft (DFG, German Research Foundation)** within the **[NFDI4Objects](https://www.nfdi4objects.net/)** consortium (*National Research Data Infrastructure for the Material Remains of Human History*).
+
+---
+
+## License
+
+Released under the **[MIT License](LICENSE)** — Copyright © 2026 Bonn Center for Digital Humanities (BCDH), University of Bonn.

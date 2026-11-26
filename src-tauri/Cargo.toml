@@ -2,7 +2,8 @@
 name = "hermes"
 version = "0.1.36"
 description = "HERitage Metadata Entry System"
-authors = ["you"]
+authors = ["Bonn Center for Digital Humanities (BCDH), University of Bonn"]
+license = "MIT"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
