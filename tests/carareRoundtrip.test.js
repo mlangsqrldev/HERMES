@@ -155,7 +155,7 @@ describe("CARARE XML Roundtrip Parser", () => {
     expect(step.equipment).toContain("SDXL");
   });
 
-  it("parses samples/giza_pyramid_carare_2.0.6.xml completely", async () => {
+  it("parses samples/giza_pyramid_carare_2.0.6.xml completely with relations", async () => {
     const fs = await import("fs");
     const path = await import("path");
     const xml = fs.readFileSync(
@@ -167,5 +167,30 @@ describe("CARARE XML Roundtrip Parser", () => {
     expect(parsed.HeritageAsset).toHaveLength(10);
     expect(parsed.DigitalResource).toHaveLength(20);
     expect(parsed.Activity).toHaveLength(1);
+
+    const pyramide = parsed.HeritageAsset.find(
+      (h) => h["recordInformation.id"] === "HA-PYRAMIDE",
+    );
+    const grab = parsed.HeritageAsset.find(
+      (h) => h["recordInformation.id"] === "HA-GRAB",
+    );
+    expect(pyramide.hasPart).toContain("HA-GRAB");
+    expect(grab.isPartOf).toContain("HA-PYRAMIDE");
+    // Collection ID must NOT be injected into HA/DR/Act isPartOf
+    expect(pyramide.isPartOf || []).not.toContain("COL-GIZEH-01");
+
+    const masterDr = parsed.DigitalResource.find(
+      (d) => d["recordInformation.id"] === "DR-PYRAMIDE-MASTER",
+    );
+    const lpDr = parsed.DigitalResource.find(
+      (d) => d["recordInformation.id"] === "DR-PYRAMIDE-LP",
+    );
+    expect(masterDr.hasDerivative).toContain("DR-PYRAMIDE-LP");
+    expect(lpDr.isDerivativeOf).toContain("DR-PYRAMIDE-MASTER");
+    expect(masterDr.isRepresentationOf).toContain("HA-PYRAMIDE");
+
+    const act = parsed.Activity[0];
+    expect(act.wasPresentAt).toHaveLength(10);
+    expect(act.hasCreated).toHaveLength(20);
   });
 });

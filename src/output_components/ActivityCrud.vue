@@ -1295,6 +1295,7 @@
                 :title="getLabel('spatial', 'Spatial')"
                 :tooltip="getLabel('spatial', 'Location where this activity took place.', 'doc')"
                 :allow-org-pool="true"
+                :max-items="1"
               />
               <RelationsPanelCollapse
                 :count="countFormRelations(form, 'activity')"
@@ -5551,7 +5552,8 @@ onMounted(async () => {
   try {
     store.value = await getAppStore("templates.json", { autoSave: true });
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
-      let tpls = await store.value.get(f);
+      let tpls =
+        (await store.value.get(`activity_${f}`)) || (await store.value.get(f));
       if (!tpls || tpls.length === 0) {
         const raw = localStorage.getItem(`hermes_templates_activity_${f}`);
         if (raw) tpls = JSON.parse(raw);
@@ -5609,7 +5611,7 @@ const addTemplate = async () => {
 
   if (store.value) {
     await store.value.set(
-      field,
+      `activity_${field}`,
       JSON.parse(JSON.stringify(templates.value[field])),
     );
     await store.value.save();
@@ -5642,7 +5644,7 @@ const executeDeleteTemplate = async () => {
     templates.value[field].splice(idx, 1);
     if (store.value) {
       await store.value.set(
-        field,
+        `activity_${field}`,
         JSON.parse(JSON.stringify(templates.value[field])),
       );
       await store.value.save();
@@ -6280,9 +6282,12 @@ const startNewRecord = () => {
 };
 
 const edit = (index) => {
+  const sourceItem = items.value?.[index];
+  if (!sourceItem || typeof sourceItem !== "object") return;
+  resetForm(true);
   isEditing.value = true;
   editIndex.value = index;
-  Object.assign(form, JSON.parse(JSON.stringify(items.value[index])));
+  Object.assign(form, JSON.parse(JSON.stringify(sourceItem)));
   if (form["eventType"] && !form["activityType"])
     form["activityType"] = form["eventType"];
   if (form["activityType"] && !form["eventType"])
@@ -6303,8 +6308,19 @@ const edit = (index) => {
 };
 
 const remove = (index) => {
+  const msg =
+    currentLocale.value === "de"
+      ? "Möchten Sie diese Aktivität wirklich löschen?"
+      : "Are you sure you want to delete this activity?";
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
   items.value.splice(index, 1);
-  if (isEditing.value && editIndex.value === index) resetForm(true);
+  if (isEditing.value) {
+    if (editIndex.value === index) {
+      resetForm(true);
+    } else if (editIndex.value !== null && editIndex.value > index) {
+      editIndex.value -= 1;
+    }
+  }
 };
 
 const resetForm = (force = false) => {

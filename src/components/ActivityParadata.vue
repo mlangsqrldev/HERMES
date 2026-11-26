@@ -247,6 +247,8 @@ const DAP_DIMENSIONS = [
       "Dimension 1 of 5: Material Traces and Features (Object Condition)",
     purposeDe:
       "Digital Authenticity Profile, Dimension 1 von 5: Materielle Spuren und Merkmale (Ausgangsbefund am Objekt)",
+    purposeEn:
+      "Digital Authenticity Profile, Dimension 1 of 5: Material Traces and Features (Object Condition)",
     hintDe:
       "Welche materiellen Spuren, Beschädigungen, Bearbeitungsspuren oder historischen Restaurierungen weist das physische Objekt auf?",
     hintEn:
@@ -265,6 +267,8 @@ const DAP_DIMENSIONS = [
     titleEn: "Dimension 2 of 5: Acquisition Process and Coverage",
     purposeDe:
       "Digital Authenticity Profile, Dimension 2 von 5: Aufnahmeprozess und Erfassungsumfang",
+    purposeEn:
+      "Digital Authenticity Profile, Dimension 2 of 5: Acquisition Process and Coverage",
     hintDe:
       "Wie wurde das Objekt erfasst? Welche Bereiche blieben ausgespart oder abgeschattet (z. B. Standfläche, Hohlräume)?",
     hintEn:
@@ -283,6 +287,8 @@ const DAP_DIMENSIONS = [
     titleEn: "Dimension 3 of 5: Geometry Processing",
     purposeDe:
       "Digital Authenticity Profile, Dimension 3 von 5: Geometrie-Bearbeitung",
+    purposeEn:
+      "Digital Authenticity Profile, Dimension 3 of 5: Geometry Processing",
     hintDe:
       "Welche Eingriffe wurden an der 3D-Geometrie vorgenommen (z. B. Löcher geschlossen, Ausrichtung, Dezimierung, Glättung)?",
     hintEn:
@@ -301,6 +307,8 @@ const DAP_DIMENSIONS = [
     titleEn: "Dimension 4 of 5: Texture, Shader and Material",
     purposeDe:
       "Digital Authenticity Profile, Dimension 4 von 5: Textur, Shader und Material",
+    purposeEn:
+      "Digital Authenticity Profile, Dimension 4 of 5: Texture, Shader and Material",
     hintDe:
       "Wie wurden Texturen, Farben, Lichteffekte (Delighting) und Materialeigenschaften (PBR/Shader) erzeugt bzw. angepasst?",
     hintEn:
@@ -319,6 +327,8 @@ const DAP_DIMENSIONS = [
     titleEn: "Dimension 5 of 5: Representation Balance",
     purposeDe:
       "Digital Authenticity Profile, Dimension 5 von 5: Abbildungsbilanz",
+    purposeEn:
+      "Digital Authenticity Profile, Dimension 5 of 5: Representation Balance",
     hintDe:
       "Abschließende Bewertung: Was bildet das digitale 3D-Modell authentisch ab und wo liegen bewusste Grenzen oder Abweichungen zum Original?",
     hintEn:
@@ -431,13 +441,15 @@ const syncToConsistsOf = () => {
     entries.forEach((entry) => {
       const val = (entry?._value || "").trim();
       if (val) {
+        const entryLang = entry.lang || defaultLang();
+        const useEn = entryLang === "en" || props.currentLocale === "en";
         dapSteps.push({
           isDap: true,
           dapId: dim.id,
-          hadSpecificPurpose: dim.purposeDe,
-          "hadSpecificPurpose#lang": "de",
+          hadSpecificPurpose: useEn ? dim.purposeEn : dim.purposeDe,
+          "hadSpecificPurpose#lang": useEn ? "en" : "de",
           methods: val,
-          "methods#lang": entry.lang || defaultLang(),
+          "methods#lang": entryLang,
           "methods#preferred": Boolean(entry.preferred),
           "methods#termUID": dim.uri,
         });
@@ -468,6 +480,7 @@ const initFromConsistsOf = () => {
         item.dapId === dim.id ||
         uid.endsWith(`/${dim.id}`) ||
         p.includes(`Dimension ${dim.num} von 5`) ||
+        p.includes(`Dimension ${dim.num} of 5`) ||
         p.includes(dim.id) ||
         m.includes(dim.id)
       );
@@ -494,43 +507,56 @@ const initFromConsistsOf = () => {
 };
 
 const loadSampleDap = () => {
+  if (completedCount.value > 0) {
+    const msg =
+      props.currentLocale === "de"
+        ? "Vorhandene DAP-Einträge mit dem Beispieltext überschreiben?"
+        : "Overwrite existing DAP entries with the sample text?";
+    if (typeof window !== "undefined" && !window.confirm(msg)) return;
+  }
+  const isEn = props.currentLocale === "en";
   dimTexts["DAP-1"] = [
     {
-      _value:
-        "Abgebrochene Partien und Bestoßungen an der Oberfläche, feine Rissbildung sowie historische Restaurierungskittungen dokumentiert.",
-      lang: "de",
+      _value: isEn
+        ? "Broken sections and surface chips, fine hairline cracks, and historical restoration fills documented."
+        : "Abgebrochene Partien und Bestoßungen an der Oberfläche, feine Rissbildung sowie historische Restaurierungskittungen dokumentiert.",
+      lang: isEn ? "en" : "de",
       preferred: true,
     },
   ];
   dimTexts["DAP-2"] = [
     {
-      _value:
-        "360°-Rundumerfassung im Museum; Standfläche aus Standsicherheitsgründen ausgespart; tiefer liegende Hohlräume teilweise abgeschattet.",
-      lang: "de",
+      _value: isEn
+        ? "360° capture in the museum; base omitted for stability; deep cavities partially occluded."
+        : "360°-Rundumerfassung im Museum; Standfläche aus Standsicherheitsgründen ausgespart; tiefer liegende Hohlräume teilweise abgeschattet.",
+      lang: isEn ? "en" : "de",
       preferred: true,
     },
   ];
   dimTexts["DAP-3"] = [
     {
-      _value:
-        "ICP-Ausrichtung der Einzelscans, Entfernung von Messrauschen, plane Schließung der Standfläche und Dezimierung für Web-Derivat.",
-      lang: "de",
+      _value: isEn
+        ? "ICP alignment of individual scans, noise removal, flat closing of the base, and decimation for web derivative."
+        : "ICP-Ausrichtung der Einzelscans, Entfernung von Messrauschen, plane Schließung der Standfläche und Dezimierung für Web-Derivat.",
+      lang: isEn ? "en" : "de",
       preferred: true,
     },
   ];
   dimTexts["DAP-4"] = [
     {
-      _value:
-        "Farbkalibrierung mittels ColorChecker, Delighting der Texturaufnahmen und Normal-Map-Bake aus dem hochauflösenden Modell.",
-      lang: "de",
+      _value: isEn
+        ? "Color calibration via ColorChecker, delighting of texture captures, and normal-map bake from high-resolution mesh."
+        : "Farbkalibrierung mittels ColorChecker, Delighting der Texturaufnahmen und Normal-Map-Bake aus dem hochauflösenden Modell.",
+      lang: isEn ? "en" : "de",
       preferred: true,
     },
   ];
   dimTexts["DAP-5"] = [
     {
-      _value:
-        "Alle sichtbaren Oberflächenspuren und Beschädigungen sind maßstabsgetreu abgebildet; lediglich die ausgesparte Standfläche wurde plan geschlossen.",
-      lang: "de",
+      _value: isEn
+        ? "All visible surface traces and damages are preserved to scale; only the omitted base was closed flat."
+        : "Alle sichtbaren Oberflächenspuren und Beschädigungen sind maßstabsgetreu abgebildet; lediglich die ausgesparte Standfläche wurde plan geschlossen.",
+      lang: isEn ? "en" : "de",
       preferred: true,
     },
   ];
@@ -538,6 +564,13 @@ const loadSampleDap = () => {
 };
 
 const clearAllDap = () => {
+  if (completedCount.value > 0) {
+    const msg =
+      props.currentLocale === "de"
+        ? "Möchten Sie alle erfassten DAP-Einträge wirklich leeren?"
+        : "Are you sure you want to clear all DAP entries?";
+    if (typeof window !== "undefined" && !window.confirm(msg)) return;
+  }
   DAP_DIMENSIONS.forEach((dim) => {
     dimTexts[dim.id] = [{ _value: "", lang: defaultLang(), preferred: true }];
   });

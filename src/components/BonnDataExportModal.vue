@@ -572,6 +572,8 @@ const uploadToBonnData = async () => {
     }
 
     const persistentId = createData.data.persistentId;
+    // Record immediately so partial file-upload retries never lose the created dataset PID
+    createdPersistentId.value = persistentId;
     const filesToUpload = [];
 
     if (includeCarareXml.value && typeof props.getXmlString === "function") {

@@ -7,7 +7,7 @@ HERMES runs either as a **portable standalone Windows desktop executable** (no i
 ## 1. Running the Desktop Application (Windows)
 
 1. Open `HERMES_Windows_Release_Package/`.
-2. Double-click `HERMES_v0.1.35_2026-11-26.exe`.
+2. Double-click `HERMES_v0.1.36_2026-11-26.exe`.
    - Requirements: 64-bit Windows 10 or Windows 11 with Microsoft Edge WebView2 Runtime (preinstalled on modern Windows).
 3. Click **Manual / Handbuch** in the top header at any time to open the embedded bilingual scholarly manual in a dedicated desktop window.
 

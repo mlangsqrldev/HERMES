@@ -1360,10 +1360,10 @@
                   </div>
                 </div>
                 <input
-                  type="url"
+                  type="text"
                   required
                   v-model="form['link']"
-                  class="input input-bordered w-full"
+                  class="input input-bordered w-full validator"
                   :placeholder="
                     getLabel(
                       'link',
@@ -5423,7 +5423,8 @@ onMounted(async () => {
   try {
     store.value = await getAppStore("templates.json", { autoSave: true });
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
-      let tpls = await store.value.get(f);
+      let tpls =
+        (await store.value.get(`digital_${f}`)) || (await store.value.get(f));
       if (!tpls || tpls.length === 0) {
         const raw = localStorage.getItem(`hermes_templates_digital_${f}`);
         if (raw) tpls = JSON.parse(raw);
@@ -5477,7 +5478,7 @@ const addTemplate = async () => {
 
   if (store.value) {
     await store.value.set(
-      field,
+      `digital_${field}`,
       JSON.parse(JSON.stringify(templates.value[field])),
     );
     await store.value.save();
@@ -5510,7 +5511,7 @@ const executeDeleteTemplate = async () => {
     templates.value[field].splice(idx, 1);
     if (store.value) {
       await store.value.set(
-        field,
+        `digital_${field}`,
         JSON.parse(JSON.stringify(templates.value[field])),
       );
       await store.value.save();
@@ -5865,6 +5866,7 @@ const saveDraft = () => {
 const edit = (index) => {
   const sourceItem = items.value?.[index];
   if (!sourceItem || typeof sourceItem !== "object") return;
+  resetForm();
   isEditing.value = true;
   editIndex.value = index;
   const cloned = JSON.parse(JSON.stringify(sourceItem));
@@ -5895,7 +5897,13 @@ const edit = (index) => {
 const remove = (index) => {
   if (confirm(t("deletePrompt"))) {
     items.value.splice(index, 1);
-    if (isEditing.value && editIndex.value === index) resetForm();
+    if (isEditing.value) {
+      if (editIndex.value === index) {
+        resetForm();
+      } else if (editIndex.value !== null && editIndex.value > index) {
+        editIndex.value -= 1;
+      }
+    }
   }
 };
 
@@ -5966,9 +5974,10 @@ const createForHeritageAsset = (haItem) => {
       ? rawNames[0]._value || rawNames[0].name || haId
       : haId;
   const defLang = defaultMetadataLanguage.value || "de";
+  const prefix = currentLocale.value === "en" ? "3D Model" : "3D-Modell";
   form["appellation.name"] = [
     {
-      _value: haName ? `3D-Modell: ${haName}` : "",
+      _value: haName ? `${prefix}: ${haName}` : "",
       "appellation.name#lang": defLang,
       "appellation.name#preferred": true,
     },
@@ -5976,13 +5985,8 @@ const createForHeritageAsset = (haItem) => {
   if (haId) {
     form["isRepresentationOf"] = [haId];
   }
-  if (projectActivities.value && projectActivities.value.length > 0) {
-    const act = projectActivities.value[0];
-    const actId = act["recordInformation.id"] || act["appellation.id"] || "";
-    if (actId) {
-      form["wasDigitizedBy"] = [actId];
-    }
-  }
+  // Note: CARARE 2.0.6 XSD does NOT allow <wasDigitizedBy> on <digitalResource>.
+  // Activity -> DigitalResource linkage is expressed via <activity><hasCreated>.
 };
 
 defineExpose({

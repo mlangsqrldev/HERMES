@@ -37,12 +37,17 @@
       </div>
 
       <button
+        v-if="!maxItems || items.length < maxItems"
         type="button"
         class="btn btn-sm btn-outline btn-primary gap-1"
         @click.prevent="openModal(null)"
       >
         <span>+</span>
-        {{ currentLocale === "de" ? "Spatial hinzufügen" : "Add Spatial" }}
+        {{
+          currentLocale === "de"
+            ? "Ort / Fundort hinzufügen"
+            : "Add Location / Findspot"
+        }}
       </button>
     </div>
 
@@ -139,8 +144,8 @@
     >
       {{
         currentLocale === "de"
-          ? "Noch keine räumlichen Einträge vorhanden. Klicken Sie auf „Spatial hinzufügen“."
-          : "No spatial entries yet. Click 'Add Spatial' to add one."
+          ? "Noch keine räumlichen Einträge vorhanden. Klicken Sie auf „Ort / Fundort hinzufügen“."
+          : "No spatial entries yet. Click 'Add Location / Findspot' to add one."
       }}
     </div>
 
@@ -169,11 +174,11 @@
                 {{
                   editingIndex !== null
                     ? currentLocale === "de"
-                      ? "Spatial-Eintrag bearbeiten"
-                      : "Edit Spatial Entry"
+                      ? "Ort / Fundort bearbeiten"
+                      : "Edit Location / Findspot"
                     : currentLocale === "de"
-                      ? "Spatial hinzufügen"
-                      : "Add Spatial Entry"
+                      ? "Ort / Fundort hinzufügen"
+                      : "Add Location / Findspot"
                 }}
               </h3>
               <p class="text-xs text-base-content/60">
@@ -211,7 +216,11 @@
             <div class="form-control w-full">
               <label class="label py-1">
                 <span class="label-text font-bold text-xs uppercase tracking-wider">
-                  Ancient (Pleiades)
+                  {{
+                    currentLocale === "de"
+                      ? "Antiker Ort (Pleiades)"
+                      : "Ancient Place (Pleiades)"
+                  }}
                 </span>
               </label>
               <PlaceAutocomplete
@@ -225,7 +234,11 @@
             <div class="form-control w-full">
               <label class="label py-1">
                 <span class="label-text font-bold text-xs uppercase tracking-wider">
-                  Modern (Geonames)
+                  {{
+                    currentLocale === "de"
+                      ? "Heutiger Ort (GeoNames)"
+                      : "Modern Place (GeoNames)"
+                  }}
                 </span>
               </label>
               <PlaceAutocomplete
@@ -305,7 +318,7 @@
               </label>
               <input
                 type="text"
-                v-model="draft['spatialReferenceSystem']"
+                v-model="draft['geometry.spatialReferenceSystem']"
                 class="input input-sm input-bordered w-full font-mono text-xs"
                 placeholder="WGS84"
               />
@@ -434,6 +447,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  maxItems: {
+    type: Number,
+    default: 0, // 0 = unlimited
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -459,7 +476,7 @@ const draft = reactive({
   "locationSet.address.country": "",
   "geometry.quickpoint.y": "",
   "geometry.quickpoint.x": "",
-  spatialReferenceSystem: "",
+  "geometry.spatialReferenceSystem": "",
 });
 
 const resetDraft = () => {
@@ -532,7 +549,10 @@ const openModal = (idx = null) => {
       item["locationSet.address.country"] || "";
     draft["geometry.quickpoint.y"] = item["geometry.quickpoint.y"] || "";
     draft["geometry.quickpoint.x"] = item["geometry.quickpoint.x"] || "";
-    draft["spatialReferenceSystem"] = item["spatialReferenceSystem"] || "";
+    draft["geometry.spatialReferenceSystem"] =
+      item["geometry.spatialReferenceSystem"] ||
+      item["spatialReferenceSystem"] ||
+      "";
 
     spatialKind.value =
       draft["locationSet.historicalName"] && !draft["locationSet.namedLocation"]

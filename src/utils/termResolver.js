@@ -604,10 +604,16 @@ export const HECTOR_VOCABULARY_INDEX = {
   },
 };
 
-/**
- * Searches localStorage recent vocabs for a matching label
- */
-function findInLocalStorageVocabs(termLower) {
+// Short-lived in-memory cache for localStorage vocab entries to avoid repeated JSON.parse on misses
+let _localVocabCache = null;
+let _localVocabCacheAt = 0;
+
+function getLocalStorageVocabMap() {
+  const now = Date.now();
+  if (_localVocabCache && now - _localVocabCacheAt < 5000) {
+    return _localVocabCache;
+  }
+  const map = new Map();
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
@@ -620,16 +626,16 @@ function findInLocalStorageVocabs(termLower) {
               const l = String(item.label || item.prefLabel || "")
                 .toLowerCase()
                 .trim();
-              if (l === termLower && (item.uri || item.termUID)) {
+              if (l && (item.uri || item.termUID) && !map.has(l)) {
                 const uri = item.uri || item.termUID;
                 const nsMatch = uri.match(/^(https?:\/\/[^\/]+\/[^\/]+\/)/);
-                return {
+                map.set(l, {
                   uri,
                   namespace: nsMatch
                     ? nsMatch[1]
                     : uri.substring(0, uri.lastIndexOf("/") + 1),
                   label: item.label || item.prefLabel,
-                };
+                });
               }
             }
           }
@@ -639,7 +645,16 @@ function findInLocalStorageVocabs(termLower) {
   } catch (e) {
     // ignore
   }
-  return null;
+  _localVocabCache = map;
+  _localVocabCacheAt = now;
+  return map;
+}
+
+/**
+ * Searches localStorage recent vocabs for a matching label
+ */
+function findInLocalStorageVocabs(termLower) {
+  return getLocalStorageVocabMap().get(termLower) || null;
 }
 
 /**

@@ -46,8 +46,8 @@
           <p class="text-[11px] text-base-content/60 leading-snug mt-0.5">
             {{
               currentLocale === "de"
-                ? "Tipp: Erfassen Sie erst alle Einträge in Ruhe — am Ende können Sie alles bequem in Schritt 5 (Grafischer Editor) verknüpfen."
-                : "Tip: Enter all records first — at the end, link everything visually in Step 5 (Visual Relations Editor)."
+                ? "Tipp: Erfassen Sie erst alle Einträge in Ruhe — am Ende können Sie alles bequem in Schritt 5 (Verknüpfungs-Editor) zuordnen."
+                : "Tip: Enter all records first — at the end, link everything cleanly in Step 5 (Relations Editor)."
             }}
           </p>
         </div>
@@ -60,12 +60,12 @@
           class="btn btn-xs sm:btn-sm btn-primary btn-outline gap-1.5"
           @click="openRelationsEditor()"
         >
-          <span>🗺️</span>
+          <span>🔗</span>
           <span>
             {{
               currentLocale === "de"
-                ? "Im Grafischen Editor verknüpfen →"
-                : "Open Visual Editor →"
+                ? "Im Verknüpfungs-Editor zuordnen →"
+                : "Open Relations Editor →"
             }}
           </span>
         </button>

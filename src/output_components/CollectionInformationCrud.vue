@@ -38,11 +38,12 @@
                 <div class="flex items-center gap-2 flex-wrap">
                   <h4 class="font-bold text-sm text-base-content">
                     {{
-                      form["collectionTitle"] ||
-                      form["id"] ||
-                      (currentLocale === "de"
-                        ? "Aktive Sammlung des Projekts"
-                        : "Active Project Collection")
+                      getDisplayName(form) !== "—"
+                        ? getDisplayName(form)
+                        : form["id"] ||
+                          (currentLocale === "de"
+                            ? "Aktive Sammlung des Projekts"
+                            : "Active Project Collection")
                     }}
                   </h4>
                   <span class="badge badge-primary badge-xs font-semibold">{{
@@ -771,10 +772,7 @@
               <button
                 type="button"
                 class="btn btn-ghost"
-                @click="
-                  items = [];
-                  resetForm(true);
-                "
+                @click="resetForm(true)"
               >
                 {{ t("cancel") }}
               </button>
@@ -2841,7 +2839,9 @@ onMounted(async () => {
   try {
     store.value = await getAppStore("templates.json", { autoSave: true });
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
-      let tpls = await store.value.get(f);
+      let tpls =
+        (await store.value.get(`collection_${f}`)) ||
+        (await store.value.get(f));
       if (!tpls || tpls.length === 0) {
         const raw = localStorage.getItem(`hermes_templates_collection_${f}`);
         if (raw) tpls = JSON.parse(raw);
@@ -2895,7 +2895,7 @@ const addTemplate = async () => {
 
   if (store.value) {
     await store.value.set(
-      field,
+      `collection_${field}`,
       JSON.parse(JSON.stringify(templates.value[field])),
     );
     await store.value.save();
@@ -2928,7 +2928,7 @@ const executeDeleteTemplate = async () => {
     templates.value[field].splice(idx, 1);
     if (store.value) {
       await store.value.set(
-        field,
+        `collection_${field}`,
         JSON.parse(JSON.stringify(templates.value[field])),
       );
       await store.value.save();
@@ -3238,9 +3238,12 @@ const normalizeLegacyCoverageArrays = () => {
 };
 
 const edit = (index) => {
+  const sourceItem = items.value?.[index];
+  if (!sourceItem || typeof sourceItem !== "object") return;
+  resetForm(true);
   isEditing.value = true;
   editIndex.value = index;
-  Object.assign(form, JSON.parse(JSON.stringify(items.value[index])));
+  Object.assign(form, JSON.parse(JSON.stringify(sourceItem)));
   normalizeLegacyCoverageArrays();
   // Populate preferred languages
   Object.keys(form).forEach((k) => {
@@ -3252,8 +3255,19 @@ const edit = (index) => {
 };
 
 const remove = (index) => {
+  const msg =
+    currentLocale.value === "de"
+      ? "Möchten Sie diese Sammlungsinformation wirklich löschen?"
+      : "Are you sure you want to delete this collection record?";
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
   items.value.splice(index, 1);
-  if (isEditing.value && editIndex.value === index) resetForm(true);
+  if (isEditing.value) {
+    if (editIndex.value === index) {
+      resetForm(true);
+    } else if (editIndex.value !== null && editIndex.value > index) {
+      editIndex.value -= 1;
+    }
+  }
 };
 
 const isOrgPickerOpen = ref(false);

@@ -161,7 +161,7 @@
         <div
           ref="formContainerRef"
           v-if="showAddForm || editingIndex !== null"
-          class="p-4 bg-primary/5 border-b border-primary/20"
+          class="p-4 bg-primary/5 border-b border-primary/20 max-h-[55vh] overflow-y-auto shrink-0"
         >
           <div class="flex items-center justify-between mb-3">
             <h4
@@ -478,6 +478,7 @@
             <button
               type="button"
               class="btn btn-xs btn-primary gap-1"
+              :disabled="!formData.name.trim()"
               @click="saveFormData"
             >
               <span>💾</span>
@@ -994,7 +995,7 @@ const handleImportPoolsBackup = async (event) => {
 
 const handleClearAllOrganizations = () => {
   const msg =
-    props.locale === "de"
+    locale.value === "de"
       ? "Möchten Sie wirklich alle gespeicherten Organisationen aus dem Pool löschen?"
       : "Are you sure you want to delete all saved organizations from the pool?";
   if (confirm(msg)) {

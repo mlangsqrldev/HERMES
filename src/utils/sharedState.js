@@ -968,10 +968,7 @@ export const apiCredentials = reactive({ ...savedApiCredentialsRaw });
 
 export const saveApiCredentials = (creds) => {
   Object.assign(apiCredentials, creds);
-  localStorage.setItem(
-    "hermes_api_credentials",
-    JSON.stringify(apiCredentials),
-  );
+  safeSetStorage("hermes_api_credentials", JSON.stringify(apiCredentials));
 };
 
 export const isApiSettingsOpen = ref(false);

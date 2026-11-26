@@ -376,7 +376,28 @@ const escapeHtml = (str) =>
   String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const highlightAttrsSafe = (attrPart) => {
+  const attrRegex = /([\w:.-]+)(\s*=\s*)("[^"]*"|'[^']*')/g;
+  let out = "";
+  let lastIdx = 0;
+  let m;
+  while ((m = attrRegex.exec(attrPart)) !== null) {
+    if (m.index > lastIdx) {
+      out += escapeHtml(attrPart.slice(lastIdx, m.index));
+    }
+    const [, attrName, eq, attrVal] = m;
+    out += `<span class="text-amber-600 dark:text-amber-300">${escapeHtml(attrName)}</span><span class="text-slate-400">${escapeHtml(eq)}</span><span class="text-emerald-600 dark:text-emerald-300">${escapeHtml(attrVal)}</span>`;
+    lastIdx = attrRegex.lastIndex;
+  }
+  if (lastIdx < attrPart.length) {
+    out += escapeHtml(attrPart.slice(lastIdx));
+  }
+  return out;
+};
 
 const highlightXmlLine = (line) => {
   const trimmed = line.trim();
@@ -387,25 +408,37 @@ const highlightXmlLine = (line) => {
     return `<span class="text-slate-400 dark:text-slate-500 italic">${escapeHtml(line)}</span>`;
   }
 
-  return line.replace(/(<!--[\s\S]*?-->|<\/?[^>]+>)/g, (match) => {
-    if (match.startsWith("<!--")) {
-      return `<span class="text-slate-400 dark:text-slate-500 italic">${escapeHtml(match)}</span>`;
-    }
-    const tagMatch = match.match(/^<(\/?)([\w:.-]+)([\s\S]*?)(\/?)>$/);
-    if (!tagMatch) {
-      return escapeHtml(match);
-    }
-    const [, slashOpen, tagName, attrPart, slashClose] = tagMatch;
-    const tagColorClass = "text-sky-600 dark:text-sky-400 font-semibold";
+  const tokenRegex = /(<!--[\s\S]*?-->|<\/?[^>]+>)/g;
+  let result = "";
+  let lastIndex = 0;
+  let match;
 
-    const highlightedAttrs = attrPart.replace(
-      /([\w:.-]+)(\s*=\s*)("[^"]*"|'[^']*')/g,
-      (_, attrName, eq, attrVal) =>
-        `<span class="text-amber-600 dark:text-amber-300">${escapeHtml(attrName)}</span><span class="text-slate-400">${escapeHtml(eq)}</span><span class="text-emerald-600 dark:text-emerald-300">${escapeHtml(attrVal)}</span>`,
-    );
+  while ((match = tokenRegex.exec(line)) !== null) {
+    if (match.index > lastIndex) {
+      result += escapeHtml(line.slice(lastIndex, match.index));
+    }
+    const token = match[0];
+    if (token.startsWith("<!--")) {
+      result += `<span class="text-slate-400 dark:text-slate-500 italic">${escapeHtml(token)}</span>`;
+    } else {
+      const tagMatch = token.match(/^<(\/?)([\w:.-]+)([\s\S]*?)(\/?)>$/);
+      if (!tagMatch) {
+        result += escapeHtml(token);
+      } else {
+        const [, slashOpen, tagName, attrPart, slashClose] = tagMatch;
+        const tagColorClass = "text-sky-600 dark:text-sky-400 font-semibold";
+        const highlightedAttrs = highlightAttrsSafe(attrPart);
+        result += `<span class="text-slate-400">&lt;${slashOpen}</span><span class="${tagColorClass}">${escapeHtml(tagName)}</span>${highlightedAttrs}<span class="text-slate-400">${slashClose}&gt;</span>`;
+      }
+    }
+    lastIndex = tokenRegex.lastIndex;
+  }
 
-    return `<span class="text-slate-400">&lt;${slashOpen}</span><span class="${tagColorClass}">${escapeHtml(tagName)}</span>${highlightedAttrs}<span class="text-slate-400">${slashClose}&gt;</span>`;
-  });
+  if (lastIndex < line.length) {
+    result += escapeHtml(line.slice(lastIndex));
+  }
+
+  return result;
 };
 
 const xmlLines = computed(() => {

@@ -47,9 +47,10 @@
           ? 'border-primary bg-primary/10'
           : 'border-base-300 bg-base-200/30 hover:border-primary/50'
       "
-      @dragover.prevent="isDragging3D = true"
-      @dragleave.prevent="isDragging3D = false"
-      @drop.prevent="handle3DFileDrop"
+      @dragenter.prevent.stop="isDragging3D = true"
+      @dragover.prevent.stop="isDragging3D = true"
+      @dragleave.prevent.stop="isDragging3D = false"
+      @drop.prevent.stop="handle3DFileDrop"
       @click="$refs.file3DInput?.click()"
     >
       <input
@@ -503,7 +504,7 @@
             <button
               type="button"
               class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
-              @click="openEquipmentPicker('camera')"
+              @click="openEquipmentPicker('sls')"
               :title="
                 currentLocale === 'de'
                   ? 'SLS-Scanner aus dem zentralen Pool auswählen'
@@ -789,7 +790,7 @@
             <button
               type="button"
               class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
-              @click="openEquipmentPicker('camera')"
+              @click="openEquipmentPicker('tls')"
               :title="
                 currentLocale === 'de'
                   ? 'TLS-Scanner aus dem zentralen Pool auswählen'
@@ -3057,7 +3058,7 @@ const generateSummaries = () => {
 };
 
 const handleClickOutside = (e) => {
-  if (!e.target.closest(".relative")) {
+  if (!(e.target instanceof Element) || !e.target.closest(".relative")) {
     showCameraDropdown.value = false;
     showSlsDropdown.value = false;
     showTlsDropdown.value = false;

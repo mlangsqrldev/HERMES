@@ -360,12 +360,20 @@ const addOrUpdateMarker = (lat, lng) => {
   const popupTitle =
     props.locationName ||
     (props.currentLocale === "de" ? "Ausgewählter Ort" : "Selected Location");
-  marker.bindPopup(`
-    <div style="font-family: inherit; font-size: 11px; line-height: 1.4; padding: 2px;">
-      <b style="color: #0284c7;">📍 ${popupTitle}</b><br/>
-      <span style="font-family: monospace; color: #475569;">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>
-    </div>
-  `);
+  const popupContainer = document.createElement("div");
+  popupContainer.style.cssText =
+    "font-family: inherit; font-size: 11px; line-height: 1.4; padding: 2px;";
+  const titleEl = document.createElement("b");
+  titleEl.style.color = "#0284c7";
+  titleEl.textContent = `📍 ${popupTitle}`;
+  const brEl = document.createElement("br");
+  const coordEl = document.createElement("span");
+  coordEl.style.cssText = "font-family: monospace; color: #475569;";
+  coordEl.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  popupContainer.appendChild(titleEl);
+  popupContainer.appendChild(brEl);
+  popupContainer.appendChild(coordEl);
+  marker.bindPopup(popupContainer);
 };
 
 const removeMarker = () => {

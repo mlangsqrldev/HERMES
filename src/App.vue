@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.35 · 2026-11-26</span
+              >v0.1.36 · 2026-11-26</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -220,7 +220,18 @@
               : 'Toggle theme (Light/Dark)'
           "
         >
-          <input type="checkbox" value="business" class="theme-controller" />
+          <input
+            type="checkbox"
+            value="business"
+            class="theme-controller"
+            :checked="isDarkTheme"
+            @change="handleThemeToggle"
+            :aria-label="
+              currentLocale === 'de'
+                ? 'Erscheinungsbild umschalten (Hell/Dunkel)'
+                : 'Toggle theme (Light/Dark)'
+            "
+          />
 
           <!-- sun icon (shown when theme is dark/business to switch back to light) -->
 
@@ -280,7 +291,7 @@
               </h3>
 
               <p class="text-[11px] text-base-content/60">
-                {{ completedSectionsCount }}/5
+                {{ completedSectionsCount }}/{{ steps.length }}
                 {{
                   currentLocale === "de"
                     ? "Abschnitte bereit"
@@ -292,13 +303,25 @@
             <div
               class="radial-progress text-primary text-xs font-mono font-bold"
               :style="{
-                '--value': (completedSectionsCount / 5) * 100,
+                '--value': Math.round(
+                  (completedSectionsCount / steps.length) * 100,
+                ),
                 '--size': '2.2rem',
                 '--thickness': '3px',
               }"
               role="progressbar"
+              :aria-valuenow="
+                Math.round((completedSectionsCount / steps.length) * 100)
+              "
+              aria-valuemin="0"
+              aria-valuemax="100"
+              :aria-label="
+                currentLocale === 'de'
+                  ? 'Workflow-Fortschritt'
+                  : 'Workflow progress'
+              "
             >
-              {{ Math.round((completedSectionsCount / 5) * 100) }}%
+              {{ Math.round((completedSectionsCount / steps.length) * 100) }}%
             </div>
           </div>
 
@@ -360,8 +383,8 @@
                 v-if="
                   index === activeStepIndex &&
                   (requiredTree[step.id] ||
-                    step.id === 'heritage' ||
-                    step.id === 'digital' ||
+                    step.id === 'heritageAssetIdentification' ||
+                    step.id === 'digitalResource' ||
                     step.id === 'activity')
                 "
                 class="ml-3 pb-2 border-l-2 border-base-300/60 pl-2 space-y-0.5 w-[calc(100%-0.75rem)] min-w-0"
@@ -394,7 +417,7 @@
                 </li>
 
                 <!-- Individual Heritage Asset entries -->
-                <template v-if="step.id === 'heritage'">
+                <template v-if="step.id === 'heritageAssetIdentification'">
                   <li
                     v-for="(item, itemIdx) in getChildComp(heritageRef)
                       ?.items || []"
@@ -413,7 +436,7 @@
                 </template>
 
                 <!-- Individual Digital Resource entries -->
-                <template v-if="step.id === 'digital'">
+                <template v-if="step.id === 'digitalResource'">
                   <li
                     v-for="(item, itemIdx) in getChildComp(digitalRef)?.items ||
                     []"
@@ -485,19 +508,27 @@
             </span>
             <span
               class="badge badge-xs font-medium"
-              :class="lastExportedAt ? 'badge-success/20 text-success' : 'badge-ghost opacity-70'"
+              :class="
+                lastExportedAt
+                  ? 'badge-success/20 text-success'
+                  : 'badge-ghost opacity-70'
+              "
               :title="
                 lastExportedAt
-                  ? (currentLocale === 'de' ? `Zuletzt exportiert um ${lastExportedAt}` : `Last exported at ${lastExportedAt}`)
-                  : (currentLocale === 'de' ? 'Lokal zwischengespeichert (noch nicht als Datei exportiert)' : 'Saved locally (not yet exported to file)')
+                  ? currentLocale === 'de'
+                    ? `Zuletzt exportiert um ${lastExportedAt}`
+                    : `Last exported at ${lastExportedAt}`
+                  : currentLocale === 'de'
+                    ? 'Nur in dieser Sitzung im Arbeitsspeicher — bitte vor dem Schließen als XML/BagIt exportieren'
+                    : 'In-memory session only — export as XML/BagIt before closing'
               "
             >
               {{
                 lastExportedAt
                   ? `✓ ${lastExportedAt}`
                   : currentLocale === "de"
-                    ? "Lokal gesichert"
-                    : "Local only"
+                    ? "Nicht exportiert"
+                    : "Not exported"
               }}
             </span>
           </div>
@@ -704,14 +735,14 @@
 
           <div
             v-if="exportStatus === 'success'"
-            class="p-2.5 text-xs font-semibold text-success-content bg-success/20 border border-success/30 rounded-xl flex items-center gap-2 animate-fadeIn"
+            class="p-2.5 text-xs font-semibold text-success bg-success/15 border border-success/30 rounded-xl flex items-center gap-2 animate-fadeIn"
           >
             <span class="text-sm">✓</span> {{ t("exportSuccess") }}
           </div>
 
           <div
             v-if="exportStatus === 'error'"
-            class="p-2.5 text-xs font-semibold text-error-content bg-error/20 border border-error/30 rounded-xl flex items-center gap-2 animate-fadeIn"
+            class="p-2.5 text-xs font-semibold text-error bg-error/15 border border-error/30 rounded-xl flex items-center gap-2 animate-fadeIn"
           >
             <span class="text-sm">⚠</span> {{ t("exportError") }}
             {{ errorMessage }}
@@ -738,7 +769,7 @@
           <!-- Card Header (non-sticky to prevent overlapping fields during scroll) -->
 
           <div
-            class="px-6 py-4 border-b border-base-200/70 flex items-center justify-between bg-base-100/90 rounded-t-2xl"
+            class="px-6 py-4 border-b border-base-200/70 flex flex-wrap items-center justify-between gap-2 bg-base-100/90 rounded-t-2xl"
           >
             <div class="flex items-center gap-3">
               <span
@@ -817,6 +848,7 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-ghost btn-circle"
+                  :aria-label="t('addtemplate')"
                   @click="openAddTemplateModal(step.id)"
                 >
                   <svg
@@ -836,6 +868,7 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-ghost btn-circle"
+                  :aria-label="t('template')"
                   @click="openTemplateModal(step.id)"
                 >
                   <svg
@@ -1030,8 +1063,8 @@
         @mousedown.prevent="startResizing"
         :title="
           currentLocale === 'de'
-            ? 'Ziehen, um die Breite der Formulare und des XML-Inspektors anzupassen (Doppelklick für 500px)'
-            : 'Drag to resize form and XML preview (double-click to reset)'
+            ? 'Ziehen, um die Breite der Formulare und des XML-Inspektors anzupassen (Doppelklick für 480px)'
+            : 'Drag to resize form and XML preview (double-click for 480px)'
         "
         @dblclick="resetResizerWidth"
       >
@@ -1056,7 +1089,7 @@
       <aside
         v-if="showSideXmlPreview"
         ref="xmlPreviewSectionRef"
-        class="sticky top-20 shrink-0 transition-all duration-75 max-w-full"
+        class="hidden lg:block sticky top-20 shrink-0 transition-all duration-75 max-w-[50vw]"
         :style="{ width: xmlPanelWidth + 'px' }"
       >
         <LiveXmlPreview
@@ -1289,6 +1322,7 @@
           v-model="newTemplateName"
           :placeholder="t('templateName')"
           class="input input-bordered w-full"
+          @keyup.enter="newTemplateName && addTemplate(activeAddTemplateStep)"
         />
 
         <div class="modal-action mt-2 w-full">
@@ -1549,9 +1583,26 @@ const openManual = async () => {
   }
 };
 
-// Localization State & Dictionary
+// Localization & Theme State
 
 const currentLocale = ref("de");
+
+const isDarkTheme = ref(false);
+
+const applyThemeToDocument = (dark) => {
+  isDarkTheme.value = Boolean(dark);
+  const themeName = isDarkTheme.value ? "business" : "corporate";
+  if (typeof document !== "undefined") {
+    document.documentElement.setAttribute("data-theme", themeName);
+  }
+  try {
+    localStorage.setItem("hermes_theme", themeName);
+  } catch {}
+};
+
+const handleThemeToggle = (e) => {
+  applyThemeToDocument(Boolean(e?.target?.checked));
+};
 
 provide("currentLocale", currentLocale);
 
@@ -1600,6 +1651,25 @@ const RELATION_SYNC_KEYS = [
 ];
 
 const handleRelationsChanged = () => {
+  // Keep collection items[0] in sync with collectionForm.dcRelation edits
+  const colComp = getChildComp(collectionRef);
+  if (
+    colComp &&
+    colComp.form &&
+    Array.isArray(colComp.items) &&
+    colComp.items.length > 0 &&
+    colComp.items[0] &&
+    typeof colComp.items[0] === "object"
+  ) {
+    if (Array.isArray(colComp.form.dcRelation)) {
+      colComp.items[0].dcRelation = JSON.parse(
+        JSON.stringify(colComp.form.dcRelation),
+      );
+    } else {
+      colComp.items[0].dcRelation = [];
+    }
+  }
+
   // Keep any currently open CRUD edit form synchronized with item relation edits
   const comps = [
     getChildComp(heritageRef),
@@ -1608,18 +1678,27 @@ const handleRelationsChanged = () => {
   ].filter(Boolean);
 
   for (const comp of comps) {
+    if (!comp.form || !Array.isArray(comp.items)) continue;
+    let sourceItem = null;
     if (
       comp.isEditing &&
       comp.editIndex !== null &&
       comp.editIndex !== undefined &&
-      Array.isArray(comp.items) &&
-      comp.items[comp.editIndex] &&
-      comp.form
+      comp.items[comp.editIndex]
     ) {
-      const sourceItem = comp.items[comp.editIndex];
+      sourceItem = comp.items[comp.editIndex];
+    } else {
+      const formId = getRecordId(comp.form);
+      if (formId) {
+        sourceItem = comp.items.find((it) => getRecordId(it) === formId) || null;
+      }
+    }
+    if (sourceItem) {
       for (const key of RELATION_SYNC_KEYS) {
         if (Array.isArray(sourceItem[key])) {
-          comp.form[key] = [...sourceItem[key]];
+          comp.form[key] = JSON.parse(JSON.stringify(sourceItem[key]));
+        } else if (key in comp.form) {
+          comp.form[key] = [];
         }
       }
     }
@@ -1666,69 +1745,81 @@ watch(currentLocale, (newLocale) => {
 });
 
 const applyGlobalRightsToAll = (rightsObj) => {
-  const components = [
-    getChildComp(collectionRef),
-
-    getChildComp(heritageRef),
-
-    getChildComp(digitalRef),
-
-    getChildComp(activityRef),
-  ].filter(Boolean);
-
   const targetLicence = resolveLicenceUri(
     rightsObj.licence,
     currentLocale.value,
   );
+  const targetHaLicence = resolveLicenceUri(
+    rightsObj.haLicence || rightsObj.licence,
+    currentLocale.value,
+  );
 
-  components.forEach((comp) => {
-    if (comp.form) {
-      if (
-        "recordInformation.metadataRights" in comp.form ||
-        comp.form["recordInformation.metadataRights"] !== undefined
-      ) {
-        comp.form["recordInformation.metadataRights"] =
-          rightsObj.metadataRights;
-      }
+  const applyTargets = [
+    {
+      comp: getChildComp(collectionRef),
+      // CARARE 2.0.6: collectionInformation has <rights>, NO <recordInformation>
+      allowMetadataRights: false,
+      allowRights: true,
+      copyrightCreditLine: rightsObj.copyrightCreditLine,
+      accessRights: rightsObj.accessRights,
+      reproductionRights: rightsObj.reproductionRights,
+      licence: targetLicence,
+    },
+    {
+      comp: getChildComp(heritageRef),
+      allowMetadataRights: true,
+      allowRights: true,
+      copyrightCreditLine:
+        rightsObj.haCopyrightCreditLine || rightsObj.copyrightCreditLine,
+      accessRights: rightsObj.haAccessRights || rightsObj.accessRights,
+      reproductionRights:
+        rightsObj.haReproductionRights || rightsObj.reproductionRights,
+      licence: targetHaLicence,
+    },
+    {
+      comp: getChildComp(digitalRef),
+      allowMetadataRights: true,
+      allowRights: true,
+      copyrightCreditLine: rightsObj.copyrightCreditLine,
+      accessRights: rightsObj.accessRights,
+      reproductionRights: rightsObj.reproductionRights,
+      licence: targetLicence,
+    },
+    {
+      comp: getChildComp(activityRef),
+      // CARARE 2.0.6: activity has <recordInformation><metadataRights>, NO <rights>
+      allowMetadataRights: true,
+      allowRights: false,
+    },
+  ];
 
-      if (
-        "rights.copyrightCreditLine" in comp.form ||
-        comp.form["rights.copyrightCreditLine"] !== undefined
-      ) {
-        comp.form["rights.copyrightCreditLine"] = rightsObj.copyrightCreditLine;
-      }
-
-      if (
-        "rights.accessRights" in comp.form ||
-        comp.form["rights.accessRights"] !== undefined
-      ) {
-        comp.form["rights.accessRights"] = rightsObj.accessRights;
-      }
-
-      if (
-        "rights.licence" in comp.form ||
-        comp.form["rights.licence"] !== undefined
-      ) {
-        comp.form["rights.licence"] = targetLicence;
-      }
-
-      if (
-        "rights.reproductionRights" in comp.form ||
-        comp.form["rights.reproductionRights"] !== undefined
-      ) {
-        comp.form["rights.reproductionRights"] = rightsObj.reproductionRights;
-      }
+  const patchTarget = (obj, cfg) => {
+    if (!obj || typeof obj !== "object") return;
+    if (cfg.allowMetadataRights) {
+      obj["recordInformation.metadataRights"] = rightsObj.metadataRights;
+    } else {
+      delete obj["recordInformation.metadataRights"];
     }
+    if (cfg.allowRights) {
+      obj["rights.copyrightCreditLine"] = cfg.copyrightCreditLine;
+      obj["rights.accessRights"] = cfg.accessRights;
+      obj["rights.licence"] = cfg.licence;
+      obj["rights.reproductionRights"] = cfg.reproductionRights;
+    } else {
+      delete obj["rights.copyrightCreditLine"];
+      delete obj["rights.accessRights"];
+      delete obj["rights.licence"];
+      delete obj["rights.reproductionRights"];
+    }
+  };
 
-    if (Array.isArray(comp.items)) {
-      comp.items.forEach((item) => {
-        if (!item || typeof item !== "object") return;
-        item["recordInformation.metadataRights"] = rightsObj.metadataRights;
-        item["rights.copyrightCreditLine"] = rightsObj.copyrightCreditLine;
-        item["rights.accessRights"] = rightsObj.accessRights;
-        item["rights.licence"] = targetLicence;
-        item["rights.reproductionRights"] = rightsObj.reproductionRights;
-      });
+  applyTargets.forEach((cfg) => {
+    if (!cfg.comp) return;
+    if (cfg.comp.form) {
+      patchTarget(cfg.comp.form, cfg);
+    }
+    if (Array.isArray(cfg.comp.items)) {
+      cfg.comp.items.forEach((item) => patchTarget(item, cfg));
     }
   });
 };
@@ -1954,7 +2045,7 @@ const uiTranslations = {
 
     cancel: "Abbrechen",
 
-    exportSuccess: "Archivierungsbericht erfolgreich erzeugt.",
+    exportSuccess: "Export erfolgreich erzeugt.",
 
     exportError: "Fehler beim Erzeugen des Exports:",
   },
@@ -2053,23 +2144,6 @@ const applyTemplate = (stepId, templateData) => {
       delete cleanData["language#lang"];
     }
 
-    if (stepId === "heritageAssetIdentification") {
-      if (
-        cleanData["repositoryLocation"] &&
-        cleanData["repositoryLocation"].includes("Antikensammlung")
-      ) {
-        cleanData["repositoryLocation"] =
-          "Antikensammlung, Staatliche Museen zu Berlin (GND: 5035657-4)";
-      } else if (
-        cleanData["repositoryLocation"] &&
-        (cleanData["repositoryLocation"].includes("Ägyptisches Museum") ||
-          cleanData["repositoryLocation"].includes("Aegyptisches"))
-      ) {
-        cleanData["repositoryLocation"] =
-          "Ägyptisches Museum und Papyrussammlung, Staatliche Museen zu Berlin (GND: 5035655-0)";
-      }
-    }
-
     if (
       stepId === "collectionInformation" &&
       Array.isArray(cleanData["contacts"])
@@ -2087,6 +2161,8 @@ const applyTemplate = (stepId, templateData) => {
 
     Object.assign(targetComp.form, cleanData);
   }
+
+  templateModal.value?.close();
 };
 
 const confirmDeleteTemplate = (stepId, index) => {
@@ -2714,7 +2790,8 @@ onMounted(async () => {
       unlistenFn = await listen("hash-progress", (event) => {
         const { filename, bytes_processed, total_bytes } = event.payload;
 
-        const percentage = (bytes_processed / total_bytes) * 100;
+        const percentage =
+          total_bytes > 0 ? Math.min(100, (bytes_processed / total_bytes) * 100) : 100;
 
         currentFile.value = filename;
 
@@ -2765,9 +2842,14 @@ const handleDirectorySelect = async () => {
         manifestContent += `${hash} data/${relativePath}\n`;
       }
     } catch (error) {
-      // Now, if anything fails (Rust error or JS error), you will actually see it!
-
       console.error("Error generating hashes:", error);
+      currentFile.value = "";
+      progress.value = 0;
+      exportStatus.value = "error";
+      errorMessage.value =
+        typeof error === "string"
+          ? error
+          : error?.message || "Failed to generate file hashes.";
     }
   } else {
     // Browser fallback
@@ -3657,13 +3739,13 @@ const handleGlobalKeyDown = (e) => {
     e.preventDefault();
 
     const currentComp = [
-      collectionRef.value?.[0],
+      getChildComp(collectionRef),
 
-      heritageRef.value?.[0],
+      getChildComp(heritageRef),
 
-      digitalRef.value?.[0],
+      getChildComp(digitalRef),
 
-      activityRef.value?.[0],
+      getChildComp(activityRef),
     ][activeStepIndex.value];
 
     if (currentComp && typeof currentComp.save === "function") {
@@ -3672,10 +3754,30 @@ const handleGlobalKeyDown = (e) => {
   }
 };
 
+const handleBeforeUnload = (e) => {
+  const totalRecords =
+    (getChildComp(collectionRef)?.items?.length || 0) +
+    (getChildComp(heritageRef)?.items?.length || 0) +
+    (getChildComp(digitalRef)?.items?.length || 0) +
+    (getChildComp(activityRef)?.items?.length || 0);
+  if (totalRecords > 0 && !lastExportedAt.value) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+};
+
 onMounted(() => {
   themeChange(false);
 
+  try {
+    const savedTheme = localStorage.getItem("hermes_theme");
+    applyThemeToDocument(savedTheme === "business");
+  } catch {
+    applyThemeToDocument(false);
+  }
+
   window.addEventListener("keydown", handleGlobalKeyDown);
+  window.addEventListener("beforeunload", handleBeforeUnload);
 
   observer = new IntersectionObserver(
     (entries) => {
@@ -3709,54 +3811,13 @@ onMounted(() => {
   } catch {}
 });
 
-let sessionSaveTimer = null;
-watch(
-  () => [
-    getChildComp(collectionRef)?.items,
-    getChildComp(collectionRef)?.form,
-    getChildComp(heritageRef)?.items,
-    getChildComp(heritageRef)?.form,
-    getChildComp(digitalRef)?.items,
-    getChildComp(digitalRef)?.form,
-    getChildComp(activityRef)?.items,
-    getChildComp(activityRef)?.form,
-  ],
-  () => {
-    if (!isAppMounted.value) return;
-    if (sessionSaveTimer) clearTimeout(sessionSaveTimer);
-    sessionSaveTimer = setTimeout(() => {
-      try {
-        const snapMod = (compRef) => {
-          const comp = getChildComp(compRef);
-          if (!comp) return null;
-          const itemsArr = Array.isArray(comp.items)
-            ? comp.items
-            : comp.items?.value || [];
-          return {
-            items: itemsArr,
-            form: comp.form || {},
-          };
-        };
-        const payload = {
-          savedAt: new Date().toISOString(),
-          collection: snapMod(collectionRef),
-          heritage: snapMod(heritageRef),
-          digital: snapMod(digitalRef),
-          activity: snapMod(activityRef),
-        };
-        localStorage.setItem("hermes_session_draft_v1", JSON.stringify(payload));
-      } catch (e) {
-        console.warn("Failed to auto-save HERMES session draft:", e);
-      }
-    }, 1000);
-  },
-  { deep: true },
-);
-
 onUnmounted(() => {
   if (observer) observer.disconnect();
+  if (debounceXmlTimer) clearTimeout(debounceXmlTimer);
+  if (activeFieldHighlightTimer) clearTimeout(activeFieldHighlightTimer);
 
   window.removeEventListener("keydown", handleGlobalKeyDown);
+  window.removeEventListener("beforeunload", handleBeforeUnload);
 });
 
 // 1. Add these refs near your other state variables in App.vue
@@ -3963,6 +4024,9 @@ const clearAllForms = () => {
     actComp.resetForm?.(true);
   }
 
+  fileHashes.value = {};
+  manifestContent = "";
+  lastExportedAt.value = "";
   rawLiveCarareXml.value = "";
 };
 
@@ -4501,7 +4565,7 @@ const exportToBagInfoTxt = async () => {
 
     bagInfoContent += `Bagging-Date: ${new Date().toISOString().substring(0, 10)}\n`;
 
-    bagInfoContent += `Bag-Software-Agent: HERMES (Heritage Metadata Entry System) v0.1.5\n`;
+    bagInfoContent += `Bag-Software-Agent: HERMES (Heritage Metadata Entry System) v0.1.36\n`;
 
     bagInfoContent += `Metadata-Schemas: CARARE 2.0.6 (metadata/carare-v2.0.6.xml)\n`;
 
@@ -4568,9 +4632,13 @@ const exportToBagInfoTxt = async () => {
 
     const cararePdfHash = await generateSHA256(cararePdfBuffer);
 
+    const manifestHash = await generateSHA256(manifestContent);
+
     let tagmanifestContent = `${bagitHash} bagit.txt\n`;
 
     tagmanifestContent += `${bagInfoHash} bag-info.txt\n`;
+
+    tagmanifestContent += `${manifestHash} manifest-sha256.txt\n`;
 
     tagmanifestContent += `${carareXmlHash} metadata/carare-v2.0.6.xml\n`;
 
@@ -5493,7 +5561,12 @@ const handleXmlLineClick = (payload) => {
  * @param {Object|null} customAllData - Optional override for data records.
  * @returns {string} Fully serialized XML document with <?xml ... ?> declaration.
  */
-const buildXmlString = (mode = "carare", customAllData = null) => {
+const buildXmlString = (
+  mode = "carare",
+  customAllData = null,
+  options = {},
+) => {
+  const strictRelationFiltering = Boolean(options?.strictRelationFiltering);
   const allData = customAllData || {
     Collection: getRecordsFromComponent(collectionRef),
 
@@ -6215,16 +6288,62 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       node.getOrCreateChild("appellation");
     }
 
-    if (node.name === "digitalResource" && hasContent(node)) {
-      let linkChild = node.children.find((c) => c.name === "link");
-
-      if (!linkChild || !linkChild.text || !linkChild.text.trim()) {
-        if (!linkChild) {
-          linkChild = node.addChild("link");
-        }
-
-        linkChild.text = "https://carare.eu/resource";
+    // Migrate misplaced <spatialReferenceSystem> from <spatial> into <spatial><geometry>
+    if (node.name === "spatial") {
+      const srsNodes = node.children.filter(
+        (c) => c.name === "spatialReferenceSystem",
+      );
+      if (srsNodes.length > 0) {
+        const geomNode = node.getOrCreateChild("geometry");
+        srsNodes.forEach((srs) => {
+          if (
+            srs.text &&
+            String(srs.text).trim() &&
+            !geomNode.children.some((c) => c.name === "spatialReferenceSystem")
+          ) {
+            const targetSrs = geomNode.getOrCreateChild(
+              "spatialReferenceSystem",
+            );
+            targetSrs.text = srs.text;
+          }
+        });
+        node.children = node.children.filter(
+          (c) => c.name !== "spatialReferenceSystem",
+        );
       }
+    }
+
+    // Migrate misplaced <periodName> from <temporal><timeSpan> up to <temporal>
+    if (node.name === "temporal") {
+      node.children
+        .filter((c) => c.name === "timeSpan")
+        .forEach((ts) => {
+          const moved = ts.children.filter((c) => c.name === "periodName");
+          if (moved.length > 0) {
+            moved.forEach((p) => node.children.push(p));
+            ts.children = ts.children.filter((c) => c.name !== "periodName");
+          }
+        });
+    }
+
+    // CARARE 2.0.6 XSD: <activity> allows maxOccurs="1" for <spatial>
+    if (node.name === "activity") {
+      let seenSpatial = false;
+      node.children = node.children.filter((c) => {
+        if (c.name !== "spatial") return true;
+        if (seenSpatial) return false;
+        seenSpatial = true;
+        return true;
+      });
+    }
+
+    if (node.name === "digitalResource" && hasContent(node)) {
+      const linkChild = node.children.find((c) => c.name === "link");
+      const isShownAtChild = node.children.find((c) => c.name === "isShownAt");
+      const bestUri =
+        (linkChild?.text && linkChild.text.trim()) ||
+        (isShownAtChild?.text && isShownAtChild.text.trim()) ||
+        "";
 
       let objectChild = node.children.find((c) => c.name === "object");
 
@@ -6233,7 +6352,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
           objectChild = node.addChild("object");
         }
 
-        objectChild.text = linkChild.text || "https://carare.eu/resource";
+        objectChild.text = bestUri || "https://carare.eu/resource";
       }
     }
 
@@ -6662,11 +6781,17 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       }
 
       if (
-        ["dateRangeQualifier", "geopoliticalAreaType"].includes(
-          elName,
-        )
+        [
+          "dateRangeQualifier",
+          "geopoliticalAreaType",
+          "keywords",
+        ].includes(elName)
       )
         return ["lang", "namespace"];
+
+      if (["materials", "methods", "techniques"].includes(elName)) {
+        return ["lang"];
+      }
 
       if (elName === "dcRelation") {
         if (pName === "collectionInformation") return ["lang", "preferred"];
@@ -6681,10 +6806,6 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       if (
         [
           "heritageAssetType",
-          "keywords",
-          "materials",
-          "methods",
-          "techniques",
           "eventType",
           "assessments",
           "roles",
@@ -6769,12 +6890,30 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       return [];
     };
 
+    // Preserve authority URI in text for materials/methods/techniques before stripping non-XSD termUID attr
+    if (
+      ["materials", "methods", "techniques"].includes(node.name) &&
+      node.attributes["termUID"] &&
+      node.text &&
+      !String(node.text).includes(String(node.attributes["termUID"]))
+    ) {
+      node.text = `${String(node.text).trim()} (${String(node.attributes["termUID"]).trim()})`;
+    }
+
     const allowedAttrs = getAllowedAttributes(node.name, parentName);
 
     for (const k of Object.keys(node.attributes)) {
       if (!allowedAttrs.includes(k)) {
         delete node.attributes[k];
       }
+    }
+
+    // Enforce strict XSD child-element whitelist for known complex types
+    const allowedChildren = schemaSequenceMap[node.name];
+    if (allowedChildren && node.children.length > 0) {
+      node.children = node.children.filter((c) =>
+        allowedChildren.includes(c.name),
+      );
     }
 
     node.children.forEach((c) => cleanAndValidateNode(c, node.name, node));
@@ -7227,7 +7366,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       );
 
       const haDrs = digitalResources.filter((drRecord) => {
-        if (heritageAssets.length === 1) return true;
+        if (!strictRelationFiltering && heritageAssets.length === 1) return true;
         const drId = String(
           drRecord["recordInformation.id"] || drRecord["appellation.id"] || "",
         );
@@ -7282,7 +7421,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       const haActs = activities.filter((actRecord) => {
         // If there is only 1 campaign activity in the project, it brackets all heritage assets
         if (activities.length === 1) return true;
-        if (heritageAssets.length === 1) return true;
+        if (!strictRelationFiltering && heritageAssets.length === 1) return true;
         const actId = String(
           actRecord["recordInformation.id"] ||
             actRecord["appellation.id"] ||
@@ -7291,12 +7430,12 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
         if (haRelIds.has(actId)) return true;
         const actRelIds = new Set(
           [
-            ...(Array.isArray(actRecord["isRelatedTo"])
-              ? actRecord["isRelatedTo"]
-              : [actRecord["isRelatedTo"]]),
-            ...(Array.isArray(actRecord["hasRepresentation"])
-              ? actRecord["hasRepresentation"]
-              : [actRecord["hasRepresentation"]]),
+            ...(Array.isArray(actRecord["wasPresentAt"])
+              ? actRecord["wasPresentAt"]
+              : [actRecord["wasPresentAt"]]),
+            ...(Array.isArray(actRecord["hasCreated"])
+              ? actRecord["hasCreated"]
+              : [actRecord["hasCreated"]]),
             ...(Array.isArray(actRecord["dcRelation"])
               ? actRecord["dcRelation"]
               : [actRecord["dcRelation"]]),
@@ -7331,7 +7470,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
         populateNode(drNode, enrichDigitalResourceRecord(drRecord));
       });
 
-      if (idx === heritageAssets.length - 1) {
+      if (!strictRelationFiltering && idx === heritageAssets.length - 1) {
         digitalResources.forEach((drRecord) => {
           const dId =
             drRecord["recordInformation.id"] ||
@@ -7354,7 +7493,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
         populateNode(actNode, enrichActivityRecord(actRecord));
       });
 
-      if (idx === heritageAssets.length - 1) {
+      if (!strictRelationFiltering && idx === heritageAssets.length - 1) {
         activities.forEach((actRecord) => {
           const aId =
             actRecord["recordInformation.id"] ||
@@ -7497,23 +7636,36 @@ const exportSingleCarareXmlsZip = async () => {
 
     const zip = new JSZip();
 
+    const usedFilenames = new Set();
+
     heritageAssets.forEach((haRecord, idx) => {
       const haId = String(
         haRecord["recordInformation.id"] ||
           haRecord["appellation.id"] ||
           `HA-${idx + 1}`,
       ).trim();
-      const safeId = haId.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const baseSafeId = haId.replace(/[^a-zA-Z0-9._-]/g, "_") || `HA-${idx + 1}`;
+      let filename = `CARARE_${baseSafeId}.xml`;
+      let suffix = 2;
+      while (usedFilenames.has(filename.toLowerCase())) {
+        filename = `CARARE_${baseSafeId}_${suffix}.xml`;
+        suffix++;
+      }
+      usedFilenames.add(filename.toLowerCase());
 
-      // Generate a standalone CARARE XML file for this single heritage asset
-      const singleXml = buildXmlString("carare", {
-        Collection: allData.Collection || [],
-        HeritageAsset: [haRecord],
-        DigitalResource: allData.DigitalResource || [],
-        Activity: allData.Activity || [],
-      });
+      // Generate a standalone CARARE XML file strictly filtered to this heritage asset
+      const singleXml = buildXmlString(
+        "carare",
+        {
+          Collection: allData.Collection || [],
+          HeritageAsset: [haRecord],
+          DigitalResource: allData.DigitalResource || [],
+          Activity: allData.Activity || [],
+        },
+        { strictRelationFiltering: true },
+      );
 
-      zip.file(`CARARE_${safeId}.xml`, singleXml);
+      zip.file(filename, singleXml);
     });
 
     // Also include a summary README inside the ZIP
@@ -7669,10 +7821,10 @@ const exportToCarareXML = async () => {
 const isBonnDataModalOpen = ref(false);
 
 const getBonnDataRawSections = () => ({
-  collectionInformation: getChildComp(collectionRef)?.items || [],
-  heritageAssetIdentification: getChildComp(heritageRef)?.items || [],
-  digitalResource: getChildComp(digitalRef)?.items || [],
-  activity: getChildComp(activityRef)?.items || [],
+  Collection: getRecordsFromComponent(collectionRef),
+  HeritageAsset: getRecordsFromComponent(heritageRef),
+  DigitalResource: getRecordsFromComponent(digitalRef),
+  Activity: getRecordsFromComponent(activityRef),
 });
 
 const bonnDataExportPayload = computed(() => ({

@@ -1,4 +1,4 @@
-HERMES — Heritage Metadata Entry System (v0.1.35 · 2026-11-26)
+HERMES — Heritage Metadata Entry System (v0.1.36 · 2026-11-26)
 Scholarly Metadata Authoring System for Archaeology & Museums
 University of Bonn — Bonn Center for Digital Humanities (BCDH)
 Funded by DFG within the NFDI4Objects Consortium
@@ -6,7 +6,7 @@ Funded by DFG within the NFDI4Objects Consortium
 
 Package Contents:
 -----------------
-1. HERMES_v0.1.35_2026-11-26.exe
+1. HERMES_v0.1.36_2026-11-26.exe
    - Portable standalone desktop application (single executable, no installation required).
    - Double-click on any 64-bit Windows 10 or Windows 11 PC to launch.
    - The bilingual user manual (DE / EN) is embedded inside the application:

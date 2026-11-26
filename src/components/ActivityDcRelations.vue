@@ -650,15 +650,6 @@ const RELATION_TYPES = [
     placeholderEn: "e.g. HECTOR 3D Documentation Campaign 2024-2026",
   },
   {
-    key: "isSuccessorOf",
-    labelDe: "Ist Nachfolger von (isSuccessorOf, Folgekampagne)",
-    labelEn: "Is Successor Of (isSuccessorOf, Follow-up campaign)",
-    badgeClass: "badge-ghost border-base-300",
-    icon: "⏭️",
-    placeholderDe: "z.B. ACT_2024_VORSTUDIE_01",
-    placeholderEn: "e.g. ACT_2024_PILOT_01",
-  },
-  {
     key: "dcRelation",
     labelDe: "Allgemeine DC-Beziehung (dcRelation, Publikation / DOI)",
     labelEn: "General DC Relation (Publication / DOI / External URI)",

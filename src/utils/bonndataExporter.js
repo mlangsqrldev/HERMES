@@ -20,6 +20,11 @@ const LICENCE_MAP = [
     uri: "http://creativecommons.org/publicdomain/zero/1.0",
   },
   {
+    match: /by-nc-nd/i,
+    name: "CC BY-NC-ND 4.0",
+    uri: "http://creativecommons.org/licenses/by-nc-nd/4.0",
+  },
+  {
     match: /by-nc-sa/i,
     name: "CC BY-NC-SA 4.0",
     uri: "http://creativecommons.org/licenses/by-nc-sa/4.0",
@@ -28,6 +33,11 @@ const LICENCE_MAP = [
     match: /by-nc/i,
     name: "CC BY-NC 4.0",
     uri: "http://creativecommons.org/licenses/by-nc/4.0",
+  },
+  {
+    match: /by-nd/i,
+    name: "CC BY-ND 4.0",
+    uri: "http://creativecommons.org/licenses/by-nd/4.0",
   },
   {
     match: /by-sa/i,
@@ -40,6 +50,51 @@ const LICENCE_MAP = [
     uri: "http://creativecommons.org/licenses/by/4.0",
   },
 ];
+
+const COUNTRY_DATAVERSE_MAP = {
+  de: "Germany",
+  deutschland: "Germany",
+  germany: "Germany",
+  at: "Austria",
+  österreich: "Austria",
+  austria: "Austria",
+  ch: "Switzerland",
+  schweiz: "Switzerland",
+  switzerland: "Switzerland",
+  eg: "Egypt",
+  ägypten: "Egypt",
+  egypt: "Egypt",
+  gr: "Greece",
+  griechenland: "Greece",
+  greece: "Greece",
+  it: "Italy",
+  italien: "Italy",
+  italy: "Italy",
+  fr: "France",
+  frankreich: "France",
+  france: "France",
+  es: "Spain",
+  spanien: "Spain",
+  spain: "Spain",
+  tr: "Turkey",
+  türkei: "Turkey",
+  turkey: "Turkey",
+  gb: "United Kingdom",
+  uk: "United Kingdom",
+  großbritannien: "United Kingdom",
+  us: "United States",
+  usa: "United States",
+  jp: "Japan",
+  japan: "Japan",
+};
+
+const normalizeDataverseCountry = (raw) => {
+  const s = String(raw || "").trim();
+  if (!s) return "";
+  const lower = s.toLowerCase();
+  if (COUNTRY_DATAVERSE_MAP[lower]) return COUNTRY_DATAVERSE_MAP[lower];
+  return s;
+};
 
 const primitive = (typeName, value) => ({
   typeName,
@@ -90,7 +145,8 @@ const extractAllTexts = (val) => {
 
 const normalizeDate = (d) => {
   if (!d) return "";
-  const s = String(d).trim();
+  // Strip ISO time component if present (e.g. 2026-11-26T10:00:00Z -> 2026-11-26)
+  const s = String(d).trim().replace(/T.*$/, "");
   // Dataverse accepts YYYY, YYYY-MM, or YYYY-MM-DD
   if (/^\d{4}(-\d{2}(-\d{2})?)?$/.test(s)) return s;
   return "";
@@ -132,7 +188,8 @@ export function buildBonnDataJson({
     collectionForm["recordInformation.source"] || collectionForm.source || "",
   ).trim();
   const collectionCreationDate = normalizeDate(
-    collectionForm["recordInformation.creation.date"] ||
+    collectionForm["creation.createdOn"] ||
+      collectionForm["recordInformation.creation.date"] ||
       collectionForm.createdOn ||
       "",
   );
@@ -260,7 +317,7 @@ export function buildBonnDataJson({
   collectActors(collectionContacts);
   for (const a of activityItems) collectActors(a.actors);
   for (const d of digitalItems) collectActors(d.actors);
-  for (const h of heritageItems) collectActors(h.actors);
+  // Note: Do NOT include heritageItems[].actors (historical ancient creators/workshops) as modern dataset authors!
 
   if (authors.length === 0 && collectionSource) {
     authors.push({
@@ -291,10 +348,9 @@ export function buildBonnDataJson({
           c.organization,
         );
       }
-      entry.datasetContactEmail = primitive(
-        "datasetContactEmail",
-        email || "contact@example.org",
-      );
+      if (email) {
+        entry.datasetContactEmail = primitive("datasetContactEmail", email);
+      }
       contacts.push(entry);
     }
   };
@@ -307,10 +363,6 @@ export function buildBonnDataJson({
       datasetContactName: primitive(
         "datasetContactName",
         collectionSource || "HERMES Data Provider",
-      ),
-      datasetContactEmail: primitive(
-        "datasetContactEmail",
-        "contact@example.org",
       ),
     });
   }
@@ -664,7 +716,15 @@ export function buildBonnDataJson({
   const publications = [];
   for (const h of heritageItems) {
     for (const refItem of Array.isArray(h.references) ? h.references : []) {
-      const cit = String(refItem?.citation || refItem?.title || refItem?.name || refItem || "").trim();
+      const cit =
+        typeof refItem === "string"
+          ? refItem.trim()
+          : extractLocalizedText(
+              refItem?.["appellation.name"] ||
+                refItem?.citation ||
+                refItem?.title ||
+                refItem?.name,
+            );
       if (!cit) continue;
       const pub = {
         publicationRelationType: {
@@ -675,8 +735,26 @@ export function buildBonnDataJson({
         },
         publicationCitation: primitive("publicationCitation", cit),
       };
-      if (refItem?.uri && /^https?:\/\//i.test(refItem.uri)) {
-        pub.publicationURL = primitive("publicationURL", refItem.uri);
+      const rawRefId = String(refItem?.["appellation.id"] || "").trim();
+      const rawRefUrl = String(refItem?.link || refItem?.uri || "").trim();
+      const doiMatch =
+        rawRefId.match(/(10\.\d{4,9}\/\S+)/i) ||
+        rawRefUrl.match(/doi\.org\/(10\.\d{4,9}\/\S+)/i);
+      if (doiMatch) {
+        const doi = doiMatch[1];
+        pub.publicationIDType = {
+          typeName: "publicationIDType",
+          typeClass: "controlledVocabulary",
+          multiple: false,
+          value: "doi",
+        };
+        pub.publicationIDNumber = primitive("publicationIDNumber", doi);
+        pub.publicationURL = primitive(
+          "publicationURL",
+          /^https?:\/\//i.test(rawRefUrl) ? rawRefUrl : `https://doi.org/${doi}`,
+        );
+      } else if (/^https?:\/\//i.test(rawRefUrl || rawRefId)) {
+        pub.publicationURL = primitive("publicationURL", rawRefUrl || rawRefId);
       }
       publications.push(pub);
     }
@@ -707,19 +785,38 @@ export function buildBonnDataJson({
   const geoBoxes = [];
   for (const sp of spatialEntries) {
     if (!sp || typeof sp !== "object") continue;
-    const country = String(sp.country || sp["spatial.country"] || "").trim();
+    const rawCountry = String(
+      sp["locationSet.address.country"] ||
+        sp.country ||
+        sp["spatial.country"] ||
+        "",
+    ).trim();
+    const country = normalizeDataverseCountry(rawCountry);
     const city = String(
-      sp.city || sp.locality || sp["spatial.locality"] || sp.placeName || "",
+      sp["locationSet.address.townOrCity"] ||
+        sp["locationSet.address.locality"] ||
+        sp.city ||
+        sp.locality ||
+        sp["spatial.locality"] ||
+        sp.placeName ||
+        "",
     ).trim();
     const baseGeoName = String(
       sp["locationSet.historicalName"] ||
         sp["locationSet.namedLocation"] ||
+        sp["locationSet.geopoliticalArea"] ||
         sp.locationName ||
         sp.namedPlace ||
         sp.address ||
         "",
     ).trim();
-    const spUri = String(sp.pleiadesUri || sp.geonamesUri || sp.uri || "").trim();
+    const spUri = String(
+      sp.pleiadesUri ||
+        sp.geonamesUri ||
+        sp.uri ||
+        sp["locationSet.namedLocation#termUID"] ||
+        "",
+    ).trim();
     const otherGeo =
       baseGeoName && spUri ? `${baseGeoName} (${spUri})` : baseGeoName || spUri;
     if (country || city || otherGeo) {
@@ -729,8 +826,12 @@ export function buildBonnDataJson({
       if (otherGeo) entry.otherGeographicCoverage = primitive("otherGeographicCoverage", otherGeo);
       geoCoverages.push(entry);
     }
-    const lat = parseFloat(sp.latitude ?? sp.lat);
-    const lon = parseFloat(sp.longitude ?? sp.lon ?? sp.lng);
+    const lat = parseFloat(
+      sp["geometry.quickpoint.y"] ?? sp.latitude ?? sp.lat,
+    );
+    const lon = parseFloat(
+      sp["geometry.quickpoint.x"] ?? sp.longitude ?? sp.lon ?? sp.lng,
+    );
     if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
       geoBoxes.push({
         westLongitude: primitive("westLongitude", lon),
@@ -769,7 +870,9 @@ export function buildBonnDataJson({
   return {
     metadataLanguage: resolvedMetadataLanguage,
     datasetVersion: {
-      license: mapLicence(globalRights?.licence),
+      license: mapLicence(
+        collectionForm?.["rights.licence"] || globalRights?.licence,
+      ),
       metadataBlocks,
     },
   };

@@ -8,20 +8,35 @@ export const isTauri = () => {
 
 export const openExternalUrl = async (url) => {
   if (!url) return;
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(String(url).trim());
+  } catch {
+    console.warn("Blocked invalid external URL:", url);
+    return;
+  }
+  if (!["https:", "http:", "mailto:"].includes(parsedUrl.protocol)) {
+    console.warn("Blocked unsafe URL protocol:", parsedUrl.protocol);
+    return;
+  }
+  const safeHref = parsedUrl.href;
   try {
     if (isTauri()) {
-      await openUrl(url);
+      await openUrl(safeHref);
     } else {
-      window.open(url, "_blank", "noopener,noreferrer");
+      window.open(safeHref, "_blank", "noopener,noreferrer");
     }
   } catch (e) {
     console.warn(
       "Failed to open URL with Tauri opener, falling back to window.open:",
       e,
     );
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open(safeHref, "_blank", "noopener,noreferrer");
   }
 };
+
+const cloneDefaults = () =>
+  defaultTemplates ? JSON.parse(JSON.stringify(defaultTemplates)) : {};
 
 class BrowserStore {
   constructor(name = "templates.json") {
@@ -43,12 +58,12 @@ class BrowserStore {
         } catch (e) {
           console.warn("Failed to seed default templates in localStorage:", e);
         }
-        return defaultTemplates;
+        return cloneDefaults();
       }
       return {};
     } catch {
       return this.name === "templates.json" && defaultTemplates
-        ? defaultTemplates
+        ? cloneDefaults()
         : {};
     }
   }

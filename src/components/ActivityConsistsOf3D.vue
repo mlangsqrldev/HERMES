@@ -441,9 +441,9 @@ const getDapBadge = (item) => {
 };
 
 const activeMethod = ref("photogrammetry");
-const selectedHardware = ref(["Nikon Z 8", "NIKKOR Z 50mm f/1.8 S"]);
+const selectedHardware = ref([]);
 const customHardware = ref("");
-const selectedSoftware = ref(["RealityCapture", "Blender 4.3"]);
+const selectedSoftware = ref([]);
 const customSoftware = ref("");
 
 const PHOTO_HW = [

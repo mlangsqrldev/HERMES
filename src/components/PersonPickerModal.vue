@@ -694,6 +694,11 @@ const savePersonForm = () => {
 };
 
 const confirmDeletePerson = (person) => {
+  const msg =
+    currentLocale.value === "de"
+      ? `Möchten Sie "${person?.name || ""}" wirklich aus dem Personen-Pool entfernen?`
+      : `Remove "${person?.name || ""}" from the persons pool?`;
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
   const actualIdx = (savedPersons.value || []).findIndex(
     (p) => p === person || (p.name === person.name && p.id === person.id),
   );
@@ -816,6 +821,11 @@ const handleImportPoolsBackup = async (event) => {
 };
 
 const handleClearAllPersons = () => {
+  const msg =
+    currentLocale.value === "de"
+      ? "Möchten Sie wirklich alle gespeicherten Personen unwiderruflich aus dem Pool löschen?"
+      : "Are you sure you want to permanently delete all saved persons from the pool?";
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
   clearAllPersons();
   selectedIds.clear();
 };

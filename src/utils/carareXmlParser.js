@@ -1333,14 +1333,12 @@ function reconcileProjectRelations(result) {
 
   // 1. Digital Resource relations
   resources.forEach((dr) => {
-    const drId = dr["recordInformation.id"] || dr.id || dr["appellation.id"];
+    const drId = dr["recordInformation.id"] || dr["appellation.id"] || dr.id;
     const isRepList = ensureArray(dr, "isRepresentationOf");
     const isDerivList = ensureArray(dr, "isDerivativeOf");
     const hasDerivList = ensureArray(dr, "hasDerivative");
     const dcList = ensureArray(dr, "dcRelation");
-    const drPartOf = ensureArray(dr, "isPartOf");
-
-    if (colId) addUnique(drPartOf, colId);
+    delete dr.id; // CARARE 2.0.6 XSD has no top-level <id> on <digitalResource>
 
     // Cross-link to Heritage Asset
     isRepList.forEach((haId) => {
@@ -1391,12 +1389,10 @@ function reconcileProjectRelations(result) {
 
   // 2. Heritage Asset relations
   assets.forEach((ha) => {
-    const haId = ha["recordInformation.id"] || ha.id || ha["appellation.id"];
+    const haId = ha["recordInformation.id"] || ha["appellation.id"] || ha.id;
     const repList = ensureArray(ha, "hasRepresentation");
     const digiList = ensureArray(ha, "wasDigitizedBy");
-    const haPartOf = ensureArray(ha, "isPartOf");
-
-    if (colId) addUnique(haPartOf, colId);
+    delete ha.id; // CARARE 2.0.6 XSD has no top-level <id> on <heritageAssetIdentification>
 
     repList.forEach((drId) => {
       const dr = resourceMap.get(drId);
@@ -1418,12 +1414,10 @@ function reconcileProjectRelations(result) {
   // 3. Activity relations
   activities.forEach((act) => {
     const actId =
-      act["recordInformation.id"] || act.id || act["appellation.id"];
+      act["recordInformation.id"] || act["appellation.id"] || act.id;
     const createdList = ensureArray(act, "hasCreated");
     const presentList = ensureArray(act, "wasPresentAt");
-    const actPartOf = ensureArray(act, "isPartOf");
-
-    if (colId) addUnique(actPartOf, colId);
+    delete act.id; // CARARE 2.0.6 XSD has no top-level <id> on <activity>
 
     createdList.forEach((drId) => {
       const dr = resourceMap.get(drId);
@@ -1450,106 +1444,82 @@ function reconcileProjectRelations(result) {
     delete col.isPartOf;
   });
 
-  // 5. Global Field Fallback & Inheritance
-  // Ensures NO field is blank even if an imported file had slight omissions
+  // 5. Non-destructive inheritance only from explicitly present Collection data
+  // (Never fabricate dates, countries, licenses, or prose not present in the imported XML.)
   const colContacts = collections[0]?.contacts || [];
   const colCreatedOn =
     collections[0]?.["creation.createdOn"] ||
     collections[0]?.["recordInformation.creation.date"] ||
-    "2026-10-15";
+    "";
 
   assets.forEach((ha) => {
     if (
-      !ha["recordInformation.creation.contacts"] ||
-      ha["recordInformation.creation.contacts"].length === 0
+      (!ha["recordInformation.creation.contacts"] ||
+        ha["recordInformation.creation.contacts"].length === 0) &&
+      colContacts.length > 0
     ) {
-      if (colContacts.length > 0) {
-        ha["recordInformation.creation.contacts"] = JSON.parse(
-          JSON.stringify(colContacts),
-        );
-      }
+      ha["recordInformation.creation.contacts"] = JSON.parse(
+        JSON.stringify(colContacts),
+      );
     }
-    if (!ha["recordInformation.creation.date"]) {
+    if (!ha["recordInformation.creation.date"] && colCreatedOn) {
       ha["recordInformation.creation.date"] = colCreatedOn;
     }
     if (!ha["conditions.wasPresentAt"]) {
       const digi = ensureArray(ha, "wasDigitizedBy");
       if (digi.length > 0) ha["conditions.wasPresentAt"] = digi[0];
     }
-    if (!ha["conditions.conditionDate"]) {
-      ha["conditions.conditionDate"] =
-        ha["recordInformation.creation.date"] || colCreatedOn;
-    }
     const haTemps = ensureArray(ha, "characters.temporal");
     haTemps.forEach((t) => {
       if (!t.displayDate && t.periodName) t.displayDate = t.periodName;
-      if (!t.periodName && t.displayDate) t.periodName = t.displayDate;
       if (
         !t.displayDate &&
         (t["timeSpan.startDate"] || t["timeSpan.endDate"])
       ) {
-        t.displayDate = `${t["timeSpan.startDate"] || ""} bis ${t["timeSpan.endDate"] || ""}`;
+        t.displayDate = [t["timeSpan.startDate"], t["timeSpan.endDate"]]
+          .filter(Boolean)
+          .join(" – ");
       }
     });
   });
 
   resources.forEach((dr) => {
     if (
-      !dr["recordInformation.creation.contacts"] ||
-      dr["recordInformation.creation.contacts"].length === 0
+      (!dr["recordInformation.creation.contacts"] ||
+        dr["recordInformation.creation.contacts"].length === 0) &&
+      colContacts.length > 0
     ) {
-      if (colContacts.length > 0) {
-        dr["recordInformation.creation.contacts"] = JSON.parse(
-          JSON.stringify(colContacts),
-        );
-      }
+      dr["recordInformation.creation.contacts"] = JSON.parse(
+        JSON.stringify(colContacts),
+      );
     }
-    if (!dr["recordInformation.creation.date"]) {
+    if (!dr["recordInformation.creation.date"] && colCreatedOn) {
       dr["recordInformation.creation.date"] = colCreatedOn;
-    }
-    if (!dr["recordInformation.metadataRights"]) {
-      dr["recordInformation.metadataRights"] =
-        "CC0 1.0 Universal Public Domain";
-    }
-    if (!dr["recordInformation.country"]) {
-      dr["recordInformation.country"] = "DE";
     }
   });
 
   activities.forEach((act) => {
     if (
-      !act["recordInformation.creation.contacts"] ||
-      act["recordInformation.creation.contacts"].length === 0
+      (!act["recordInformation.creation.contacts"] ||
+        act["recordInformation.creation.contacts"].length === 0) &&
+      colContacts.length > 0
     ) {
-      if (colContacts.length > 0) {
-        act["recordInformation.creation.contacts"] = JSON.parse(
-          JSON.stringify(colContacts),
-        );
-      }
+      act["recordInformation.creation.contacts"] = JSON.parse(
+        JSON.stringify(colContacts),
+      );
     }
-    if (!act["recordInformation.creation.date"]) {
+    if (!act["recordInformation.creation.date"] && colCreatedOn) {
       act["recordInformation.creation.date"] = colCreatedOn;
-    }
-    if (!act["recordInformation.metadataRights"]) {
-      act["recordInformation.metadataRights"] =
-        "CC0 1.0 Universal Public Domain";
-    }
-    if (!act["recordInformation.country"]) {
-      act["recordInformation.country"] = "DE";
-    }
-    if (!act.hasGeneralPurpose) {
-      act.hasGeneralPurpose =
-        "Metrologisch exakte Konservierungsdokumentation und semantisch transparente Bereitstellung für Forschung und Lehre.";
     }
     const actTemps = ensureArray(act, "temporal");
     actTemps.forEach((t) => {
-      if (!t.periodName) t.periodName = "3D-Digitalisierungskampagne";
-      if (!t.displayDate) {
-        if (t["timeSpan.startDate"] || t["timeSpan.endDate"]) {
-          t.displayDate = `${t["timeSpan.startDate"] || ""} bis ${t["timeSpan.endDate"] || ""}`;
-        } else {
-          t.displayDate = t.periodName;
-        }
+      if (
+        !t.displayDate &&
+        (t["timeSpan.startDate"] || t["timeSpan.endDate"])
+      ) {
+        t.displayDate = [t["timeSpan.startDate"], t["timeSpan.endDate"]]
+          .filter(Boolean)
+          .join(" – ");
       }
     });
   });

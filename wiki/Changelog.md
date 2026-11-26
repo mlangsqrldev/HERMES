@@ -4,6 +4,26 @@ Consolidated release history for **HERMES (Heritage Metadata Entry System)**.
 
 ---
 
+## `v0.1.36` (2026-11-26) — Triple-Agent Quality, XSD Conformance & Security Release
+- **Strict CARARE 2.0.6 XSD Conformance (0 Validation Errors)**:
+  - Enforced strict XSD child-element and attribute whitelists in the XML serializer (`App.vue`), fixing illegal attributes on `<keywords>`/`<materials>`/`<methods>`/`<techniques>`, dropping invalid `<contacts><type>`, `<activity><rights>`, `<activity><isSuccessorOf>`, `<digitalResource><wasDigitizedBy>`, `<collectionInformation><recordInformation>`, and `<quickpoint><uri>`, and enforcing `maxOccurs="1"` on `<activity><spatial>`.
+  - Migrated misplaced `<spatialReferenceSystem>` into `<geometry>` and `<periodName>` out of `<timeSpan>` into `<temporal>`.
+  - Regenerated `samples/giza_pyramid_carare_2.0.6.xml` and cleaned `public/CARARE_Demo_Collection_3D_Master_and_Derivatives.xml` — both pass official `carare-v2.0.6.xsd` validation with **0 errors**.
+  - Stopped fabricating dummy `<link>https://carare.eu/resource</link>`, hardcoded dates/licences on import, and forcing `colId` into `isPartOf`.
+- **Critical Bug & Data-Loss Remediation**:
+  - Fixed `autoMatchRelations` argument mismatch crash in Step 5 (`relationsHelper.js`, `RelationsGraphEditor.vue`).
+  - Fixed **Cancel** buttons in `HeritageAssetIdentificationCrud.vue` and `CollectionInformationCrud.vue` that previously deleted saved records; added confirmation prompts for destructive deletions and fixed `editIndex` shifting & stale form bleed across all 4 CRUDs.
+  - Fixed `exportSingleCarareXmlsZip` (strict per-asset filtering + filename deduplication) and `getBonnDataRawSections()` (correct section keys for BonnData XML/Markdown uploads).
+  - Fixed `bonndataExporter.js` (excluded historical creators from modern authors, fixed `[object Object]` publications, added `CC BY-ND` / `CC BY-NC-ND`, country vocabulary mapping, and geospatial extraction).
+  - Fixed sidebar workflow progress (`N/6` instead of `N/5`), sidebar sub-entry IDs, global `Ctrl+S` shortcut, `beforeunload` unsaved-session guard, and BagIt `tagmanifest-sha256.txt` (`manifest-sha256.txt` hash included).
+  - Fixed Tailwind v4 + DaisyUI v5 Dark Mode (`@custom-variant dark` + `[data-theme="business"]`), modal scrolling in `OrganizationPickerModal.vue`, 3D dropzone bubbling, and exposed **"Save & Next"** on Heritage Assets.
+- **Security Hardening**:
+  - Eliminated XSS sinks in `LiveXmlPreview.vue` and `SpatialMapPicker.vue`.
+  - Restricted `openExternalUrl()` to `https:`, `http:`, and `mailto:`.
+  - Replaced unrestricted `fs:scope: ["**"]` / `fs:read-all` / `fs:write-all` with dialog-scoped permissions, enabled a strict Tauri Content Security Policy (CSP), and hardened Rust `generate_bag_hashes` directory/error handling.
+
+---
+
 ## `v0.1.35` (2026-11-26) — Strict Collection `dcRelation`, Code Cleanup & Full Wiki
 - **Strict CARARE 2.0.6 Collection Relations**: Enforced `<dcRelation>` as the sole relation element on `<collectionInformation>` across `CollectionDcRelations.vue`, `relationsHelper.js`, `carareXmlParser.js`, and the XML serializer XSD guard in `App.vue` (preventing illegal `<hasPart>` / `<isPartOf>` / `<wasDigitizedBy>` tags on Collection).
 - **Repository Cleanup & Internationalization**: Removed 40+ unused legacy assets/scripts and the third-party `CARARE/` reference folder, standardized all repository filenames and code comments to English (`src/assets/tooltips_translations.json`, `samples/giza_pyramid_carare_2.0.6.xml`, `public/CARARE_Demo_Collection_3D_Master_and_Derivatives.xml`), reducing the packaged binary size.

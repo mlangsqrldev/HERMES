@@ -12,12 +12,9 @@
     "dialog:allow-open",
     "dialog:allow-confirm",
     "fs:default",
-    "fs:read-all",
-    "fs:write-all",
-    {
-      "identifier": "fs:scope",
-      "allow": ["**"]
-    },
+    "fs:allow-read-file",
+    "fs:allow-write-file",
+    "fs:allow-read-text-file",
     "store:default"
   ]
 }

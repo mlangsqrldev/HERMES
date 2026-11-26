@@ -366,7 +366,7 @@
             <button
               type="button"
               class="btn btn-xs btn-outline"
-              @click="copyGlobalToTarget(collectionForm)"
+              @click="copyGlobalToTarget(collectionForm, true)"
             >
               {{
                 locale === "de"
@@ -399,6 +399,19 @@
                 >
                   {{ lic.code }} —
                   {{ locale === "de" ? lic.labelDe : lic.labelEn }}
+                </option>
+                <option
+                  v-if="
+                    collectionForm['rights.licence'] &&
+                    !CC_LICENCES.some(
+                      (l) =>
+                        (locale === 'en' ? l.uriEn : l.uriDe) ===
+                        collectionForm['rights.licence'],
+                    )
+                  "
+                  :value="collectionForm['rights.licence']"
+                >
+                  {{ collectionForm["rights.licence"] }}
                 </option>
               </select>
             </div>
@@ -445,20 +458,6 @@
                 type="text"
                 v-model="collectionForm['rights.reproductionRights']"
                 class="input input-sm input-bordered w-full text-xs"
-              />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-semibold">
-                  {{
-                    locale === "de" ? "Metadaten-Rechte:" : "Metadata Rights:"
-                  }}
-                </span>
-              </label>
-              <input
-                type="text"
-                v-model="collectionForm['recordInformation.metadataRights']"
-                class="input input-sm input-bordered w-full text-xs font-mono"
               />
             </div>
           </div>
@@ -576,6 +575,19 @@
                   >
                     {{ lic.code }}
                   </option>
+                  <option
+                    v-if="
+                      item['rights.licence'] &&
+                      !CC_LICENCES.some(
+                        (l) =>
+                          (locale === 'en' ? l.uriEn : l.uriDe) ===
+                          item['rights.licence'],
+                      )
+                    "
+                    :value="item['rights.licence']"
+                  >
+                    {{ item["rights.licence"] }}
+                  </option>
                 </select>
                 <select
                   v-model="item['rights.accessRights']"
@@ -645,7 +657,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import {
   globalRights,
   saveGlobalRights,
@@ -704,16 +716,27 @@ const saveAndApplyGlobal = () => {
   emit("close");
 };
 
-const copyGlobalToTarget = (target) => {
+const copyGlobalToTarget = (target, isCollection = false) => {
   if (!target) return;
-  target["recordInformation.metadataRights"] =
-    globalRights.metadataRights || "";
+  if (!isCollection) {
+    target["recordInformation.metadataRights"] =
+      globalRights.metadataRights || "";
+  }
   target["rights.licence"] =
     resolveLicenceUri(globalRights.licence, props.locale) || "";
   target["rights.accessRights"] = globalRights.accessRights || "";
   target["rights.copyrightCreditLine"] = globalRights.copyrightCreditLine || "";
   target["rights.reproductionRights"] = globalRights.reproductionRights || "";
 };
+
+const handleModalEscape = (e) => {
+  if (e.key === "Escape" && props.isOpen) {
+    e.preventDefault();
+    emitClose();
+  }
+};
+onMounted(() => window.addEventListener("keydown", handleModalEscape));
+onBeforeUnmount(() => window.removeEventListener("keydown", handleModalEscape));
 
 const copyGlobalHaToTarget = (target) => {
   if (!target) return;

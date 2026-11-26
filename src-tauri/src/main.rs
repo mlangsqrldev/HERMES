@@ -25,10 +25,20 @@ async fn generate_bag_hashes(
     window: Window,
     base_dir: String,
 ) -> Result<HashMap<String, String>, String> {
+    let base_path = Path::new(&base_dir);
+    if !base_path.is_dir() {
+        return Err(format!(
+            "Selected path is not an accessible directory: {}",
+            base_dir
+        ));
+    }
+
     let mut file_hashes = HashMap::new();
 
     // Iterate through all files and folders in the base_dir recursively
-    for entry in WalkDir::new(&base_dir).into_iter().filter_map(|e| e.ok()) {
+    for entry_res in WalkDir::new(base_path).into_iter() {
+        let entry = entry_res
+            .map_err(|e| format!("Failed to traverse directory entry: {}", e))?;
         let path = entry.path();
 
         // We only want to hash files, skip directories
@@ -36,21 +46,23 @@ async fn generate_bag_hashes(
             let absolute_path_str = path.to_string_lossy().to_string();
 
             // Calculate the relative path for the BagIt manifest
-            // e.g., turning "C:/Users/name/folder/data/XYZ.obj" into "data/XYZ.obj"
             let relative_path = path
-                .strip_prefix(&base_dir)
-                .unwrap_or(path) // fallback to absolute if stripping fails
+                .strip_prefix(base_path)
+                .map_err(|e| {
+                    format!(
+                        "Failed to resolve relative path for {}: {}",
+                        absolute_path_str, e
+                    )
+                })?
                 .to_string_lossy()
-                .replace("\\", "/"); // BagIt manifests usually prefer forward slashes
+                .replace("\\", "/");
 
-            // Call your existing hash function
+            // Call hash function
             match hash_file_with_progress(&window, &absolute_path_str).await {
                 Ok(hash) => {
-                    // Insert into our map: { "data/hp/XYZ.obj" : "a1b2c3d4..." }
                     file_hashes.insert(relative_path, hash);
                 }
                 Err(e) => {
-                    // If a single file fails (e.g. permission denied), return the error
                     return Err(format!("Failed to hash file {}: {}", relative_path, e));
                 }
             }
@@ -71,8 +83,8 @@ async fn hash_file_with_progress(window: &Window, path: &str) -> Result<String, 
 
     let filename = Path::new(path)
         .file_name()
-        .unwrap()
-        .to_string_lossy()
+        .and_then(|n| n.to_str())
+        .unwrap_or(path)
         .to_string();
 
     loop {

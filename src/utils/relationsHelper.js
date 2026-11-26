@@ -634,6 +634,19 @@ export function autoMatchRelations(
   activityItems = [],
   collectionForm = null,
 ) {
+  // Support both positional args (ha, dr, act, col) and a single options object
+  if (
+    heritageItems &&
+    typeof heritageItems === "object" &&
+    !Array.isArray(heritageItems)
+  ) {
+    const opts = heritageItems;
+    heritageItems = opts.heritageItems || [];
+    digitalItems = opts.digitalItems || [];
+    activityItems = opts.activityItems || [];
+    collectionForm = opts.collectionForm || null;
+  }
+
   let assetResourceLinks = 0;
   let masterDerivativeLinks = 0;
   let activityLinks = 0;
@@ -670,7 +683,9 @@ export function autoMatchRelations(
   // 2. Heritage Asset <-> Digital Resource matching
   const haStemIndex = haList.map((ha) => {
     const id = getRecordId(ha);
-    const inv = String(ha["repositoryLocation.inventoryNumber"] || "").trim();
+    const inv = String(
+      ha["appellation.id"] || ha["repositoryLocation.inventoryNumber"] || "",
+    ).trim();
     const stems = new Set();
     const sId = normalizeMatchStem(id);
     if (sId.length >= 2) stems.add(sId);
@@ -769,12 +784,15 @@ export function autoMatchRelations(
     collectionLinks = syncCollectionRelations(collectionForm, haList, actList);
   }
 
+  const createdCount =
+    assetResourceLinks +
+    masterDerivativeLinks +
+    activityLinks +
+    collectionLinks;
+
   return {
-    createdCount:
-      assetResourceLinks +
-      masterDerivativeLinks +
-      activityLinks +
-      collectionLinks,
+    createdCount,
+    totalAdded: createdCount,
     assetResourceLinks,
     masterDerivativeLinks,
     activityLinks,
@@ -815,7 +833,6 @@ export function countFormRelations(form, kind) {
       "hasCreated",
       "hasPart",
       "isPartOf",
-      "isSuccessorOf",
       "dcRelation",
     ],
   };

@@ -252,7 +252,7 @@
             <div class="flex flex-wrap items-center gap-1.5">
               <!-- Bulk Assign Licence -->
 
-              <div class="dropdown dropdown-bottom dropdown-end">
+              <div class="dropdown dropdown-top dropdown-end">
                 <button
                   tabindex="0"
                   type="button"
@@ -272,7 +272,13 @@
                   class="dropdown-content z-30 menu p-1 shadow-lg bg-base-100 text-base-content rounded-box w-64 border border-base-300 text-xs"
                 >
                   <li v-for="lic in CC_LICENCES" :key="lic.code">
-                    <a @click.prevent="bulkAssignLicence(lic.uriDe)">
+                    <a
+                      @click.prevent="
+                        bulkAssignLicence(
+                          currentLocale === 'en' ? lic.uriEn : lic.uriDe,
+                        )
+                      "
+                    >
                       {{ lic.short }} — {{ lic.fullName }}
                     </a>
                   </li>
@@ -2791,6 +2797,23 @@
                 >
                   ✓ {{ currentLocale === "de" ? "Gespeichert" : "Saved" }}
                 </span>
+
+                <button
+                  type="button"
+                  class="btn btn-outline btn-primary btn-sm"
+                  @click="saveAndContinueNextPart()"
+                  :title="
+                    currentLocale === 'de'
+                      ? 'Aktuelles Kulturgut speichern und direkt das nächste Teilobjekt mit übernommenen Sammlungs-, Fundort- und Materialdaten anlegen'
+                      : 'Save current heritage asset and immediately start the next part preserving shared metadata'
+                  "
+                >
+                  {{
+                    currentLocale === "de"
+                      ? "Speichern & Nächstes"
+                      : "Save & Next"
+                  }}
+                </button>
 
                 <button type="submit" class="btn btn-primary">
                   {{
@@ -9869,7 +9892,8 @@ onMounted(async () => {
     store.value = await getAppStore("templates.json", { autoSave: true });
 
     for (const f of ["contacts", "references", "temporal", "spatial"]) {
-      let tpls = await store.value.get(f);
+      let tpls =
+        (await store.value.get(`heritage_${f}`)) || (await store.value.get(f));
 
       if (!tpls || tpls.length === 0) {
         const raw = localStorage.getItem(`hermes_templates_heritage_${f}`);
@@ -9935,7 +9959,7 @@ const addTemplate = async () => {
 
   if (store.value) {
     await store.value.set(
-      field,
+      `heritage_${field}`,
       JSON.parse(JSON.stringify(templates.value[field])),
     );
 
@@ -9978,7 +10002,7 @@ const executeDeleteTemplate = async () => {
 
     if (store.value) {
       await store.value.set(
-        field,
+        `heritage_${field}`,
         JSON.parse(JSON.stringify(templates.value[field])),
       );
 
@@ -10474,7 +10498,14 @@ const save = () => {
     });
   }
 
-  if (isEditing.value) {
+  delete form._isDraft;
+
+  if (
+    isEditing.value &&
+    editIndex.value !== null &&
+    editIndex.value >= 0 &&
+    editIndex.value < items.value.length
+  ) {
     items.value[editIndex.value] = JSON.parse(JSON.stringify(form));
   } else {
     items.value.push(JSON.parse(JSON.stringify(form)));
@@ -10499,11 +10530,16 @@ const saveDraft = () => {
 };
 
 const edit = (index) => {
+  const sourceItem = items.value?.[index];
+  if (!sourceItem || typeof sourceItem !== "object") return;
+
+  resetForm(true);
+
   isEditing.value = true;
 
   editIndex.value = index;
 
-  Object.assign(form, JSON.parse(JSON.stringify(items.value[index])));
+  Object.assign(form, JSON.parse(JSON.stringify(sourceItem)));
 
   // Populate preferred languages
 
@@ -10891,15 +10927,18 @@ const getGridTemporalValue = (item) => {
   ) {
     const t = item["characters.temporal"][0];
 
+    const rawPeriod = t["periodName"] ?? t["timeSpan.periodName"];
     const pName =
-      Array.isArray(t["timeSpan.periodName"]) && t["timeSpan.periodName"][0]
-        ? t["timeSpan.periodName"][0]._value || t["timeSpan.periodName"][0]
-        : t["timeSpan.periodName"] || "";
+      Array.isArray(rawPeriod) && rawPeriod[0]
+        ? rawPeriod[0]._value || rawPeriod[0]
+        : typeof rawPeriod === "object" && rawPeriod !== null
+          ? rawPeriod._value || ""
+          : rawPeriod || "";
 
     if (pName) return pName;
 
     if (t["timeSpan.startDate"] || t["timeSpan.endDate"]) {
-      return `${t["timeSpan.startDate"] || ""} bis ${t["timeSpan.endDate"] || ""}`;
+      return `${t["timeSpan.startDate"] || ""} – ${t["timeSpan.endDate"] || ""}`;
     }
   }
 
@@ -10913,9 +10952,7 @@ const setGridTemporalValue = (originalIndex, val) => {
 
   items.value[originalIndex]["characters.temporal"] = [
     {
-      "timeSpan.periodName": [
-        { _value: val, "timeSpan.periodName#lang": lang },
-      ],
+      periodName: [{ _value: val, "periodName#lang": lang }],
 
       "timeSpan.startDate": "",
 
@@ -10973,6 +11010,13 @@ const openOrgPickerForBulk = () => {
 
 const bulkDeleteSelected = () => {
   if (selectedOriginalIndices.value.length === 0) return;
+
+  const count = selectedOriginalIndices.value.length;
+  const msg =
+    currentLocale.value === "de"
+      ? `Möchten Sie wirklich ${count} ausgewählte(s) Kulturgut/Kulturgüter unwiderruflich löschen?`
+      : `Are you sure you want to permanently delete ${count} selected heritage asset(s)?`;
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
 
   const sorted = [...selectedOriginalIndices.value].sort((a, b) => b - a);
 
@@ -11050,11 +11094,17 @@ const saveAndContinueNextPart = () => {
 
   const preservedRepoLang = form["repositoryLocation#lang"];
 
+  const preservedGeneralType = form["generalType"];
+
   const preservedCredit = form["rights.copyrightCreditLine"];
 
   const preservedCreditLang = form["rights.copyrightCreditLine#lang"];
 
   const preservedAccess = form["rights.accessRights"];
+
+  const preservedLicence = form["rights.licence"];
+
+  const preservedRepro = form["rights.reproductionRights"];
 
   const preservedAssetType = JSON.parse(
     JSON.stringify(form["characters.heritageAssetType"] || []),
@@ -11086,6 +11136,8 @@ const saveAndContinueNextPart = () => {
 
   form["recordInformation.metadataRights#lang"] = preservedMetaRightsLang;
 
+  form["generalType"] = preservedGeneralType;
+
   form["actors"] = preservedActors;
 
   form["provenance"] = preservedProvenance;
@@ -11108,6 +11160,10 @@ const saveAndContinueNextPart = () => {
 
   form["rights.accessRights"] = preservedAccess;
 
+  form["rights.licence"] = preservedLicence;
+
+  form["rights.reproductionRights"] = preservedRepro;
+
   form["characters.heritageAssetType"] = preservedAssetType;
 
   isEditing.value = false;
@@ -11116,9 +11172,21 @@ const saveAndContinueNextPart = () => {
 };
 
 const remove = (index) => {
+  const msg =
+    currentLocale.value === "de"
+      ? "Möchten Sie dieses Kulturgut wirklich löschen?"
+      : "Are you sure you want to delete this heritage asset?";
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
+
   items.value.splice(index, 1);
 
-  if (isEditing.value && editIndex.value === index) resetForm(true);
+  if (isEditing.value) {
+    if (editIndex.value === index) {
+      resetForm(true);
+    } else if (editIndex.value !== null && editIndex.value > index) {
+      editIndex.value -= 1;
+    }
+  }
 };
 
 const quickAddContact = (contact) => {
@@ -11160,8 +11228,6 @@ const quickAddSpatial = (sp) => {
     "geometry.quickpoint.x": sp.x || "",
 
     "geometry.quickpoint.y": sp.y || "",
-
-    "geometry.quickpoint.uri": sp.uri || "",
   });
 };
 
@@ -11197,6 +11263,8 @@ const handleOrgSelected = (org) => {
         id: org.gnd || org.uri || "",
 
         name: org.name,
+
+        actorType: "organisation",
 
         roles: org.category || "Institution / Organisation",
       });
@@ -11371,14 +11439,7 @@ const applyGlobalRightsToForm = () => {
 };
 
 const cancelCurrentAsset = () => {
-  if (
-    isEditing.value &&
-    editIndex.value !== null &&
-    editIndex.value >= 0 &&
-    editIndex.value < items.value.length
-  ) {
-    items.value.splice(editIndex.value, 1);
-  }
+  // Cancel must discard unsaved form edits ONLY — never delete a saved item!
   resetForm(true);
 };
 
@@ -11412,14 +11473,24 @@ const resetForm = (force = false) => {
     form["recordInformation.metadataRights"] =
       globalRights.metadataRights || "";
 
-    form["rights.copyrightCreditLine"] = globalRights.copyrightCreditLine || "";
+    form["rights.copyrightCreditLine"] =
+      globalRights.haCopyrightCreditLine ||
+      globalRights.copyrightCreditLine ||
+      "";
 
-    form["rights.accessRights"] = globalRights.accessRights || "";
+    form["rights.accessRights"] =
+      globalRights.haAccessRights || globalRights.accessRights || "";
 
     form["rights.licence"] =
-      resolveLicenceUri(globalRights.licence, currentLocale.value) || "";
+      resolveLicenceUri(
+        globalRights.haLicence || globalRights.licence,
+        currentLocale.value,
+      ) || "";
 
-    form["rights.reproductionRights"] = globalRights.reproductionRights || "";
+    form["rights.reproductionRights"] =
+      globalRights.haReproductionRights ||
+      globalRights.reproductionRights ||
+      "";
   }
 
   isEditing.value = false;

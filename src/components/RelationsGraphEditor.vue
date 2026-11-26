@@ -223,7 +223,13 @@
                   class="badge badge-xs font-mono"
                   :class="dr.masterId || dr.isDerivativeHint ? 'badge-secondary badge-outline' : 'badge-primary badge-outline'"
                 >
-                  {{ dr.masterId || dr.isDerivativeHint ? "Low-Poly / Derivat" : "Master" }}
+                  {{
+                    dr.masterId || dr.isDerivativeHint
+                      ? currentLocale === "de"
+                        ? "Low-Poly / Derivat"
+                        : "Low-Poly / Derivative"
+                      : "Master"
+                  }}
                 </span>
               </div>
 
@@ -552,20 +558,20 @@ const setDrActivity = (dr, newActId) => {
 };
 
 const runAutoMatch = () => {
-  const result = autoMatchRelations({
-    collectionForm: props.collectionForm,
-    heritageItems: props.heritageItems,
-    digitalItems: props.digitalItems,
-    activityItems: props.activityItems,
-  });
+  const result = autoMatchRelations(
+    props.heritageItems,
+    props.digitalItems,
+    props.activityItems,
+    props.collectionForm,
+  );
   revision.value++;
   emit("relations-changed");
   statusBanner.value = {
-    type: result.totalAdded > 0 ? "success" : "info",
+    type: result.createdCount > 0 ? "success" : "info",
     text:
       props.currentLocale === "de"
-        ? `Automatische Zuordnung: ${result.totalAdded} neue Verbindung(en) angelegt.`
-        : `Auto-Match: ${result.totalAdded} new link(s) created.`,
+        ? `Automatische Zuordnung: ${result.createdCount} neue Verbindung(en) angelegt.`
+        : `Auto-Match: ${result.createdCount} new link(s) created.`,
   };
 };
 </script>

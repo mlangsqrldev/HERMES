@@ -394,7 +394,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted, onBeforeUnmount } from "vue";
 import {
   savedSoftware,
   addOrUpdateSoftware,
@@ -438,6 +438,15 @@ const emitClose = () => {
   editingIndex.value = null;
   emit("close");
 };
+
+const handleModalEscape = (e) => {
+  if (e.key === "Escape" && props.isOpen) {
+    e.preventDefault();
+    emitClose();
+  }
+};
+onMounted(() => window.addEventListener("keydown", handleModalEscape));
+onBeforeUnmount(() => window.removeEventListener("keydown", handleModalEscape));
 
 const filteredSoftware = computed(() => {
   let list = savedSoftware.value || [];

@@ -849,12 +849,12 @@ const buildEntryFromDraft = () => {
   const normalizedType =
     draft.type === "organisation" ? "organization" : draft.type || "person";
   if (props.mode === "contact") {
+    // CARARE 2.0.6 XSD <contacts> does NOT allow a <type> child element
     return {
       name: draft.name.trim(),
       role: draft.singleRole.trim(),
       organization: draft.organization.trim(),
       email: draft.email.trim(),
-      type: normalizedType,
     };
   }
   const rolesOut = isMultiRole.value
@@ -1076,7 +1076,6 @@ const handlePickedPersons = (selectedList) => {
           role: p.role || "",
           organization: p.organization || "",
           email: p.email || "",
-          type: p.type || "person",
         });
       } else {
         next.push({
@@ -1105,7 +1104,6 @@ const handlePickedOrg = (org) => {
         role: "",
         organization: orgName,
         email: org.email || "",
-        type: "organization",
       });
     } else {
       next.push({

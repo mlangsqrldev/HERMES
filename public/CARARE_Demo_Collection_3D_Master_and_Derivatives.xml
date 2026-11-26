@@ -134,9 +134,6 @@
       </references>
       <hasRepresentation>DR-KYLIX-001-MASTER-HP</hasRepresentation>
       <hasRepresentation>DR-KYLIX-001-REALTIME-GLB</hasRepresentation>
-      <hasPart>DR-KYLIX-001-MASTER-HP</hasPart>
-      <hasPart>DR-KYLIX-001-REALTIME-GLB</hasPart>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <wasDigitizedBy>ACT-2026-KYLIX-DIGI</wasDigitizedBy>
       <dcRelation>https://archaeology.uni-bonn.de/sammlungen/antiken/objekt-742</dcRelation>
     </heritageAssetIdentification>
@@ -186,7 +183,6 @@
         <europeanaRights>Creative Commons - Attribution, Non-Commercial, ShareAlike (BY-NC-SA)</europeanaRights>
       </rights>
       <isRepresentationOf>HA-HERMES-KYLIX-001</isRepresentationOf>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <hasDerivative>DR-KYLIX-001-REALTIME-GLB</hasDerivative>
       <dcRelation>ACT-2026-KYLIX-DIGI</dcRelation>
     </digitalResource>
@@ -236,7 +232,6 @@
         <europeanaRights>Creative Commons - Attribution, ShareAlike (BY-SA)</europeanaRights>
       </rights>
       <isRepresentationOf>HA-HERMES-KYLIX-001</isRepresentationOf>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <isDerivativeOf>DR-KYLIX-001-MASTER-HP</isDerivativeOf>
       <dcRelation>ACT-2026-KYLIX-DIGI</dcRelation>
     </digitalResource>
@@ -312,23 +307,14 @@
         <equipment>Adobe Photoshop Lightroom 14.1, Substance 3D Designer 14</equipment>
       </consistsOf>
       <consistsOf>
-        <hadSpecificPurpose>Methodische Leitlinien &amp; Transparenz</hadSpecificPurpose>
+        <hadSpecificPurpose lang="de">Digital Authenticity Profile, Dimension 5 von 5: Abbildungsbilanz</hadSpecificPurpose>
         <startDate>2026-10-18</startDate>
         <endDate>2026-10-18</endDate>
-        <methods>DAP-5: Wissenschaftliche Begründung (Principles) (http://hector.archaeology.org/vocab/dap-5)</methods>
-        <techniques>Einhaltung der London Charter (Prinzip 4: Authentizität &amp; Transparenz) und Sevilla-Prinzipien. Keine synthetische Rekonstruktion verlorener Bruchstücke.</techniques>
-      </consistsOf>
-      <consistsOf>
-        <hadSpecificPurpose>Transformationsbilanz &amp; Grenzziehung</hadSpecificPurpose>
-        <startDate>2026-10-18</startDate>
-        <endDate>2026-10-18</endDate>
-        <methods>DAP-6: Abbildungsbilanz (Evaluation) (http://hector.archaeology.org/vocab/dap-6)</methods>
-        <techniques>Metrologischer Soll-Ist-Vergleich: 99.4% der Gefäßoberfläche innerhalb 0.1 mm Abweichung erfasst; Verwitterungsspuren im Mastermodell vollwertig konserviert.</techniques>
+        <methods lang="de">DAP-5: Abbildungsbilanz — Metrologischer Soll-Ist-Vergleich: 99.4% der Gefäßoberfläche innerhalb 0.1 mm Abweichung erfasst; Einhaltung der London Charter und Sevilla-Prinzipien ohne synthetische Rekonstruktion.</methods>
       </consistsOf>
       <assessments>DAP-1 Befund: Fragmente antik gedübelt und modern mit Paraloid B72 gesichert; Tondo-Zeichnung zu 98% unversehrt.</assessments>
-      <assessments>DAP-6 Qualitätsurteil: Vollständiges metrologisches Mastermodell mit höchster Signifikanz für archäologische Gefäßanalysen.</assessments>
+      <assessments>DAP-5 Qualitätsurteil: Vollständiges metrologisches Mastermodell mit höchster Signifikanz für archäologische Gefäßanalysen.</assessments>
       <wasPresentAt>HA-HERMES-KYLIX-001</wasPresentAt>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <hasCreated>DR-KYLIX-001-MASTER-HP</hasCreated>
       <hasCreated>DR-KYLIX-001-REALTIME-GLB</hasCreated>
       <dcRelation>HA-HERMES-KYLIX-001</dcRelation>
@@ -369,7 +355,7 @@
       <generalType>Artefact</generalType>
       <actors>
         <name lang="de">Peloponnesische Bildhauerwerkstatt (Umkreis des Kalamis)</name>
-        <actorType lang="en">person</actorType>
+        <actorType lang="en">organisation</actorType>
         <roles lang="de" namespace="AAT" term="Bronzegießer" termUID="http://vocab.getty.edu/aat/300025176">Erzgießer &amp; Bildhauer</roles>
       </actors>
       <designations>
@@ -417,9 +403,6 @@
       </references>
       <hasRepresentation>DR-STATUETTE-002-MASTER-HP</hasRepresentation>
       <hasRepresentation>DR-STATUETTE-002-REALTIME-GLB</hasRepresentation>
-      <hasPart>DR-STATUETTE-002-MASTER-HP</hasPart>
-      <hasPart>DR-STATUETTE-002-REALTIME-GLB</hasPart>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <wasDigitizedBy>ACT-2026-STATUETTE-DIGI</wasDigitizedBy>
       <dcRelation>https://archaeology.uni-bonn.de/sammlungen/antiken/objekt-1842</dcRelation>
     </heritageAssetIdentification>
@@ -469,7 +452,6 @@
         <europeanaRights>Creative Commons - Attribution, Non-Commercial, ShareAlike (BY-NC-SA)</europeanaRights>
       </rights>
       <isRepresentationOf>HA-HERMES-STATUETTE-002</isRepresentationOf>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <hasDerivative>DR-STATUETTE-002-REALTIME-GLB</hasDerivative>
       <dcRelation>ACT-2026-STATUETTE-DIGI</dcRelation>
     </digitalResource>
@@ -519,7 +501,6 @@
         <europeanaRights>Creative Commons - Attribution, ShareAlike (BY-SA)</europeanaRights>
       </rights>
       <isRepresentationOf>HA-HERMES-STATUETTE-002</isRepresentationOf>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <isDerivativeOf>DR-STATUETTE-002-MASTER-HP</isDerivativeOf>
       <dcRelation>ACT-2026-STATUETTE-DIGI</dcRelation>
     </digitalResource>
@@ -595,23 +576,14 @@
         <equipment>Substance 3D Designer 14, Adobe Photoshop</equipment>
       </consistsOf>
       <consistsOf>
-        <hadSpecificPurpose>London Charter &amp; Sevilla-Prinzipien</hadSpecificPurpose>
+        <hadSpecificPurpose lang="de">Digital Authenticity Profile, Dimension 5 von 5: Abbildungsbilanz</hadSpecificPurpose>
         <startDate>2026-10-20</startDate>
         <endDate>2026-10-20</endDate>
-        <methods>DAP-5: Wissenschaftliche Begründung (Principles) (http://hector.archaeology.org/vocab/dap-5)</methods>
-        <techniques>Minimal-invasive Digitalisierung ohne Anbringung von Passmarken auf dem Original; vollständige Dokumentation aller Datenverarbeitungsschritte.</techniques>
-      </consistsOf>
-      <consistsOf>
-        <hadSpecificPurpose>Abbildungsbilanz &amp; metrologische Validierung</hadSpecificPurpose>
-        <startDate>2026-10-20</startDate>
-        <endDate>2026-10-20</endDate>
-        <methods>DAP-6: Abbildungsbilanz (Evaluation) (http://hector.archaeology.org/vocab/dap-6)</methods>
-        <techniques>Gegenüberstellung von Lasertracking und Streifenlichtscan: Maximale Restabweichung 0.038 mm; Gussnahtverläufe zu 100% abbildungstreu rekonstruiert.</techniques>
+        <methods lang="de">DAP-5: Abbildungsbilanz — Minimal-invasive Digitalisierung ohne Passmarken; maximale Restabweichung 0.038 mm; Gussnahtverläufe zu 100% abbildungstreu rekonstruiert.</methods>
       </consistsOf>
       <assessments>DAP-1 Befund: Kaltgravierte Details an Locken und Widderkopf mit außergewöhnlicher Frische erhalten; Patina intakt.</assessments>
-      <assessments>DAP-6 Urteil: Idealer Referenzdatensatz für klassische griechische Kleinbronzen mit metrologischem Gütesiegel.</assessments>
+      <assessments>DAP-5 Urteil: Idealer Referenzdatensatz für klassische griechische Kleinbronzen mit metrologischem Gütesiegel.</assessments>
       <wasPresentAt>HA-HERMES-STATUETTE-002</wasPresentAt>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <hasCreated>DR-STATUETTE-002-MASTER-HP</hasCreated>
       <hasCreated>DR-STATUETTE-002-REALTIME-GLB</hasCreated>
       <dcRelation>HA-HERMES-STATUETTE-002</dcRelation>
@@ -652,7 +624,7 @@
       <generalType>Artefact</generalType>
       <actors>
         <name lang="de">Römische kaiserzeitliche Bildhauerwerkstatt (Rom/Ostia)</name>
-        <actorType lang="en">person</actorType>
+        <actorType lang="en">organisation</actorType>
         <roles lang="de" namespace="AAT" term="Bildhauer" termUID="http://vocab.getty.edu/aat/300025176">Marmorbildhauer &amp; Kopist</roles>
       </actors>
       <designations>
@@ -700,9 +672,6 @@
       </references>
       <hasRepresentation>DR-MARBLE-003-MASTER-HP</hasRepresentation>
       <hasRepresentation>DR-MARBLE-003-REALTIME-GLB</hasRepresentation>
-      <hasPart>DR-MARBLE-003-MASTER-HP</hasPart>
-      <hasPart>DR-MARBLE-003-REALTIME-GLB</hasPart>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <wasDigitizedBy>ACT-2026-MARBLE-DIGI</wasDigitizedBy>
       <dcRelation>https://archaeology.uni-bonn.de/sammlungen/antiken/objekt-sk920</dcRelation>
     </heritageAssetIdentification>
@@ -752,7 +721,6 @@
         <europeanaRights>Creative Commons - Attribution, Non-Commercial, ShareAlike (BY-NC-SA)</europeanaRights>
       </rights>
       <isRepresentationOf>HA-HERMES-MARBLE-003</isRepresentationOf>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <hasDerivative>DR-MARBLE-003-REALTIME-GLB</hasDerivative>
       <dcRelation>ACT-2026-MARBLE-DIGI</dcRelation>
     </digitalResource>
@@ -802,7 +770,6 @@
         <europeanaRights>Creative Commons - Attribution, ShareAlike (BY-SA)</europeanaRights>
       </rights>
       <isRepresentationOf>HA-HERMES-MARBLE-003</isRepresentationOf>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <isDerivativeOf>DR-MARBLE-003-MASTER-HP</isDerivativeOf>
       <dcRelation>ACT-2026-MARBLE-DIGI</dcRelation>
     </digitalResource>
@@ -878,23 +845,14 @@
         <equipment>Substance 3D Designer, Photoshop, KTX2 Tooling</equipment>
       </consistsOf>
       <consistsOf>
-        <hadSpecificPurpose>Methodische Rechtfertigung &amp; Denkmalschutz</hadSpecificPurpose>
+        <hadSpecificPurpose lang="de">Digital Authenticity Profile, Dimension 5 von 5: Abbildungsbilanz</hadSpecificPurpose>
         <startDate>2026-10-21</startDate>
         <endDate>2026-10-21</endDate>
-        <methods>DAP-5: Wissenschaftliche Begründung (Principles) (http://hector.archaeology.org/vocab/dap-5)</methods>
-        <techniques>Begründung der Sockel-Mitdigitalisierung zur Dokumentation der historischen Montage; Keine fiktive Rekonstruktion verlorener Krempenteile.</techniques>
-      </consistsOf>
-      <consistsOf>
-        <hadSpecificPurpose>Vergleichsbilanz &amp; Güteprüfung</hadSpecificPurpose>
-        <startDate>2026-10-21</startDate>
-        <endDate>2026-10-21</endDate>
-        <methods>DAP-6: Abbildungsbilanz (Evaluation) (http://hector.archaeology.org/vocab/dap-6)</methods>
-        <techniques>99.1% der Oberfläche unter 0.1 mm Abweichung; Transluzenz des pentelischen Marmors im Shader physikalisch plausibel abgebildet.</techniques>
+        <methods lang="de">DAP-5: Abbildungsbilanz — 99.1% der Oberfläche unter 0.1 mm Abweichung; Transluzenz des pentelischen Marmors im Shader physikalisch plausibel abgebildet; keine fiktive Rekonstruktion.</methods>
       </consistsOf>
       <assessments>DAP-1 Befund: Historische Restaurierungen deutlich differenzierbar; antike Meißelführung unverfälscht dokumentiert.</assessments>
-      <assessments>DAP-6 Urteil: Hervorragend für 3D-Kopienforschung und vergleichende Werkstattstudien römischer Kaiserzeitporträts geeignet.</assessments>
+      <assessments>DAP-5 Urteil: Hervorragend für 3D-Kopienforschung und vergleichende Werkstattstudien römischer Kaiserzeitporträts geeignet.</assessments>
       <wasPresentAt>HA-HERMES-MARBLE-003</wasPresentAt>
-      <isPartOf>COL-UNIBONN-ARCH-2026</isPartOf>
       <hasCreated>DR-MARBLE-003-MASTER-HP</hasCreated>
       <hasCreated>DR-MARBLE-003-REALTIME-GLB</hasCreated>
       <dcRelation>HA-HERMES-MARBLE-003</dcRelation>

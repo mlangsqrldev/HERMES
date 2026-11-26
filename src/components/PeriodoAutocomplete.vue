@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full">
+  <div ref="rootEl" class="relative w-full">
     <!-- Provider Toggle (HECTOR Epochs vs. PeriodO) -->
     <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2">
       <div class="flex items-center gap-1.5 text-xs">
@@ -364,8 +364,14 @@
   </div>
 </template>
 
+<script>
+// Shared module-level cache so PeriodO dataset is fetched at most once across all instances
+let livePeriodoCache = null;
+let livePeriodoPromise = null;
+</script>
+
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 
 const props = defineProps({
   currentLocale: {
@@ -415,7 +421,17 @@ const recordRecentPeriod = (period) => {
 };
 
 const providerMode = ref("all"); // 'hector' | 'periodo' | 'all'
+const rootEl = ref(null);
 const searchQuery = ref(props.modelValue || "");
+watch(
+  () => props.modelValue,
+  (val) => {
+    const next = val || "";
+    if (next !== searchQuery.value) {
+      searchQuery.value = next;
+    }
+  },
+);
 const isOpen = ref(false);
 const highlightedIndex = ref(-1);
 const selectedPeriod = ref(null);
@@ -423,8 +439,6 @@ const isLiveSearching = ref(false);
 const liveSkosmosResults = ref([]);
 const livePeriodoResults = ref([]);
 
-let livePeriodoCache = null;
-let livePeriodoPromise = null;
 async function ensureLivePeriodoCache() {
   if (livePeriodoCache) return livePeriodoCache;
   if (livePeriodoPromise) return livePeriodoPromise;
@@ -1438,7 +1452,7 @@ function selectHighlighted() {
 }
 
 function handleClickOutside(e) {
-  if (!e.target.closest(".relative")) {
+  if (rootEl.value && e.target instanceof Node && !rootEl.value.contains(e.target)) {
     isOpen.value = false;
   }
 }
@@ -1448,6 +1462,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  if (liveSearchTimer) clearTimeout(liveSearchTimer);
   document.removeEventListener("click", handleClickOutside);
 });
 </script>

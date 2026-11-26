@@ -8,8 +8,8 @@
         class="text-[11px] font-bold uppercase tracking-wider opacity-75 flex items-center gap-1"
         :title="
           currentLocale === 'de'
-            ? 'Standard-Metadatensprache (xml:lang) für neue Einträge'
-            : 'Default Metadata Language (xml:lang) for new entries'
+            ? 'Standard-Metadatensprache (lang) für neue Einträge'
+            : 'Default Metadata Language (lang) for new entries'
         "
       >
         <svg
@@ -29,7 +29,7 @@
         <span class="hidden 2xl:inline">{{
           currentLocale === "de" ? "Metadaten-Sprache:" : "Metadata Language:"
         }}</span>
-        <span class="2xl:hidden">xml:lang</span>
+        <span class="2xl:hidden">lang</span>
       </span>
 
       <div
@@ -215,6 +215,18 @@
         </button>
     </div>
 
+    <!-- Feedback Toast -->
+    <div
+      v-if="appliedToast"
+      class="toast toast-bottom toast-end z-[9999]"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="alert alert-success text-xs font-semibold shadow-lg py-2 px-3">
+        <span>✓ {{ appliedToast }}</span>
+      </div>
+    </div>
+
     <!-- Modals teleported to body so header backdrop-filter/sticky stacking context never clips them -->
     <Teleport to="body">
       <!-- Person Pool Modal -->
@@ -327,19 +339,29 @@ const availableLanguages = [
   { code: "fr", name: "Français", flag: "🇫🇷" },
   { code: "it", name: "Italiano", flag: "🇮🇹" },
   { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "el", name: "Ελληνικά", flag: "🇬🇷" },
 ];
 
 const setLanguage = (langCode) => {
   defaultMetadataLanguage.value = langCode;
-  emitApplyLanguage();
+  showToast(
+    props.currentLocale === "de"
+      ? `Standard-Sprache für neue Einträge: "${langCode.toUpperCase()}"`
+      : `Default language for new entries: "${langCode.toUpperCase()}"`,
+  );
 };
 
 const emitApplyLanguage = () => {
+  const msg =
+    props.currentLocale === "de"
+      ? `Möchten Sie die Sprache "${defaultMetadataLanguage.value.toUpperCase()}" auf alle vorhandenen Felder und Datensätze anwenden?`
+      : `Apply language "${defaultMetadataLanguage.value.toUpperCase()}" to all existing fields and records?`;
+  if (typeof window !== "undefined" && !window.confirm(msg)) return;
   emit("apply-language", defaultMetadataLanguage.value);
   showToast(
     props.currentLocale === "de"
-      ? `Standardsprache auf "${defaultMetadataLanguage.value.toUpperCase()}" gesetzt!`
-      : `Default language set to "${defaultMetadataLanguage.value.toUpperCase()}"!`,
+      ? `Sprache "${defaultMetadataLanguage.value.toUpperCase()}" auf alle Datensätze angewendet!`
+      : `Language "${defaultMetadataLanguage.value.toUpperCase()}" applied to all records!`,
   );
 };
 

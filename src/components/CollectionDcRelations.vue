@@ -689,8 +689,7 @@ const syncToForm = (list) => {
 const isRelationLinked = (type, targetId) => {
   if (!targetId) return false;
   return activeRelationsList.value.some(
-    (r) =>
-      r.type === type && (r.value === targetId || r.value.includes(targetId)),
+    (r) => r.type === type && r.value === targetId,
   );
 };
 
@@ -698,8 +697,7 @@ const toggleQuickLink = (type, targetId, targetLabel = "") => {
   if (!targetId) return;
   const list = [...activeRelationsList.value];
   const existingIdx = list.findIndex(
-    (r) =>
-      r.type === type && (r.value === targetId || r.value.includes(targetId)),
+    (r) => r.type === type && r.value === targetId,
   );
 
   if (existingIdx > -1) {
