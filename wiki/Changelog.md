@@ -12,7 +12,7 @@ Consolidated release history for **HERMES (Heritage Metadata Entry System)**.
 - **Repository Separation**: Separated `repositoryLocation` (physical repository of a Heritage Asset) from `collectionInstitution` (Collection data provider), keeping optional 1-click *"Adopt from collection"*.
 - **EPSG & 3D Fixes**: Migrated EPSG lookup to `spatialreference.org` with offline fallback; fixed Point Cloud formatting and English labels.
 - **Dropdown & Modal Hardening**: Fixed `blurActiveElement()` language-badge `TypeError`, widened language dropdowns (`w-36`, `z-[60]`), fixed Spatial/Temporal modal opening, responsive 2-column contact editor, and `getAppStore()` browser fallback.
-- **Sample Dataset**: Added `samples/pyramide_gizeh_carare_2.0.6.xml` (10 hierarchical Heritage Assets, 20 Digital Resources, 1 Activity) with roundtrip test coverage.
+- **Sample Dataset**: Added `samples/giza_pyramid_carare_2.0.6.xml` (10 hierarchical Heritage Assets, 20 Digital Resources, 1 Activity) with roundtrip test coverage.
 - **Code Review & Wiki (2026-11-26)**: Removed 30+ unused legacy/mock/asset files (~2.6 MB), standardized all code comments across `src/` and `src-tauri/` to English, and established the structured `wiki/` documentation.
 
 ---

@@ -27,7 +27,8 @@ HERMES/
 │   ├── style.css                       # Tailwind v4 + DaisyUI v5 styles
 │   ├── assets/
 │   │   ├── schema_dictionary.json      # CARARE field definitions, labels (DE/EN), status & tooltips
-│   │   └── default_templates.json      # Built-in starter templates
+│   │   ├── default_templates.json      # Built-in starter templates
+│   │   └── tooltips_translations.json  # Central DE/EN tooltip dictionary
 │   ├── output_components/
 │   │   ├── CollectionInformationCrud.vue       # Step 1: Collection
 │   │   ├── HeritageAssetIdentificationCrud.vue # Step 2: Heritage Assets
@@ -43,7 +44,7 @@ HERMES/
 │       ├── relationsHelper.js          # Bidirectional CARARE relations, health check & Auto-Match
 │       ├── sharedState.js              # Global rights, language, pools, GND dedup & JSON backup/restore
 │       ├── termResolver.js             # Term URI resolver (HECTOR / AAT / PeriodO)
-│       ├── tooltips.js                 # Bilingual tooltip loader (reads root tooltips_uebersetzung.json)
+│       ├── tooltips.js                 # Bilingual tooltip loader (reads src/assets/tooltips_translations.json)
 │       └── vocabHistory.js             # Local vocabulary lookup helper
 ├── src-tauri/
 │   ├── Cargo.toml                      # Rust crate & Tauri 2 plugin dependencies
@@ -55,12 +56,12 @@ HERMES/
 │   ├── manual.html                     # Embedded bilingual scholarly manual (DE/EN, CJK-ready)
 │   ├── hermes-logo.svg                 # Favicon
 │   ├── hermes-vase-icon.png            # App header signet
-│   └── CARARE_Phantasie_Kollektion_3D_Master_und_Derivate.xml  # Built-in Demo Project
+│   └── CARARE_Demo_Collection_3D_Master_and_Derivatives.xml   # Built-in Demo Project
 ├── samples/                            # Sample CARARE 2.0.6 XML datasets (e.g. Giza Pyramid)
 ├── CARARE/                             # Official carare-v2.0.6.xsd schema, PDFs & reference XMLs
 ├── tests/                              # Vitest unit & roundtrip test suites
 ├── wiki/                               # GitHub-Wiki-compatible documentation
-└── HERMES_Windows_Release_Package/     # Portable Windows release (.exe, standalone manual, LIESMICH.txt)
+└── HERMES_Windows_Release_Package/     # Portable Windows release (.exe, standalone manual, README.txt)
 ```
 
 ---
@@ -85,7 +86,7 @@ npm.cmd test
 
 Current test suites in `tests/`:
 - `tests/relationsHelper.test.js` — Bidirectional linking, orphan/health analysis, 30-asset batch Auto-Match idempotency, form counters
-- `tests/carareRoundtrip.test.js` — CARARE XML parsing & `samples/pyramide_gizeh_carare_2.0.6.xml` roundtrip
+- `tests/carareRoundtrip.test.js` — CARARE XML parsing & `samples/giza_pyramid_carare_2.0.6.xml` roundtrip
 - `tests/bugfixesV0132.test.js` — Entity pool separation, GND duplicate prevention, backup/restore, `format` array normalization
 - `tests/hectorAndTooltips.test.js` — HECTOR vocabulary & tooltip loading
 - `tests/pdfReport.test.js` — Scholarly PDF report generation
@@ -93,7 +94,7 @@ Current test suites in `tests/`:
 ### Validating Exported XML Against `carare-v2.0.6.xsd`
 With Python `lxml` installed:
 ```bash
-python -c "import lxml.etree as ET; s = ET.XMLSchema(ET.parse('CARARE/carare-v2.0.6.xsd')); d = ET.parse('samples/pyramide_gizeh_carare_2.0.6.xml'); print('Valid:', s.validate(d), s.error_log)"
+python -c "import lxml.etree as ET; s = ET.XMLSchema(ET.parse('CARARE/carare-v2.0.6.xsd')); d = ET.parse('samples/giza_pyramid_carare_2.0.6.xml'); print('Valid:', s.validate(d), s.error_log)"
 ```
 
 ---
@@ -111,8 +112,8 @@ python -c "import lxml.etree as ET; s = ET.XMLSchema(ET.parse('CARARE/carare-v2.
    - `src-tauri/tauri.conf.json`
    - `src-tauri/Cargo.toml`
    - `src/App.vue` (header version badge)
-   - `public/manual.html` (and copy to `HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html`)
-   - `HERMES_Windows_Release_Package/LIESMICH.txt`
+   - `public/manual.html` (and copy to `HERMES_Windows_Release_Package/HERMES_Manual.html`)
+   - `HERMES_Windows_Release_Package/README.txt`
 2. Run tests and compile the standalone Windows executable:
    ```powershell
    npm.cmd test

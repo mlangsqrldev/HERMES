@@ -2570,7 +2570,7 @@ const loadSampleDataset = async (silent = false) => {
 
     try {
       const resp = await fetch(
-        "/CARARE_Phantasie_Kollektion_3D_Master_und_Derivate.xml",
+        "/CARARE_Demo_Collection_3D_Master_and_Derivatives.xml",
       );
 
       if (resp.ok) xmlText = await resp.text();
@@ -2581,7 +2581,7 @@ const loadSampleDataset = async (silent = false) => {
     if (!xmlText) {
       try {
         xmlText = await readTextFile(
-          "CARARE_Phantasie_Kollektion_3D_Master_und_Derivate.xml",
+          "CARARE_Demo_Collection_3D_Master_and_Derivatives.xml",
         );
       } catch (err) {
         console.warn("Tauri fs fallback:", err);
@@ -7526,7 +7526,7 @@ const exportSingleCarareXmlsZip = async () => {
     zip.file("README.txt", readmeContent);
 
     const zipContent = await zip.generateAsync({ type: "uint8array" });
-    const defaultFilename = `hermes-carare-einzelfiles-${Date.now()}.zip`;
+    const defaultFilename = `hermes-carare-single-files-${Date.now()}.zip`;
 
     if (isTauri()) {
       const selectedPath = await save({

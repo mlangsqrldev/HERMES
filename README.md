@@ -60,8 +60,8 @@ Full user and developer documentation lives in the **[HERMES Wiki](https://githu
 | **[Architecture & Developer Guide](https://github.com/mlangsqrldev/HERMES/wiki/Architecture-and-Developer-Guide)** | Tech stack, repository layout, Vitest suites, XSD validation, and Windows release builds |
 | **[Changelog](https://github.com/mlangsqrldev/HERMES/wiki/Changelog)** | Consolidated release history (`v0.1.5` → `v0.1.34`) |
 
-- **Interactive User Manual (DE / EN):** [`public/manual.html`](public/manual.html) (also standalone at [`HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html`](HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html))
-- **Sample CARARE 2.0.6 Dataset:** [`samples/pyramide_gizeh_carare_2.0.6.xml`](samples/pyramide_gizeh_carare_2.0.6.xml)
+- **Interactive User Manual (DE / EN):** [`public/manual.html`](public/manual.html) (also standalone at [`HERMES_Windows_Release_Package/HERMES_Manual.html`](HERMES_Windows_Release_Package/HERMES_Manual.html))
+- **Sample CARARE 2.0.6 Dataset:** [`samples/giza_pyramid_carare_2.0.6.xml`](samples/giza_pyramid_carare_2.0.6.xml)
 
 ---
 

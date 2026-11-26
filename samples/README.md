@@ -1,22 +1,22 @@
-# HERMES Beispiel-Datensätze (`samples/`)
+# HERMES Sample Datasets (`samples/`)
 
-Dieser Ordner enthält vollständige, **CARARE 2.0.6**-konforme Beispieldatensätze zum direkten Laden in HERMES (*„Importieren / Load CARARE“*).
+This folder contains complete, **CARARE 2.0.6**-compliant sample datasets ready to load directly into HERMES (*Load CARARE*).
 
-## `pyramide_gizeh_carare_2.0.6.xml`
+## `giza_pyramid_carare_2.0.6.xml`
 
-Vollständiger archäologischer Hierarchie-Datensatz (**1 Sammlung · 10 Kulturgüter · 20 Digitalisate · 1 gemeinsame Aktivität**):
+Complete archaeological hierarchy dataset (**1 Collection · 10 Heritage Assets · 20 Digital Resources · 1 Activity**):
 
-- **Sammlung**: `COL-GIZEH-01` (*Pyramidenkomplex Gizeh / Giza Pyramid Complex*)
-- **Kulturgüter-Hierarchie (`hasPart` / `isPartOf`)**:
-  - `HA-PYRAMIDE` (Pyramide)
-    - `HA-GRAB` (Grabkammer)
-      - `HA-SARKOPHAG` (Granitsarkophag)
-        - `HA-SARKOPHAG-T1` (Sarkophag-Wanne)
-        - `HA-SARKOPHAG-T2` (Sarkophag-Deckel)
-        - `HA-SARKOPHAG-T3` (Sarkophag-Kopfseite)
-        - `HA-SARKOPHAG-T4` (Sarkophag-Fußseite)
-      - `HA-MUMIE` (Mumie)
-      - `HA-KANOPENKASTEN` (Kanopenkasten)
-        - `HA-KANOPEN-INHALT` (Inhalt des Kanopenkastens / 4 Kanopenkrüge)
-- **Digitalisate (`20` Stück)**: Jedes der 10 Kulturgüter besitzt genau **1 hochauflösende Master-Datei** (`*-MASTER`) und **1 Web-Low-Poly-Ableitung** (`*-LP`, verknüpft via `hasDerivative` / `isDerivativeOf`).
-- **Aktivität (`1` gemeinsame Kampagne)**: `ACT-GIZEH-SCAN` (*3D-Dokumentationskampagne Gizeh*), die alle 10 Kulturgüter (`wasPresentAt`) und alle 20 Digitalisate (`hasCreated`) erzeugt hat.
+- **Collection**: `COL-GIZEH-01` (*Giza Pyramid Complex*)
+- **Heritage Asset Hierarchy (`hasPart` / `isPartOf`)**:
+  - `HA-PYRAMIDE` (Pyramid)
+    - `HA-GRAB` (Burial Chamber)
+      - `HA-SARKOPHAG` (Granite Sarcophagus)
+        - `HA-SARKOPHAG-T1` (Sarcophagus Trough)
+        - `HA-SARKOPHAG-T2` (Sarcophagus Lid)
+        - `HA-SARKOPHAG-T3` (Sarcophagus Head End)
+        - `HA-SARKOPHAG-T4` (Sarcophagus Foot End)
+      - `HA-MUMIE` (Mummy)
+      - `HA-KANOPENKASTEN` (Canopic Chest)
+        - `HA-KANOPEN-INHALT` (Canopic Chest Contents / 4 Canopic Jars)
+- **Digital Resources (`20` total)**: Each of the 10 Heritage Assets has **1 high-resolution Master model** (`*-MASTER`) and **1 Web Low-Poly derivative** (`*-LP`, linked via `hasDerivative` / `isDerivativeOf`).
+- **Activity (`1` shared campaign)**: `ACT-GIZEH-SCAN` (*3D Documentation Campaign Giza*), linked to all 10 Heritage Assets (`wasPresentAt`) and all 20 Digital Resources (`hasCreated`).

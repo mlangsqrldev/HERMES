@@ -155,11 +155,11 @@ describe("CARARE XML Roundtrip Parser", () => {
     expect(step.equipment).toContain("SDXL");
   });
 
-  it("parses samples/pyramide_gizeh_carare_2.0.6.xml completely", async () => {
+  it("parses samples/giza_pyramid_carare_2.0.6.xml completely", async () => {
     const fs = await import("fs");
     const path = await import("path");
     const xml = fs.readFileSync(
-      path.resolve(process.cwd(), "samples/pyramide_gizeh_carare_2.0.6.xml"),
+      path.resolve(process.cwd(), "samples/giza_pyramid_carare_2.0.6.xml"),
       "utf-8",
     );
     const parsed = parseCarareXml(xml);

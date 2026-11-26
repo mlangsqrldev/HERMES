@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import tooltipsData from "../tooltips_uebersetzung.json";
+import tooltipsData from "../src/assets/tooltips_translations.json";
 import { getTooltipText } from "../src/utils/tooltips.js";
 import { IPTC_AI_TERMS, CURATED_HECTOR_3D_TERMS } from "../src/utils/hector3dVocab.js";
 import { buildBonnDataJson } from "../src/utils/bonndataExporter.js";
