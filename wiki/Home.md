@@ -42,13 +42,13 @@ flowchart LR
 | **[Exports & BonnData](Exports-and-BonnData.md)** | Live XML split-screen, combined/split CARARE XML, BagIt RFC 8493, PDF reports, BonnData API, and JSON templates |
 | **[Building from Source](Building-from-Source.md)** | Step-by-step self-build guides for **Linux** (`.deb`/`.rpm`/`.AppImage`), **macOS** (`.app`/`.dmg`/Universal), **Windows** (`.exe`/`.msi`), and Web mode |
 | **[Architecture & Developer Guide](Architecture-and-Developer-Guide.md)** | Codebase layout, Tauri 2 / Rust backend, testing with Vitest, XSD validation, and release builds |
-| **[Changelog](Changelog.md)** | Consolidated release history from `v0.1.5` to `v0.1.34` |
+| **[Changelog](Changelog.md)** | Consolidated release history from `v0.1.5` to `v0.1.35` |
 
 ---
 
-## Current Release (`v0.1.34`)
+## Current Release (`v0.1.35`)
 
-- **Portable Windows binary:** `HERMES_Windows_Release_Package/HERMES_v0.1.34_2026-11-25.exe`
+- **Portable Windows binary:** `HERMES_Windows_Release_Package/HERMES_v0.1.35_2026-11-26.exe`
 - **Built-in bilingual manual:** `public/manual.html` (also standalone at `HERMES_Windows_Release_Package/HERMES_Manual.html`)
 - **Sample dataset:** `samples/giza_pyramid_carare_2.0.6.xml` (1 Collection, 10 Heritage Assets in a 4-level hierarchy, 20 Digital Resources, 1 Activity)
 - **Target schema:** CARARE 2.0.6 (`http://www.carare.eu/carareSchema`)

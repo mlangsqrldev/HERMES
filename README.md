@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v0.1.34-b84a27?style=flat-square" alt="Version v0.1.34" />
+  <img src="https://img.shields.io/badge/version-v0.1.35-b84a27?style=flat-square" alt="Version v0.1.35" />
   <img src="https://img.shields.io/badge/standard-CARARE%202.0.6-1d4e89?style=flat-square" alt="CARARE 2.0.6" />
   <img src="https://img.shields.io/badge/stack-Tauri%202%20%C2%B7%20Vue%203%20%C2%B7%20Rust-16795f?style=flat-square" alt="Tauri 2 · Vue 3 · Rust" />
   <img src="https://img.shields.io/badge/languages-DE%20%7C%20EN-5b47a8?style=flat-square" alt="Bilingual DE / EN" />
@@ -59,7 +59,7 @@ Full user and developer documentation lives in the **[HERMES Wiki](https://githu
 | **[Exports & BonnData](https://github.com/mlangsqrldev/HERMES/wiki/Exports-and-BonnData)** | Live XML, combined/split CARARE XML, BagIt RFC 8493, PDF reports, and BonnData API |
 | **[Building from Source (Linux / macOS / Windows)](https://github.com/mlangsqrldev/HERMES/wiki/Building-from-Source)** | Native desktop builds (`.deb`/`.rpm`/`.AppImage`, `.app`/`.dmg`, `.exe`/`.msi`) & Rust-free browser mode |
 | **[Architecture & Developer Guide](https://github.com/mlangsqrldev/HERMES/wiki/Architecture-and-Developer-Guide)** | Tech stack, repository layout, Vitest suites, XSD validation, and release checklist |
-| **[Changelog](https://github.com/mlangsqrldev/HERMES/wiki/Changelog)** | Consolidated release history (`v0.1.5` → `v0.1.34`) |
+| **[Changelog](https://github.com/mlangsqrldev/HERMES/wiki/Changelog)** | Consolidated release history (`v0.1.5` → `v0.1.35`) |
 
 - **Interactive User Manual (DE / EN):** [`public/manual.html`](public/manual.html) (also standalone at [`HERMES_Windows_Release_Package/HERMES_Manual.html`](HERMES_Windows_Release_Package/HERMES_Manual.html))
 - **Sample CARARE 2.0.6 Dataset:** [`samples/giza_pyramid_carare_2.0.6.xml`](samples/giza_pyramid_carare_2.0.6.xml)
@@ -69,7 +69,7 @@ Full user and developer documentation lives in the **[HERMES Wiki](https://githu
 ## Quick Start
 
 ### End Users (Windows 10 / 11)
-Download and double-click [`HERMES_Windows_Release_Package/HERMES_v0.1.34_2026-11-25.exe`](HERMES_Windows_Release_Package/HERMES_v0.1.34_2026-11-25.exe) — no installation required.
+Download and double-click [`HERMES_Windows_Release_Package/HERMES_v0.1.35_2026-11-26.exe`](HERMES_Windows_Release_Package/HERMES_v0.1.35_2026-11-26.exe) — no installation required.
 
 ### Building on Linux, macOS & Windows
 

@@ -4,6 +4,13 @@ Consolidated release history for **HERMES (Heritage Metadata Entry System)**.
 
 ---
 
+## `v0.1.35` (2026-11-26) — Strict Collection `dcRelation`, Code Cleanup & Full Wiki
+- **Strict CARARE 2.0.6 Collection Relations**: Enforced `<dcRelation>` as the sole relation element on `<collectionInformation>` across `CollectionDcRelations.vue`, `relationsHelper.js`, `carareXmlParser.js`, and the XML serializer XSD guard in `App.vue` (preventing illegal `<hasPart>` / `<isPartOf>` / `<wasDigitizedBy>` tags on Collection).
+- **Repository Cleanup & Internationalization**: Removed 40+ unused legacy assets/scripts and the third-party `CARARE/` reference folder, standardized all repository filenames and code comments to English (`src/assets/tooltips_translations.json`, `samples/giza_pyramid_carare_2.0.6.xml`, `public/CARARE_Demo_Collection_3D_Master_and_Derivatives.xml`), reducing the packaged binary size.
+- **GitHub Wiki & Cross-Platform Build Guide**: Published the 12-page HERMES Wiki (including Linux, macOS, Windows, and Rust-free Web build instructions), BCDH branding, and NFDI4Objects / DFG funding attribution.
+
+---
+
 ## `v0.1.34` (2026-11-25) — Two-List Relations UI, Simplified Rights & Clean Start
 - **Relations & Assignment UI (`RelationsGraphEditor.vue`)**: Streamlined into a clean Two-List layout — (1) Object Hierarchy (`partOf` dropdown per Heritage Asset) and (2) Full-width Digital Resource rows with stacked selectors for Heritage Asset (`isRepresentationOf`), Master (`isDerivativeOf`), and **per-resource Activity** (`hasCreated`).
 - **Consistency Check (`relationsHelper.js`)**: `analyzeRelationsHealth` accounts for `partOf` and `replicaOf` links alongside `hasRepresentation` and `wasDigitizedBy`.

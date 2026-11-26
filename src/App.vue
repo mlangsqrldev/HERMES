@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.34 · 2026-11-25</span
+              >v0.1.35 · 2026-11-26</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
