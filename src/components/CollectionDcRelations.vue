@@ -27,8 +27,8 @@
           <p class="text-xs text-base-content/60 mt-0.5">
             {{
               currentLocale === "de"
-                ? "Verknüpfen Sie diese Sammlung per 1-Klick mit enthaltenen Kulturgütern (hasPart), zugehörigen Digitalisaten, Digitalisierungs-Aktivitäten oder externen Repositorien/Websites."
-                : "Link this collection with 1-click to included heritage assets (hasPart), digital resources, capture activities, or external repositories."
+                ? "In CARARE 2.0.6 besitzt die Sammlung ausschließlich das Element dcRelation. Alle Verknüpfungen (Kulturgüter, Digitalisate, Aktivitäten oder externe Websites/Repositorien) werden daher ausschließlich als dcRelation gespeichert."
+                : "In CARARE 2.0.6, Collection exclusively uses the dcRelation element. All links (heritage assets, digital resources, activities, or external repositories/URLs) are stored strictly in dcRelation."
             }}
           </p>
         </div>
@@ -673,18 +673,12 @@ const activeRelationsList = computed(() => {
 });
 
 const syncToForm = (list) => {
-  // Sync dedicated CARARE arrays
-  props.form["hasPart"] = list
-    .filter((i) => i.type === "hasPart")
-    .map((i) => i.value);
-  props.form["wasDigitizedBy"] = list
-    .filter((i) => i.type === "wasDigitizedBy")
-    .map((i) => i.value);
-  props.form["isPartOf"] = list
-    .filter((i) => i.type === "isPartOf")
-    .map((i) => i.value);
+  // CARARE 2.0.6 XSD allows ONLY <dcRelation> on <collectionInformation>
+  // (no <hasPart>, <isPartOf>, or <wasDigitizedBy> elements).
+  delete props.form["hasPart"];
+  delete props.form["wasDigitizedBy"];
+  delete props.form["isPartOf"];
 
-  // Sync dcRelation array
   props.form["dcRelation"] = list.map((item) => {
     if (item.type === "dcRelation") return item.value;
     return `${item.type}:${item.value}`;

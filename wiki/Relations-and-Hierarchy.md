@@ -36,7 +36,7 @@ All bidirectional mutations are implemented in `src/utils/relationsHelper.js`:
 | Resource ↔ Activity | `Activity.hasCreated` | *(target DR ID)* | Activity produced this digital resource |
 | Parent ↔ Child Asset | `Parent.hasPart` | `Child.isPartOf` | Multi-part monument or archaeological ensemble |
 | Replica → Original Asset | `Replica.isReplicaOf` | *(target HA ID)* | Plaster cast, historic copy, or reconstruction |
-| Collection Sync | `Collection.hasPart`, `Collection.wasDigitizedBy` | *(HA & Activity IDs)* | Collection umbrella references all project items |
+| Collection Sync | `Collection.dcRelation` *(only relation element in CARARE 2.0.6)* | *(HA & Activity IDs / URIs)* | Collection-level Dublin Core relations (`<dcRelation>`) |
 
 ---
 
@@ -46,7 +46,7 @@ All bidirectional mutations are implemented in `src/utils/relationsHelper.js`:
   - Conservatively and idempotently pairs derivative suffixes (`-WEB-GLB`, `-LP`, `-LOWPOLY`, `-DERIV`, etc.) to their matching Master Digital Resource.
   - Matches unlinked Digital Resources to Heritage Assets by normalized ID or inventory-number stem (e.g., `DR-SK740-MASTER` ↔ `HA-SK740`), inherits the Master's Heritage Asset for derivatives, or links automatically when only 1 Heritage Asset exists.
   - Links records to the Activity automatically when a single project Activity exists (or by ID stem).
-  - Synchronizes `Collection.hasPart` and `Collection.wasDigitizedBy`.
+  - Synchronizes Collection links strictly into `Collection.dcRelation` (in CARARE 2.0.6 XSD, `<collectionInformation>` only supports `<dcRelation>`, never `<hasPart>` or `<wasDigitizedBy>`).
 - **Health & Orphan Check (`analyzeRelationsHealth`)**:
   - Flags any Digital Resource missing the mandatory `isRepresentationOf` link.
   - Counts unlinked Heritage Assets (accounting for `hasRepresentation`, `wasDigitizedBy`, `partOf`, and `replicaOf`) and drives the Step 5 sidebar quality badge.

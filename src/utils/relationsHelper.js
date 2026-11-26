@@ -277,8 +277,9 @@ export function toggleAssetReplicaLink(replicaHa, originalHa, forceState = null)
 }
 
 /**
- * Synchronizes Collection hasPart (for all Heritage Assets) and wasDigitizedBy (for all Activities)
- * keeping dcRelation in sync with CollectionDcRelations.vue format.
+ * Synchronizes Collection relations strictly via `dcRelation`.
+ * Per CARARE 2.0.6 XSD, <collectionInformation> only supports <dcRelation>
+ * (never <hasPart>, <isPartOf>, or <wasDigitizedBy>).
  */
 export function syncCollectionRelations(
   collectionForm,
@@ -287,6 +288,11 @@ export function syncCollectionRelations(
 ) {
   if (!collectionForm || typeof collectionForm !== "object") return 0;
   let added = 0;
+
+  // Strip any legacy non-XSD relation keys on collectionInformation
+  delete collectionForm.hasPart;
+  delete collectionForm.wasDigitizedBy;
+  delete collectionForm.isPartOf;
 
   const ensureDcEntry = (prefix, val) => {
     const tag = `${prefix}:${val}`;
@@ -299,25 +305,25 @@ export function syncCollectionRelations(
     });
     if (!exists) {
       collectionForm.dcRelation.push(tag);
+      return true;
     }
+    return false;
   };
 
   for (const ha of heritageItems || []) {
     const haId = getRecordId(ha);
     if (!haId) continue;
-    if (addLinkValue(collectionForm, "hasPart", haId)) {
+    if (ensureDcEntry("hasPart", haId)) {
       added++;
     }
-    ensureDcEntry("hasPart", haId);
   }
 
   for (const act of activityItems || []) {
     const actId = getRecordId(act);
     if (!actId) continue;
-    if (addLinkValue(collectionForm, "wasDigitizedBy", actId)) {
+    if (ensureDcEntry("wasDigitizedBy", actId)) {
       added++;
     }
-    ensureDcEntry("wasDigitizedBy", actId);
   }
 
   return added;
@@ -782,7 +788,7 @@ export function autoMatchRelations(
 export function countFormRelations(form, kind) {
   if (!form || typeof form !== "object") return 0;
   const keysByKind = {
-    collection: ["hasPart", "wasDigitizedBy", "isPartOf", "dcRelation"],
+    collection: ["dcRelation"],
     heritage: [
       "hasRepresentation",
       "wasDigitizedBy",

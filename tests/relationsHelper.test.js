@@ -118,7 +118,7 @@ describe("relationsHelper (Graphical Relations Editor & Auto-Match)", () => {
       });
     }
     const activities = [{ "recordInformation.id": "ACT-CAMPAIGN-2026" }];
-    const collection = { id: "COL-RELIEFS-2026", hasPart: [], wasDigitizedBy: [], dcRelation: [] };
+    const collection = { id: "COL-RELIEFS-2026", dcRelation: [] };
 
     expect(normalizeMatchStem("DR-RELIEF_05-WEB-GLB")).toBe("RELIEF_05");
     expect(normalizeMatchStem("HA-RELIEF_05")).toBe("RELIEF_05");
@@ -127,13 +127,17 @@ describe("relationsHelper (Graphical Relations Editor & Auto-Match)", () => {
     expect(res1.masterDerivativeLinks).toBe(30);
     expect(res1.assetResourceLinks).toBe(60); // 30 masters + 30 web derivatives
     expect(res1.activityLinks).toBe(90); // 30 HA + 60 DR linked to single activity
-    expect(res1.collectionLinks).toBe(31); // 30 HA + 1 ACT
+    expect(res1.collectionLinks).toBe(31); // 30 HA + 1 ACT stored exclusively in dcRelation
 
     const health = analyzeRelationsHealth(heritage, digital, activities);
     expect(health.missingRequiredCount).toBe(0);
     expect(health.orphanCount).toBe(0);
-    expect(collection.hasPart).toHaveLength(30);
-    expect(collection.wasDigitizedBy).toEqual(["ACT-CAMPAIGN-2026"]);
+    // CARARE 2.0.6: collectionInformation allows ONLY <dcRelation> (no hasPart / wasDigitizedBy)
+    expect(collection.hasPart).toBeUndefined();
+    expect(collection.wasDigitizedBy).toBeUndefined();
+    expect(collection.dcRelation).toHaveLength(31);
+    expect(collection.dcRelation).toContain("hasPart:HA-RELIEF_01");
+    expect(collection.dcRelation).toContain("wasDigitizedBy:ACT-CAMPAIGN-2026");
 
     // Second run must be completely idempotent (0 new links)
     const res2 = autoMatchRelations(heritage, digital, activities, collection);
@@ -148,12 +152,14 @@ describe("relationsHelper (Graphical Relations Editor & Auto-Match)", () => {
       ),
     ).toBe(2);
 
-    const col = { hasPart: [], wasDigitizedBy: [], dcRelation: [] };
+    const col = { dcRelation: [] };
     syncCollectionRelations(
       col,
       [{ "recordInformation.id": "HA-1" }],
       [{ "recordInformation.id": "ACT-1" }],
     );
+    expect(col.hasPart).toBeUndefined();
+    expect(col.wasDigitizedBy).toBeUndefined();
     expect(countFormRelations(col, "collection")).toBe(2);
   });
 });

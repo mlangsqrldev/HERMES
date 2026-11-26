@@ -1442,13 +1442,12 @@ function reconcileProjectRelations(result) {
     });
   });
 
-  // 4. Collection relations
+  // 4. Collection relations: CARARE 2.0.6 <collectionInformation> only supports <dcRelation>
+  // (do not inject non-XSD <hasPart> / <wasDigitizedBy> properties onto collections).
   collections.forEach((col) => {
-    const colHasPart = ensureArray(col, "hasPart");
-    assets.forEach((ha) => {
-      const haId = ha["recordInformation.id"] || ha.id || ha["appellation.id"];
-      addUnique(colHasPart, haId);
-    });
+    delete col.hasPart;
+    delete col.wasDigitizedBy;
+    delete col.isPartOf;
   });
 
   // 5. Global Field Fallback & Inheritance

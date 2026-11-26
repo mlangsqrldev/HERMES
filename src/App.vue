@@ -6173,9 +6173,36 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       node.text = String(node.attributes["term"]).trim();
     }
 
-    // Ensure WrapCollection (collectionInformation) always has valid <coverage><spatial><locationSet>
+    // CARARE 2.0.6 XSD allows ONLY <dcRelation> as a relation element on <collectionInformation>.
+    // Migrate any legacy non-schema relation children (<hasPart>, <isPartOf>, <wasDigitizedBy>) into <dcRelation>.
     if (node.name === "collectionInformation") {
-      // Do not auto-inject default spatial/namedLocation when none was entered
+      const illegalRelNames = new Set([
+        "hasPart",
+        "isPartOf",
+        "wasDigitizedBy",
+      ]);
+      const existingDc = new Set(
+        node.children
+          .filter((c) => c.name === "dcRelation" && c.text)
+          .map((c) => String(c.text).trim()),
+      );
+      const migrated = [];
+      node.children = node.children.filter((c) => {
+        if (!illegalRelNames.has(c.name)) return true;
+        const val = String(c.text || "").trim();
+        if (val) {
+          const entry = `${c.name}:${val}`;
+          if (!existingDc.has(entry) && !existingDc.has(val)) {
+            existingDc.add(entry);
+            migrated.push(entry);
+          }
+        }
+        return false;
+      });
+      for (const entry of migrated) {
+        const dcNode = node.addChild("dcRelation");
+        dcNode.text = entry;
+      }
     }
 
     if (
