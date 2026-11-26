@@ -13,5 +13,6 @@
 - **[Exports & BonnData](Exports-and-BonnData.md)**
 
 #### Engineering
+- **[Building from Source (Linux / macOS / Windows)](Building-from-Source.md)**
 - **[Architecture & Developer Guide](Architecture-and-Developer-Guide.md)**
 - **[Changelog](Changelog.md)**

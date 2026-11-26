@@ -57,7 +57,8 @@ Full user and developer documentation lives in the **[HERMES Wiki](https://githu
 | **[3D Metadata & DAP](https://github.com/mlangsqrldev/HERMES/wiki/3D-Metadata-and-DAP)** | SfM/SLS/TLS, 3D Inspector, Web-GLB derivatives, IPTC AI disclosure, and 5-dimension DAP |
 | **[Authority Files & Pools](https://github.com/mlangsqrldev/HERMES/wiki/Authority-Files-and-Pools)** | Controlled vocabularies, GND deduplication, central pools, and JSON backup/restore |
 | **[Exports & BonnData](https://github.com/mlangsqrldev/HERMES/wiki/Exports-and-BonnData)** | Live XML, combined/split CARARE XML, BagIt RFC 8493, PDF reports, and BonnData API |
-| **[Architecture & Developer Guide](https://github.com/mlangsqrldev/HERMES/wiki/Architecture-and-Developer-Guide)** | Tech stack, repository layout, Vitest suites, XSD validation, and Windows release builds |
+| **[Building from Source (Linux / macOS / Windows)](https://github.com/mlangsqrldev/HERMES/wiki/Building-from-Source)** | Native desktop builds (`.deb`/`.rpm`/`.AppImage`, `.app`/`.dmg`, `.exe`/`.msi`) & Rust-free browser mode |
+| **[Architecture & Developer Guide](https://github.com/mlangsqrldev/HERMES/wiki/Architecture-and-Developer-Guide)** | Tech stack, repository layout, Vitest suites, XSD validation, and release checklist |
 | **[Changelog](https://github.com/mlangsqrldev/HERMES/wiki/Changelog)** | Consolidated release history (`v0.1.5` → `v0.1.34`) |
 
 - **Interactive User Manual (DE / EN):** [`public/manual.html`](public/manual.html) (also standalone at [`HERMES_Windows_Release_Package/HERMES_Manual.html`](HERMES_Windows_Release_Package/HERMES_Manual.html))
@@ -70,7 +71,9 @@ Full user and developer documentation lives in the **[HERMES Wiki](https://githu
 ### End Users (Windows 10 / 11)
 Download and double-click [`HERMES_Windows_Release_Package/HERMES_v0.1.34_2026-11-25.exe`](HERMES_Windows_Release_Package/HERMES_v0.1.34_2026-11-25.exe) — no installation required.
 
-### Developers
+### Building on Linux, macOS & Windows
+
+HERMES builds natively on **Linux** (`.deb`, `.rpm`, `.AppImage`), **macOS** (Apple Silicon & Intel `.app` / `.dmg`), and **Windows** (`.exe` / `.msi`), and also runs in any browser without Rust (`npm run dev`).
 
 ```bash
 # 1. Install frontend dependencies
@@ -79,16 +82,15 @@ npm install
 # 2. Run unit & CARARE roundtrip tests (Vitest)
 npm test
 
-# 3. Start browser dev server (Vite)
+# 3. Start browser mode (no Rust required — Linux / macOS / Windows)
 npm run dev
 
-# 4. Run full Tauri 2 desktop app (requires Rust + VS C++ Build Tools on Windows)
+# 4. Run or build the native Tauri 2 desktop app
 npm run tauri dev
-
-# 5. Build production frontend & portable Windows executable
-npm run build
-npm run tauri build -- --no-bundle
+npm run tauri build
 ```
+
+For platform-specific native prerequisites (`libwebkit2gtk-4.1-dev`, Xcode Command Line Tools, Visual Studio C++ Build Tools, Universal macOS builds, and troubleshooting), see the **[Building from Source](https://github.com/mlangsqrldev/HERMES/wiki/Building-from-Source)** wiki guide.
 
 ---
 

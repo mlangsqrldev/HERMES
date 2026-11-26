@@ -30,6 +30,8 @@ npm run tauri dev
 
 On Windows PowerShell where script execution policy restricts `npm.ps1`, invoke `npm.cmd` (e.g., `npm.cmd run dev`, `npm.cmd test`, `npm.cmd run build`).
 
+> **Building on Linux or macOS?** See the dedicated **[Building from Source (Linux, macOS & Windows)](Building-from-Source.md)** guide for exact system packages (`webkit2gtk-4.1`, Xcode Command Line Tools, `.deb`/`.rpm`/`.AppImage`, `.app`/`.dmg`, Universal macOS binaries, and Rust-free Web mode).
+
 ---
 
 ## 3. Global Header Bar (Set Once per Project)

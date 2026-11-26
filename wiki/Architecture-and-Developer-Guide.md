@@ -99,14 +99,11 @@ python -c "import lxml.etree as ET; s = ET.XMLSchema(ET.parse('CARARE/carare-v2.
 
 ---
 
-## 5. Building a Windows Standalone Release
+## 5. Building Releases (Linux, macOS & Windows)
 
-### Prerequisites
-- Node.js (LTS) + npm
-- Rust toolchain (`rustup`, `cargo`, `rustc`)
-- Microsoft Visual Studio 2022 C++ Build Tools
+For complete platform-specific dependency installation and build commands for **Linux** (Debian/Ubuntu, Fedora, Arch — `.deb`, `.rpm`, `.AppImage`), **macOS** (Apple Silicon, Intel, Universal `.app` & `.dmg`), **Windows** (`.exe`, `.msi`, NSIS), and Rust-free Web mode, see **[Building from Source](Building-from-Source.md)**.
 
-### Release Checklist
+### Windows Release Checklist
 1. Bump version in:
    - `package.json`
    - `src-tauri/tauri.conf.json`

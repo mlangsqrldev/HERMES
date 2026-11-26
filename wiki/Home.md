@@ -40,6 +40,7 @@ flowchart LR
 | **[3D Metadata & DAP](3D-Metadata-and-DAP.md)** | Photogrammetry/SfM, SLS, TLS, 3D Inspector, Web-GLB derivatives, IPTC AI transparency, and the 5-dimension DAP |
 | **[Authority Files & Pools](Authority-Files-and-Pools.md)** | HECTOR SKOSMOS, GND, ORCID, PeriodO, Pleiades, GeoNames, EPSG, local pools, and JSON backup/restore |
 | **[Exports & BonnData](Exports-and-BonnData.md)** | Live XML split-screen, combined/split CARARE XML, BagIt RFC 8493, PDF reports, BonnData API, and JSON templates |
+| **[Building from Source](Building-from-Source.md)** | Step-by-step self-build guides for **Linux** (`.deb`/`.rpm`/`.AppImage`), **macOS** (`.app`/`.dmg`/Universal), **Windows** (`.exe`/`.msi`), and Web mode |
 | **[Architecture & Developer Guide](Architecture-and-Developer-Guide.md)** | Codebase layout, Tauri 2 / Rust backend, testing with Vitest, XSD validation, and release builds |
 | **[Changelog](Changelog.md)** | Consolidated release history from `v0.1.5` to `v0.1.34` |
 
