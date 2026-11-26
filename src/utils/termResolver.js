@@ -133,7 +133,7 @@ export const HECTOR_VOCABULARY_INDEX = {
     label: "Knochen",
   },
 
-  // 2. Monument Types (HECTOR Kulturgut)
+  // 2. Monument Types (HECTOR Heritage Assets)
   grab: {
     uri: "http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_d33a8f22",
     namespace: "http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/",
@@ -250,7 +250,7 @@ export const HECTOR_VOCABULARY_INDEX = {
     label: "Kandelaber",
   },
 
-  // 3. Epochs & Periods (HECTOR Epochen)
+  // 3. Epochs & Periods (HECTOR Epochs)
   spätklassik: {
     uri: "http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_9c4fae85",
     namespace: "http://vocabs.bcdh.uni-bonn.de/hector_epochs/",

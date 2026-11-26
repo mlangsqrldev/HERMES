@@ -72,7 +72,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <!-- 1. Aktivitäten (wasDigitizedBy) -->
+        <!-- 1. Activities (wasDigitizedBy) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >
@@ -222,7 +222,7 @@
           </div>
         </div>
 
-        <!-- 3. Übergeordnetes Monument / Ensemble (isPartOf) -->
+        <!-- 3. Parent Monument / Ensemble (isPartOf) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >
@@ -410,7 +410,7 @@
         </button>
       </div>
 
-      <!-- Explicit "Noch nicht vorhanden" Banner if target category has 0 items -->
+      <!-- Explicit empty-state banner if target category has 0 items -->
       <div
         v-else-if="isTargetCategoryEmpty"
         class="alert alert-warning/20 border border-warning/40 py-2.5 px-3 rounded-xl text-xs flex items-center gap-2 mt-2.5"

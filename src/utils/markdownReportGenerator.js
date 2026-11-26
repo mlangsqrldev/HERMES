@@ -188,7 +188,7 @@ function buildProjectRelationshipIndex(allData = {}) {
     relations.haToAct[id] = new Set();
   });
 
-  // 3. Index Digital Resources & classify Master vs Realtime Derivat
+  // 3. Index Digital Resources & classify Master vs. Realtime Derivative
   digitalResources.forEach((dr, idx) => {
     const id = getEntityId(dr, `DR-${idx + 1}`);
     const name = getEntityName(dr, `3D-Digitalisat ${idx + 1}`);
@@ -406,7 +406,7 @@ export function generateMarkdownReport(allData = {}, locale = "de") {
     });
   }
 
-  // 2. Heritage Asset Identification (Kulturgut)
+  // 2. Heritage Asset Identification
   md += `## 2. ${isDe ? "Kulturgut (Heritage Asset)" : "Heritage Asset"}\n\n`;
   if (heritageAssets.length === 0) {
     md += `*${isDe ? "Keine Kulturgüter erfasst." : "No heritage assets recorded."}*\n\n`;
@@ -482,7 +482,7 @@ export function generateMarkdownReport(allData = {}, locale = "de") {
     });
   }
 
-  // 3. Digital Resources (3D-Digitalisate: Master vs Derivate)
+  // 3. Digital Resources (3D Models: Master vs. Derivatives)
   md += `## 3. ${isDe ? "Digitale 3D-Ressourcen (Digital Resources)" : "Digital Resources (3D Models & Assets)"}\n\n`;
   if (digitalResources.length === 0) {
     md += `*${isDe ? "Keine digitalen Ressourcen erfasst." : "No digital resources recorded."}*\n\n`;
@@ -1631,7 +1631,7 @@ export function generatePdfReport(allData = {}, locale = "de") {
     });
   }
 
-  // --- KAPITEL 2: DIGITALE RESSOURCEN (MASTER & DERIVATE) ---
+  // --- CHAPTER 2: DIGITAL RESOURCES (MASTER & DERIVATIVES) ---
   printSectionHeader(
     isDe
       ? "2. Digitale Ressourcen (Master & Derivate)"
@@ -2117,7 +2117,7 @@ export function generatePdfReport(allData = {}, locale = "de") {
     });
   }
 
-  // --- FINAL PASS: JUMP LINKS & FOOTER (Seite X von Y) ---
+  // --- FINAL PASS: JUMP LINKS & FOOTER (Page X of Y) ---
   const totalPages = doc.getNumberOfPages();
 
   linkHotspots.forEach((spot) => {

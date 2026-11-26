@@ -145,7 +145,7 @@
           }}</span>
         </button>
 
-        <!-- Equipment / Geräte Pool -->
+        <!-- Equipment / Devices Pool -->
         <button
           type="button"
           class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-accent hover:bg-accent/10 shadow-xs"

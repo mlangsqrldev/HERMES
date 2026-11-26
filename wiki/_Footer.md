@@ -1,0 +1,1 @@
+**HERMES — Heritage Metadata Entry System** · Developed at the [Bonn Center for Digital Humanities (BCDH)](https://www.bcdh.uni-bonn.de/), University of Bonn · Funded by DFG within [NFDI4Objects](https://www.nfdi4objects.net/)

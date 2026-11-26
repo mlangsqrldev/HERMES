@@ -87,7 +87,7 @@
       </div>
     </div>
 
-    <!-- 1. METHODEN-WAHL -->
+    <!-- 1. METHOD SELECTION -->
     <div class="mb-4 p-3.5 bg-base-200/40 rounded-xl border border-base-200">
       <div class="flex items-center justify-between mb-2">
         <label

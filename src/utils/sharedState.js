@@ -1129,7 +1129,7 @@ export const updateProjectActivities = (list) => {
 };
 
 // ────────────────────────────────────────────────────────────
-// 7. Global Organizations & Institutions Pool (Organisations-Pool)
+// 7. Global Organizations & Institutions Pool
 // ────────────────────────────────────────────────────────────
 export const DEFAULT_CURATED_ORGANIZATIONS = [
   {

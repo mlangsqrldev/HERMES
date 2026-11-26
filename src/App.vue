@@ -533,7 +533,7 @@
             }}</span>
           </button>
 
-          <!-- Primäre Aktion: CARARE-Datei laden (öffnet Dateiauswahl-Fenster) -->
+          <!-- Primary action: load a CARARE file (opens file picker) -->
 
           <button
             type="button"
@@ -564,7 +564,7 @@
             }}</span>
           </button>
 
-          <!-- Alles leeren / zurücksetzen -->
+          <!-- Clear / reset all forms -->
 
           <button
             type="button"

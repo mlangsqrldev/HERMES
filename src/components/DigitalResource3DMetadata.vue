@@ -127,7 +127,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 2A: METHODE PHOTOGRAMMETRIE                          -->
+    <!-- SECTION 2A: PHOTOGRAMMETRY METHOD                            -->
     <!-- ============================================================ -->
     <div
       v-if="
@@ -251,7 +251,7 @@
           </div>
         </div>
 
-        <!-- Sensor-Auflösung -->
+        <!-- Sensor Resolution -->
         <div>
           <label class="label py-0.5">
             <span class="label-text text-xs font-semibold">
@@ -326,7 +326,7 @@
         </div>
       </div>
 
-      <!-- Photogrammetrie Rohbilder-Dokumentation -->
+      <!-- Photogrammetry RAW Image Documentation -->
       <div class="p-3.5 bg-base-100 rounded-xl border border-secondary/20">
         <div
           class="font-semibold text-xs text-base-content/80 flex items-center gap-1.5 mb-2.5"
@@ -406,7 +406,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 2B: METHODE SLS (STREIFENLICHTSCANNING)               -->
+    <!-- SECTION 2B: SLS METHOD (STRUCTURED LIGHT SCANNING)           -->
     <!-- ============================================================ -->
     <div
       v-if="acquisitionMethod === 'sls' || acquisitionMethod === 'hybrid'"
@@ -607,7 +607,7 @@
         </div>
       </div>
 
-      <!-- WICHTIG: SLS Rohbilder & Texturaufnahmen -->
+      <!-- IMPORTANT: SLS RAW Images & Texture Captures -->
       <div class="p-3 bg-base-100 rounded-lg border border-primary/20">
         <div class="flex items-center justify-between mb-2">
           <div
@@ -692,7 +692,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 2C: METHODE TLS (TERRESTRISCHES LASERSCANNING)        -->
+    <!-- SECTION 2C: TLS METHOD (TERRESTRIAL LASER SCANNING)          -->
     <!-- ============================================================ -->
     <div
       v-if="acquisitionMethod === 'tls' || acquisitionMethod === 'hybrid'"
@@ -854,7 +854,7 @@
           </div>
         </div>
 
-        <!-- Scanauflösung & Messgenauigkeit -->
+        <!-- Scan Resolution & Measurement Accuracy -->
         <div>
           <label class="label py-0.5">
             <span class="label-text text-xs font-semibold">
@@ -889,7 +889,7 @@
         </div>
       </div>
 
-      <!-- WICHTIG: TLS Rohbilder & HDR-Panoramen zur Kolorierung -->
+      <!-- IMPORTANT: TLS RAW Images & HDR Panoramas for Colorization -->
       <div class="p-3 bg-base-100 rounded-lg border border-accent/20">
         <div class="flex items-center justify-between mb-2">
           <div
@@ -1024,7 +1024,7 @@
           </button>
         </div>
 
-        <!-- Punktwolken-Formate -->
+        <!-- Point Cloud Formats -->
         <div class="flex flex-wrap items-center gap-1.5">
           <span class="text-[11px] font-bold text-base-content/50 w-24">{{
             currentLocale === "de" ? "Punktwolken:" : "Point Clouds:"
@@ -1049,7 +1049,7 @@
           </button>
         </div>
 
-        <!-- RAW-Bilder & Texturen -->
+        <!-- RAW Images & Textures -->
         <div class="flex flex-wrap items-center gap-1.5">
           <span class="text-[11px] font-bold text-base-content/50 w-24">{{
             currentLocale === "de" ? "RAW & Textur:" : "RAW & Textures:"
@@ -1172,7 +1172,7 @@
           />
         </div>
 
-        <!-- Anzahl der Texturen (Texture Count) -->
+        <!-- Texture Count -->
         <div v-if="assetType === 'mesh'">
           <label class="label py-0.5">
             <span class="label-text text-xs font-semibold">
@@ -1194,7 +1194,7 @@
           />
         </div>
 
-        <!-- Vertices / Eckpunkte oder Punktwolkenanzahl -->
+        <!-- Vertices or Point Cloud Count -->
         <div>
           <label class="label py-0.5">
             <span class="label-text text-xs font-semibold">
@@ -1270,7 +1270,7 @@
         </div>
       </div>
 
-      <!-- Texturen & PBR (nur bei Mesh) -->
+      <!-- Textures & PBR (Mesh only) -->
       <div v-if="assetType === 'mesh'" class="pt-3 border-t border-base-300">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -1337,7 +1337,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 4B: METROLOGIE — GENAUIGKEIT & AUFLÖSUNG (DAP/SCHEMA) -->
+    <!-- SECTION 4B: METROLOGY — ACCURACY & RESOLUTION (DAP/SCHEMA)   -->
     <!-- ============================================================ -->
     <div class="p-5 bg-info/5 rounded-2xl border border-info/25 mb-5">
       <div
@@ -1366,7 +1366,7 @@
         </div>
       </div>
 
-      <!-- Unterbereich A: Genauigkeit (Accuracy) -->
+      <!-- Subsection A: Accuracy -->
       <div class="mb-6" data-xml-tag="accuracy">
         <div
           class="text-xs font-bold text-base-content/85 mb-3 flex flex-wrap items-center gap-2"
@@ -1456,7 +1456,7 @@
             </div>
           </div>
 
-          <!-- Skalierung (HECTOR) -->
+          <!-- Scaling (HECTOR) -->
           <div
             class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
             data-xml-tag="scalingMethod"
@@ -1514,7 +1514,7 @@
             </div>
           </div>
 
-          <!-- Georeferenzierung (EPSG Online + Genauigkeit) -->
+          <!-- Georeferencing (EPSG Online + Accuracy) -->
           <div
             class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
             data-xml-tag="georeferencing"
@@ -1567,7 +1567,7 @@
         </div>
       </div>
 
-      <!-- Unterbereich B: Auflösung (Resolution) -->
+      <!-- Subsection B: Resolution -->
       <div data-xml-tag="resolution">
         <div
           class="text-xs font-bold text-base-content/85 mb-3 flex flex-wrap items-center gap-2"
@@ -1622,7 +1622,7 @@
             </div>
           </div>
 
-          <!-- UV-Texturauflösung -->
+          <!-- UV Texture Resolution -->
           <div
             class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
             data-xml-tag="textureResolution"
@@ -1673,7 +1673,7 @@
             </div>
           </div>
 
-          <!-- Optische Sensorauflösung -->
+          <!-- Optical Sensor Resolution -->
           <div
             class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between"
             data-xml-tag="sensorResolution"
@@ -1715,7 +1715,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 5: DATEIGRÖSSE                                       -->
+    <!-- SECTION 5: FILE SIZE                                         -->
     <!-- ============================================================ -->
     <div
       class="p-3.5 bg-base-200/30 rounded-xl border border-base-200 mb-5"

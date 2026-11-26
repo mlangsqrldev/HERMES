@@ -73,7 +73,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <!-- 1. Enthaltene Kulturgüter (hasPart) -->
+        <!-- 1. Contained Heritage Assets (hasPart) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >
@@ -183,7 +183,7 @@
           </div>
         </div>
 
-        <!-- 3. Aktivitäten (wasDigitizedBy) -->
+        <!-- 3. Activities (wasDigitizedBy) -->
         <div
           class="p-3 bg-base-100 rounded-xl border border-base-300 flex flex-col justify-between gap-2.5 shadow-xs overflow-hidden min-w-0"
         >

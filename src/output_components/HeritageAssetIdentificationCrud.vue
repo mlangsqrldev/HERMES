@@ -62,7 +62,7 @@
             </div>
           </div>
 
-          <!-- Feature 6: Qualitäts-Dashboard & Ampelsystem (KPIs & Filters) -->
+          <!-- Feature 6: Quality Dashboard & Traffic-Light System (KPIs & Filters) -->
 
           <div
             class="bg-base-200/40 rounded-xl p-3 border border-base-200 mb-4 space-y-2.5"
@@ -4669,7 +4669,7 @@
 
                   <!--        -->
 
-                  <!-- Auswahl: Historischer Name vs. Moderner Ortsname -->
+                  <!-- Selection: Historical Name vs. Modern Place Name -->
 
                   <div class="tabs tabs-boxed bg-base-200/80 p-1 mb-4 flex">
                     <button
@@ -4709,7 +4709,7 @@
                     </button>
                   </div>
 
-                  <!-- FALL 1: HISTORISCHER NAME (Geospatial Area entfällt) -->
+                  <!-- CASE 1: HISTORICAL NAME (Geopolitical Area omitted) -->
 
                   <div
                     v-if="spatialKind === 'historical'"
@@ -4784,7 +4784,7 @@
                     </div>
                   </div>
 
-                  <!-- FALL 2: MODERNER ORT (Geospatial Area wird automatisch ausgefüllt) -->
+                  <!-- CASE 2: MODERN PLACE (Geopolitical Area auto-populated) -->
 
                   <div v-else class="grid grid-cols-1 gap-x-6">
                     <div class="form-control w-full mb-3">
@@ -4831,7 +4831,7 @@
                       </div>
                     </div>
 
-                    <!-- Automatisch ausgefüllter geopolitischer Bereich -->
+                    <!-- Automatically populated geopolitical area -->
 
                     <div
                       class="alert alert-info/15 border border-info/30 p-3 rounded-xl flex items-center justify-between gap-3 mb-3"
@@ -4900,7 +4900,7 @@
                       </button>
                     </div>
 
-                    <!-- Optionale manuelle Anpassung für Geopolitical Area -->
+                    <!-- Optional manual adjustment for Geopolitical Area -->
 
                     <div
                       v-if="showManualGeoFields"
@@ -5129,7 +5129,7 @@
                       <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('spatial.geometry.quickpoint', 'this is the centre point', 'doc') }}</div> -->
 
                       <div class="grid grid-cols-1 gap-x-6">
-                        <!-- Interaktive Karte zur Fundort-Auswahl und Prüfung -->
+                        <!-- Interactive map for findspot selection and verification -->
 
                         <div class="col-span-full mb-3">
                           <SpatialMapPicker
@@ -10564,7 +10564,7 @@ const searchQuery = ref("");
 
 const selectedOriginalIndices = ref([]);
 
-// Quality Status Calculation (Ampelsystem)
+// Quality Status Calculation (Traffic-Light System)
 
 const getAssetValidationStatus = (item) => {
   if (!item)

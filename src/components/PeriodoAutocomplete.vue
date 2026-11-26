@@ -1,6 +1,6 @@
 <template>
   <div class="relative w-full">
-    <!-- Provider Toggle (HECTOR Epochen vs. PeriodO) -->
+    <!-- Provider Toggle (HECTOR Epochs vs. PeriodO) -->
     <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2">
       <div class="flex items-center gap-1.5 text-xs">
         <span class="text-[10px] uppercase font-bold text-base-content/50 mr-1">
@@ -1010,7 +1010,7 @@ const PERIODO_CATALOG = [
     authority: "PeriodO",
     aliases: ["spätmittelalter", "gotik"],
   },
-  // --- Ägyptische Epochen (PeriodO – UCLA Encyclopedia of Egyptology) ---
+  // --- Egyptian Epochs (PeriodO – UCLA Encyclopedia of Egyptology) ---
   {
     id: "http://n2t.net/ark:/99152/p0qk76zvrnc",
     label: "Predynastic",

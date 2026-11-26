@@ -9,7 +9,7 @@
 
     <div class="drawer-content">
       <div class="container mx-auto p-4 max-w-7xl">
-        <!-- Kampagnen-Klammer Information Banner -->
+        <!-- Campaign Umbrella Information Banner -->
         <div
           class="col-span-full mb-4 p-4 rounded-2xl bg-gradient-to-r from-primary/10 via-base-100 to-secondary/10 border border-primary/20 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
         >
@@ -549,7 +549,7 @@
                 </div>
                 <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('appellation', 'This is the name of the event.. Content providers are strongly recommended to complete this element.', 'doc') }}</div> -->
                 <div class="grid grid-cols-1 gap-x-6">
-                  <!-- Kampagnen-Klammer Information Banner -->
+                  <!-- Campaign Umbrella Information Banner -->
                   <div
                     class="col-span-full pt-2 mt-1 border-t border-base-200"
                   >
@@ -1181,7 +1181,7 @@
                 />
                 <div class="validator-hint">{{ t("validationHint") }}</div>
               </div>
-              <!-- Kampagnen-Klammer Information Banner -->
+              <!-- Campaign Umbrella Information Banner -->
               <div
                 id="act-actors"
                 class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm scroll-mt-24"
@@ -1829,7 +1829,7 @@
                   </div>
                   <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('recordInformation.creation.contacts.address', 'The postal address of the person or organization', 'doc') }}</div> -->
                   <div class="grid grid-cols-1 gap-x-6">
-                    <!-- Automatische Adressübernahme aus dem Organisations-Pool -->
+                    <!-- Automatic address adoption from the Organization Pool -->
                     <div
                       class="col-span-full p-3.5 rounded-xl bg-base-200/70 border border-base-300 mb-4 text-xs"
                     >
@@ -3111,7 +3111,7 @@
                       )
                     "
                   />
-                  <!-- HECTOR 3D & KI-Verfahren (hector_3d_documentation) -->
+                  <!-- HECTOR 3D & AI Methods (hector_3d_documentation) -->
                   <div
                     class="mt-2 bg-base-200/50 p-2.5 rounded-lg border border-base-300 space-y-2"
                   >
