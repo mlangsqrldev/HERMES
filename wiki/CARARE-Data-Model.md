@@ -1,6 +1,6 @@
 # CARARE 2.0.6 Data Model & XSD Conformance
 
-HERMES generates XML validated against the official **CARARE 2.0.6** schema bundled in this repository at `CARARE/carare-v2.0.6.xsd` (namespace `http://www.carare.eu/carareSchema`).
+HERMES generates XML validated against the official **CARARE 2.0.6** XSD schema (`carare-v2.0.6.xsd`, namespace `http://www.carare.eu/carareSchema`).
 
 ---
 
@@ -32,7 +32,7 @@ A common source of metadata errors in cultural heritage projects is conflating h
 
 ## 3. Bibliographic References (`<references>`) XSD Conformance
 
-In Step 2 (*Heritage Asset*), bibliographic references use a streamlined two-field drawer (**Full Citation** + optional **DOI**). This remains **100% conformant** with `CARARE/carare-v2.0.6.xsd`:
+In Step 2 (*Heritage Asset*), bibliographic references use a streamlined two-field drawer (**Full Citation** + optional **DOI**). This remains **100% conformant** with `carare-v2.0.6.xsd`:
 
 - All sub-elements of `<references>` (`appellation`, `actors`, `type`, `rights`, `publicationStatement`, `note`, `link`) have `minOccurs="0"`.
 - Inside `<appellation>`, the schema requires `<name lang="...">` (`minOccurs="1"`, `lang` required) followed strictly by `<id>` (`minOccurs="1"`, `xs:string`).

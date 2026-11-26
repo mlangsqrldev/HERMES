@@ -35,7 +35,7 @@
 
 | Pillar | What HERMES Provides |
 | :--- | :--- |
-| **4-Pillar CARARE 2.0.6 Authoring** | Dedicated forms for *Collection*, *Heritage Asset*, *Digital Resource* (3D Archival Masters & Web-GLB Derivatives), and *Activity*, continuously validated against [`CARARE/carare-v2.0.6.xsd`](CARARE/carare-v2.0.6.xsd). |
+| **4-Pillar CARARE 2.0.6 Authoring** | Dedicated forms for *Collection*, *Heritage Asset*, *Digital Resource* (3D Archival Masters & Web-GLB Derivatives), and *Activity*, producing XML conformant with the official **CARARE 2.0.6 XSD** (`http://www.carare.eu/carareSchema`). |
 | **3D Acquisition & DAP** | Specialized metadata for **Photogrammetry (SfM)**, **Structured Light (SLS)**, and **Terrestrial Laser Scanning (TLS)**, drag-and-drop 3D file inspection, **IPTC AI transparency**, EPSG georeferencing, and the **5-dimension Digital Authenticity Profile (DAP)**. |
 | **Central Relations & Hierarchy (Step 5)** | Structured Two-List assignment view for object hierarchies (`hasPart`/`isPartOf`), `isRepresentationOf`, `isDerivativeOf`, per-model Activity links (`hasCreated`), and 1-click **Auto-Match**. |
 | **Authority Files & Reusable Pools** | Live lookups for **HECTOR SKOSMOS**, **GND (lobid)**, **ORCID**, **PeriodO**, **Pleiades**, **GeoNames**, **Leaflet**, and **EPSG (`spatialreference.org`)**, plus local Persons/Organizations/Software/Equipment pools with JSON backup & restore. |

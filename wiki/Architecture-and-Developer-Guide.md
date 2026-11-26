@@ -58,7 +58,6 @@ HERMES/
 │   ├── hermes-vase-icon.png            # App header signet
 │   └── CARARE_Demo_Collection_3D_Master_and_Derivatives.xml   # Built-in Demo Project
 ├── samples/                            # Sample CARARE 2.0.6 XML datasets (e.g. Giza Pyramid)
-├── CARARE/                             # Official carare-v2.0.6.xsd schema, PDFs & reference XMLs
 ├── tests/                              # Vitest unit & roundtrip test suites
 ├── wiki/                               # GitHub-Wiki-compatible documentation
 └── HERMES_Windows_Release_Package/     # Portable Windows release (.exe, standalone manual, README.txt)
@@ -92,9 +91,9 @@ Current test suites in `tests/`:
 - `tests/pdfReport.test.js` — Scholarly PDF report generation
 
 ### Validating Exported XML Against `carare-v2.0.6.xsd`
-With Python `lxml` installed:
+With Python `lxml` installed and the official CARARE 2.0.6 XSD downloaded locally:
 ```bash
-python -c "import lxml.etree as ET; s = ET.XMLSchema(ET.parse('CARARE/carare-v2.0.6.xsd')); d = ET.parse('samples/giza_pyramid_carare_2.0.6.xml'); print('Valid:', s.validate(d), s.error_log)"
+python -c "import lxml.etree as ET; s = ET.XMLSchema(ET.parse('carare-v2.0.6.xsd')); d = ET.parse('samples/giza_pyramid_carare_2.0.6.xml'); print('Valid:', s.validate(d), s.error_log)"
 ```
 
 ---

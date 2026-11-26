@@ -51,7 +51,7 @@ flowchart LR
 - **Portable Windows binary:** `HERMES_Windows_Release_Package/HERMES_v0.1.34_2026-11-25.exe`
 - **Built-in bilingual manual:** `public/manual.html` (also standalone at `HERMES_Windows_Release_Package/HERMES_Manual.html`)
 - **Sample dataset:** `samples/giza_pyramid_carare_2.0.6.xml` (1 Collection, 10 Heritage Assets in a 4-level hierarchy, 20 Digital Resources, 1 Activity)
-- **Official XSD schema:** `CARARE/carare-v2.0.6.xsd`
+- **Target schema:** CARARE 2.0.6 (`http://www.carare.eu/carareSchema`)
 
 ---
 

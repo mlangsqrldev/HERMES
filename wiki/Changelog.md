@@ -20,7 +20,7 @@ Consolidated release history for **HERMES (Heritage Metadata Entry System)**.
 ## `v0.1.33` (2026-11-24) — Central Relations Step & Manual Redesign
 - **Step 5 Relations**: Moved complex relation management out of Modules 1–4 into a dedicated Step 5 before Archival Package export; added `RelationsPanelCollapse.vue` to collapse inline `*DcRelations` panels with a direct jump link and expandable expert view.
 - **Bilingual Manual Redesign (`public/manual.html`)**: Full editorial redesign (14 sections, 3 inline SVG architecture/relations diagrams, live search, light/dark themes, CJK font stack ready for Japanese localization).
-- **CARARE Bibliographic References**: Confirmed 100% XSD conformance against `CARARE/carare-v2.0.6.xsd` and added sequential `REF-N` fallback IDs when DOI is omitted.
+- **CARARE Bibliographic References**: Confirmed 100% XSD conformance against `carare-v2.0.6.xsd` and added sequential `REF-N` fallback IDs when DOI is omitted.
 
 ---
 
