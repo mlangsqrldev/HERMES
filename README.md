@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  <a href="wiki/Home.md"><strong>Project Wiki</strong></a> ·
-  <a href="wiki/Getting-Started.md">Getting Started</a> ·
-  <a href="wiki/CARARE-Data-Model.md">CARARE 2.0.6 Model</a> ·
-  <a href="wiki/3D-Metadata-and-DAP.md">3D &amp; DAP</a> ·
-  <a href="wiki/Exports-and-BonnData.md">Exports &amp; BonnData</a> ·
+  <a href="https://github.com/mlangsqrldev/HERMES/wiki"><strong>Project Wiki</strong></a> ·
+  <a href="https://github.com/mlangsqrldev/HERMES/wiki/Getting-Started">Getting Started</a> ·
+  <a href="https://github.com/mlangsqrldev/HERMES/wiki/CARARE-Data-Model">CARARE 2.0.6 Model</a> ·
+  <a href="https://github.com/mlangsqrldev/HERMES/wiki/3D-Metadata-and-DAP">3D &amp; DAP</a> ·
+  <a href="https://github.com/mlangsqrldev/HERMES/wiki/Exports-and-BonnData">Exports &amp; BonnData</a> ·
   <a href="public/manual.html">Scholarly Manual (DE/EN)</a>
 </p>
 
@@ -46,19 +46,19 @@
 
 ## Documentation & Wiki
 
-Full user and developer documentation lives in the **[HERMES Wiki](wiki/Home.md)**:
+Full user and developer documentation lives in the **[HERMES Wiki](https://github.com/mlangsqrldev/HERMES/wiki)**:
 
 | Page | Summary |
 | :--- | :--- |
-| **[Home](wiki/Home.md)** | Project overview, system architecture diagram, and release highlights |
-| **[Getting Started](wiki/Getting-Started.md)** | Portable Windows startup, developer setup, global defaults, and 6-step workflow |
-| **[CARARE 2.0.6 Data Model](wiki/CARARE-Data-Model.md)** | Four-pillar CIDOC-CRM structure, XSD conformance, role separation, and bibliographic references |
-| **[Relations & Hierarchy](wiki/Relations-and-Hierarchy.md)** | Step 5 Two-List Relations UI, object hierarchies, Master/Derivative links, and Auto-Match |
-| **[3D Metadata & DAP](wiki/3D-Metadata-and-DAP.md)** | SfM/SLS/TLS, 3D Inspector, Web-GLB derivatives, IPTC AI disclosure, and 5-dimension DAP |
-| **[Authority Files & Pools](wiki/Authority-Files-and-Pools.md)** | Controlled vocabularies, GND deduplication, central pools, and JSON backup/restore |
-| **[Exports & BonnData](wiki/Exports-and-BonnData.md)** | Live XML, combined/split CARARE XML, BagIt RFC 8493, PDF reports, and BonnData API |
-| **[Architecture & Developer Guide](wiki/Architecture-and-Developer-Guide.md)** | Tech stack, repository layout, Vitest suites, XSD validation, and Windows release builds |
-| **[Changelog](wiki/Changelog.md)** | Consolidated release history (`v0.1.5` → `v0.1.34`) |
+| **[Home](https://github.com/mlangsqrldev/HERMES/wiki)** | Project overview, system architecture diagram, and release highlights |
+| **[Getting Started](https://github.com/mlangsqrldev/HERMES/wiki/Getting-Started)** | Portable Windows startup, developer setup, global defaults, and 6-step workflow |
+| **[CARARE 2.0.6 Data Model](https://github.com/mlangsqrldev/HERMES/wiki/CARARE-Data-Model)** | Four-pillar CIDOC-CRM structure, XSD conformance, role separation, and bibliographic references |
+| **[Relations & Hierarchy](https://github.com/mlangsqrldev/HERMES/wiki/Relations-and-Hierarchy)** | Step 5 Two-List Relations UI, object hierarchies, Master/Derivative links, and Auto-Match |
+| **[3D Metadata & DAP](https://github.com/mlangsqrldev/HERMES/wiki/3D-Metadata-and-DAP)** | SfM/SLS/TLS, 3D Inspector, Web-GLB derivatives, IPTC AI disclosure, and 5-dimension DAP |
+| **[Authority Files & Pools](https://github.com/mlangsqrldev/HERMES/wiki/Authority-Files-and-Pools)** | Controlled vocabularies, GND deduplication, central pools, and JSON backup/restore |
+| **[Exports & BonnData](https://github.com/mlangsqrldev/HERMES/wiki/Exports-and-BonnData)** | Live XML, combined/split CARARE XML, BagIt RFC 8493, PDF reports, and BonnData API |
+| **[Architecture & Developer Guide](https://github.com/mlangsqrldev/HERMES/wiki/Architecture-and-Developer-Guide)** | Tech stack, repository layout, Vitest suites, XSD validation, and Windows release builds |
+| **[Changelog](https://github.com/mlangsqrldev/HERMES/wiki/Changelog)** | Consolidated release history (`v0.1.5` → `v0.1.34`) |
 
 - **Interactive User Manual (DE / EN):** [`public/manual.html`](public/manual.html) (also standalone at [`HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html`](HERMES_Windows_Release_Package/HERMES_Handbuch_Manual.html))
 - **Sample CARARE 2.0.6 Dataset:** [`samples/pyramide_gizeh_carare_2.0.6.xml`](samples/pyramide_gizeh_carare_2.0.6.xml)
