@@ -52,6 +52,17 @@ export function parseCarareXml(xmlString) {
     return el && el.textContent ? el.textContent.trim() : "";
   };
 
+  const getMultilingualTextArray = (parent, tagName, defaultLang = "de") => {
+    const els = getDirectChildren(parent, tagName);
+    if (els.length === 0) return "";
+    if (els.length === 1) return els[0].textContent.trim();
+    return els.map((el, idx) => ({
+      _value: el.textContent.trim(),
+      [`${tagName}#lang`]: getLang(el, defaultLang),
+      [`${tagName}#preferred`]: getPreferred(el) || idx === 0,
+    }));
+  };
+
   const getAttr = (el, attrName) => {
     if (!el || !el.attributes) return "";
     const target = attrName.toLowerCase();
@@ -175,7 +186,7 @@ export function parseCarareXml(xmlString) {
       })),
       source: getText(col, "source"),
       "source#lang": getLang(getDirectChild(col, "source"), "de"),
-      statement: getText(col, "statement"),
+      statement: getMultilingualTextArray(col, "statement", "de"),
       "statement#lang": getLang(getDirectChild(col, "statement"), "de"),
       "statement#preferred": getPreferred(getDirectChild(col, "statement")),
       keywords: getDirectChildren(col, "keywords").map((k) => ({
@@ -444,7 +455,7 @@ export function parseCarareXml(xmlString) {
       "appellation.id": appEl ? getText(appEl, "id") : assetId,
       "appellation.name": names,
 
-      description: getText(ha, "description"),
+      description: getMultilingualTextArray(ha, "description", "de"),
       "description#lang": getLang(getDirectChild(ha, "description"), "de"),
       generalType: getText(ha, "generalType") || "physical object",
 
@@ -772,7 +783,7 @@ export function parseCarareXml(xmlString) {
       "appellation.id": appEl ? getText(appEl, "id") : resourceId,
       "appellation.name": names,
 
-      description: getText(dr, "description"),
+      description: getMultilingualTextArray(dr, "description", "en"),
       "description#lang": getLang(getDirectChild(dr, "description"), "en"),
       note: getDirectChildren(dr, "note").map((n) => n.textContent.trim()),
       "note#lang": getLang(getDirectChild(dr, "note"), "en"),
@@ -1059,9 +1070,9 @@ export function parseCarareXml(xmlString) {
       "appellation.id": appEl ? getText(appEl, "id") : activityId,
       "appellation.name": names,
 
-      description: getText(act, "description"),
+      description: getMultilingualTextArray(act, "description", "de"),
       "description#lang": getLang(getDirectChild(act, "description"), "de"),
-      hasGeneralPurpose: getText(act, "hasGeneralPurpose"),
+      hasGeneralPurpose: getMultilingualTextArray(act, "hasGeneralPurpose", "en"),
       "hasGeneralPurpose#lang": getLang(
         getDirectChild(act, "hasGeneralPurpose"),
         "en",
@@ -1119,7 +1130,7 @@ export function parseCarareXml(xmlString) {
         const matEls = getDirectChildren(co, "materials");
         const eqEls = getDirectChildren(co, "equipment");
         return {
-          hadSpecificPurpose: getText(co, "hadSpecificPurpose"),
+          hadSpecificPurpose: getMultilingualTextArray(co, "hadSpecificPurpose", "de"),
           "hadSpecificPurpose#lang": getLang(
             getDirectChild(co, "hadSpecificPurpose"),
             "de",

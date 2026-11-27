@@ -326,7 +326,7 @@
           </div>
 
           <!-- Optional Address Details -->
-          <div class="p-3.5 rounded-xl bg-base-200/40 border border-base-200 space-y-2.5">
+          <div class="p-3.5 rounded-xl bg-base-200/40 border border-base-300 space-y-2.5">
             <div class="text-xs font-bold uppercase tracking-wider text-base-content/70">
               {{ currentLocale === "de" ? "Adressdaten (Optional)" : "Address Details (Optional)" }}
             </div>

@@ -147,7 +147,7 @@
     <!-- Inline Add / Edit Form -->
     <div
       v-if="showForm"
-      class="p-4 rounded-xl bg-base-200/60 border border-primary/30 space-y-3"
+      class="p-4 rounded-xl bg-base-200/40 border border-base-300 space-y-3"
     >
       <div class="flex items-center justify-between">
         <h5 class="font-bold text-xs uppercase tracking-wide text-primary">

@@ -99,7 +99,7 @@
             </h1>
             <span
               class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
-              >v0.1.36 · 2026-11-26</span
+              >v0.1.37 · 2026-11-27</span
             >
           </div>
           <p class="text-[11px] text-base-content/70 font-medium truncate">
@@ -538,6 +538,7 @@
             ref="zipFileInput"
             class="hidden"
             accept=".zip,.xml,.json"
+            multiple
             @change="importFromBagIt"
           />
 
@@ -4129,17 +4130,36 @@ const loadNikaretePreset = () => {
 };
 
 const importFromBagIt = async (event) => {
-  const file = event.target.files?.[0];
+  const files = Array.from(event.target.files || []);
 
-  if (!file) return;
+  if (files.length === 0) return;
 
-  await processImportFile(file);
+  if (files.length === 1) {
+    await processImportFile(files[0]);
+  } else {
+    const allSummaries = [];
+    for (const file of files) {
+      const summary = await processImportFile(file, { silent: true });
+      if (Array.isArray(summary) && summary.length > 0) {
+        allSummaries.push(`${file.name}: ${summary.join(", ")}`);
+      }
+    }
+    if (allSummaries.length > 0) {
+      const header =
+        currentLocale.value === "de"
+          ? `${files.length} Dateien erfolgreich importiert:\n`
+          : `${files.length} files successfully imported:\n`;
+      alert(header + allSummaries.map((s) => "• " + s).join("\n"));
+    } else {
+      alert(t("importSuccess"));
+    }
+  }
 
   event.target.value = "";
 };
 
-const processImportFile = async (file) => {
-  if (!file) return;
+const processImportFile = async (file, { silent = false } = {}) => {
+  if (!file) return [];
 
   try {
     let parsedData = {
@@ -4151,6 +4171,7 @@ const processImportFile = async (file) => {
 
       Activity: [],
     };
+    let appendMode = false;
 
     if (file.name.toLowerCase().endsWith(".xml")) {
       const xmlText = await file.text();
@@ -4161,8 +4182,32 @@ const processImportFile = async (file) => {
 
       const jsonObj = JSON.parse(jsonText);
 
-      if (jsonObj.collectionInformation) {
-        parsedData.Collection = jsonObj.collectionInformation.map(
+      if (jsonObj.format === "hermes-single-template" && jsonObj.template) {
+        appendMode = true;
+        const tplRecord = jsonObj.template.data || jsonObj.template;
+        const sec = jsonObj.section;
+        if (sec === "collectionInformation") {
+          parsedData.Collection = [tplRecord];
+        } else if (sec === "heritageAssetIdentification") {
+          parsedData.HeritageAsset = [tplRecord];
+        } else if (sec === "digitalResource") {
+          parsedData.DigitalResource = [tplRecord];
+        } else if (sec === "activity") {
+          parsedData.Activity = [tplRecord];
+        }
+        if (Array.isArray(jsonObj.organizations)) {
+          jsonObj.organizations.forEach((org) => addOrUpdateOrganization(org));
+        }
+        if (Array.isArray(jsonObj.persons)) {
+          jsonObj.persons.forEach((p) => addOrUpdatePerson(p));
+        }
+      } else if (
+        jsonObj.collectionInformation ||
+        jsonObj.heritageAssetIdentification ||
+        jsonObj.digitalResource ||
+        jsonObj.activity
+      ) {
+        parsedData.Collection = (jsonObj.collectionInformation || []).map(
           (t) => t.data || t,
         );
 
@@ -4307,27 +4352,56 @@ const processImportFile = async (file) => {
 
       if (!Array.isArray(dataArray) || dataArray.length === 0) return;
 
+      let targetArray = dataArray;
+      if (appendMode) {
+        const existing = Array.isArray(comp.items)
+          ? comp.items
+          : comp.items && Array.isArray(comp.items.value)
+            ? comp.items.value
+            : [];
+        const getItemId = (rec) =>
+          String(
+            rec?.["recordInformation.id"] ||
+              rec?.["appellation.id"] ||
+              rec?.["id"] ||
+              "",
+          ).trim();
+        const merged = [...existing];
+        for (const incoming of dataArray) {
+          const inId = getItemId(incoming);
+          const matchIdx = inId
+            ? merged.findIndex((ex) => getItemId(ex) === inId)
+            : -1;
+          if (matchIdx >= 0) {
+            merged[matchIdx] = incoming;
+          } else {
+            merged.push(incoming);
+          }
+        }
+        targetArray = merged;
+      }
+
       if (typeof comp.loadItems === "function") {
-        comp.loadItems(dataArray);
+        comp.loadItems(targetArray);
       } else {
         if (Array.isArray(comp.items)) {
-          comp.items.splice(0, comp.items.length, ...dataArray);
+          comp.items.splice(0, comp.items.length, ...targetArray);
         } else if (comp.items && Array.isArray(comp.items.value)) {
-          comp.items.value = [...dataArray];
+          comp.items.value = [...targetArray];
         } else {
-          comp.items = dataArray;
+          comp.items = targetArray;
         }
 
         if (typeof comp.edit === "function") {
           comp.edit(0);
         }
 
-        if (comp.form && dataArray[0]) {
+        if (comp.form && targetArray[0]) {
           comp.isEditing = true;
 
           comp.editIndex = 0;
 
-          Object.assign(comp.form, JSON.parse(JSON.stringify(dataArray[0])));
+          Object.assign(comp.form, JSON.parse(JSON.stringify(targetArray[0])));
         }
       }
 
@@ -4364,20 +4438,26 @@ const processImportFile = async (file) => {
       "Activity/Activities",
     );
 
-    if (loadedSummary.length > 0) {
-      const titlePrefix =
-        currentLocale.value === "de"
-          ? `CARARE-Datei "${file.name}" erfolgreich importiert:\n`
-          : `CARARE file "${file.name}" successfully imported:\n`;
+    if (!silent) {
+      if (loadedSummary.length > 0) {
+        const titlePrefix =
+          currentLocale.value === "de"
+            ? `CARARE-Datei "${file.name}" erfolgreich importiert:\n`
+            : `CARARE file "${file.name}" successfully imported:\n`;
 
-      alert(titlePrefix + loadedSummary.map((s) => "• " + s).join("\n"));
-    } else {
-      alert(t("importSuccess"));
+        alert(titlePrefix + loadedSummary.map((s) => "• " + s).join("\n"));
+      } else {
+        alert(t("importSuccess"));
+      }
     }
+    return loadedSummary;
   } catch (error) {
     console.error("Import error:", error);
 
-    alert(t("importError") + ": " + error.message);
+    if (!silent) {
+      alert(t("importError") + ": " + error.message);
+    }
+    return [];
   }
 };
 
@@ -4565,7 +4645,7 @@ const exportToBagInfoTxt = async () => {
 
     bagInfoContent += `Bagging-Date: ${new Date().toISOString().substring(0, 10)}\n`;
 
-    bagInfoContent += `Bag-Software-Agent: HERMES (Heritage Metadata Entry System) v0.1.36\n`;
+    bagInfoContent += `Bag-Software-Agent: HERMES (Heritage Metadata Entry System) v0.1.37\n`;
 
     bagInfoContent += `Metadata-Schemas: CARARE 2.0.6 (metadata/carare-v2.0.6.xml)\n`;
 

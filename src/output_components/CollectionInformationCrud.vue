@@ -80,8 +80,8 @@
 
           <form @submit.prevent="save" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
-              <div class="form-control w-full mb-4">
-                <div class="flex flex-row items-center justify-between">
+              <div class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs form-control w-full">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <div class="flex flex-row items-center">
                     <label class="label"
                       ><span class="label-text font-bold">{{
@@ -168,7 +168,7 @@
                 class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs"
               >
                 <div
-                  class="flex justify-between items-center mb-4 pb-2 border-b border-base-200"
+                  class="flex justify-between items-center mb-3"
                 >
                   <div class="flex flex-row items-center">
                     <h4
@@ -217,12 +217,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="p-4 pt-0">
-                  <ul class="list bg-base-100 rounded-xl shadow-md w-full">
+                <div>
+                  <ul class="space-y-2 w-full">
                     <li
                       v-for="(item, idx) in form['title']"
                       :key="idx"
-                      class="list-row flex items-center justify-between group h-auto py-2"
+                      class="flex items-center justify-between group py-1"
                     >
                       <div class="flex-1 w-full mr-4">
                         <input
@@ -466,8 +466,8 @@
                   </div>
                 </div>
               </div>
-              <div class="form-control w-full mb-4">
-                <div class="flex flex-row items-center justify-between">
+              <div class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs form-control w-full">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <div class="flex flex-row items-center">
                     <label class="label"
                       ><span class="label-text font-bold"
@@ -568,6 +568,7 @@
 
               <MultilingualTextareaList
                 v-model="form['statement']"
+                history-key="collection_statement"
                 lang-key="statement#lang"
                 preferred-key="statement#preferred"
                 :label="getLabel('statement', 'statement')"

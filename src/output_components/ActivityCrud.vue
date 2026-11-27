@@ -68,7 +68,7 @@
                   <th class="w-12 text-center">
                     {{ currentLocale === "de" ? "Status" : "Status" }}
                   </th>
-                  <th>{{ getLabel("recordInformation.id", "id") }}</th>
+                  <th class="w-28 max-w-[120px] whitespace-normal leading-tight">{{ getLabel("recordInformation.id", "id") }}</th>
                   <th>{{ getLabel("appellation.name", "name") }}</th>
                   <th>
                     {{
@@ -109,7 +109,7 @@
                       </span>
                     </div>
                   </td>
-                  <td class="font-mono font-bold">
+                  <td class="font-mono font-bold w-28 max-w-[120px] truncate" :title="String(item['recordInformation.id'] || '')">
                     {{
                       Array.isArray(item["recordInformation.id"])
                         ? item["recordInformation.id"].join(", ")
@@ -171,7 +171,6 @@
         <div
           ref="formContainerRef"
           class="space-y-4"
-          :class="{ 'ring-2 ring-primary/60': isEditing }"
         >
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold capitalize">
@@ -316,7 +315,7 @@
                   </div>
                   <div class="form-control w-full mb-4">
                     <div
-                      class="flex flex-wrap justify-between items-center mb-1 gap-2"
+                      class="flex flex-wrap justify-between items-center mb-2 gap-2"
                     >
                       <div class="flex flex-row items-center">
                         <label class="label pb-0"
@@ -550,12 +549,8 @@
                 <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('appellation', 'This is the name of the event.. Content providers are strongly recommended to complete this element.', 'doc') }}</div> -->
                 <div class="grid grid-cols-1 gap-x-6">
                   <!-- Campaign Umbrella Information Banner -->
-                  <div
-                    class="col-span-full pt-2 mt-1 border-t border-base-200"
-                  >
-                    <div
-                      class="flex justify-between items-center mb-4 pb-2 border-b border-base-200"
-                    >
+                  <div class="col-span-full mt-2">
+                    <div class="flex justify-between items-center mb-2">
                       <div class="flex flex-row items-center">
                         <h4
                           class="font-bold text-lg capitalize text-base-content/60"
@@ -870,8 +865,8 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="form-control w-full mb-4">
-                    <div class="flex flex-row items-center">
+                  <div class="form-control w-full mt-5 pt-4 border-t border-base-200/70">
+                    <div class="flex flex-row items-center mb-1">
                       <label class="label"
                         ><span class="label-text font-bold capitalize">{{
                           getLabel("appellation.id", "id")
@@ -935,135 +930,55 @@
                   </div>
                 </div>
               </div>
-              <div class="form-control w-full mb-4">
-                <div class="flex flex-row items-center justify-between">
-                  <div class="flex flex-row items-center">
-                    <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
-                        getLabel("description", "description")
-                      }}</span
-                      ><span class="text-accent font-black">*</span></label
-                    >
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'description',
-                          'Free-text description of the event or activity that took place. Can be provided in multiple languages.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'description',
-                          'Free-text description of the event or activity that took place. Can be provided in multiple languages.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  <LanguageBadgePicker v-model="form['description#lang']" />
-                </div>
-                <textarea
-                  v-model="form['description']"
-                  class="textarea textarea-bordered w-full h-24"
-                  :placeholder="
-                    getLabel(
-                      'description',
-                      'e.g. This pilot project focuses on the 3D acquisition and asset documentation of 18 Attic funerary monuments from the Antikensammlung, Berlin. Conducted in 2025 as a collaboration between the Staatliche Museen zu Berlin and the Bonn Center for Digital Humanities ...',
-                      'plac',
-                    )
-                  "
-                ></textarea>
-              </div>
-              <div class="form-control w-full mb-4">
-                <div class="flex flex-row items-center justify-between">
-                  <div class="flex flex-row items-center">
-                    <label class="label"
-                      ><span class="label-text font-bold capitalize">{{
-                        getLabel("hasGeneralPurpose", "hasGeneralPurpose")
-                      }}</span
-                      ><span class="text-warning font-black">~</span></label
-                    >
-
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'hasGeneralPurpose',
-                          'A free text description of the general goal or purpose of an activity – e.g. practising, preparing, monitoring, researching, designing, testing, etc.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'hasGeneralPurpose',
-                          'A free text description of the general goal or purpose of an activity – e.g. practising, preparing, monitoring, researching, designing, testing, etc.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  <LanguageBadgePicker
-                    v-model="form['hasGeneralPurpose#lang']"
-                  />
-                </div>
-                <textarea
-                  v-model="form['hasGeneralPurpose']"
-                  class="textarea textarea-bordered w-full h-24"
-                  :placeholder="
-                    getLabel(
-                      'hasGeneralPurpose',
-                      'e.g. The digitization has a research-oriented purpose, aiming to support the use of the assets in scholarly contexts. At the same time, the campaign serves as a pilot project for prototyping documentation processes.',
-                      'plac',
-                    )
-                  "
-                ></textarea>
-              </div>
-              <div class="form-control w-full mb-4">
+              <MultilingualTextareaList
+                v-model="form['description']"
+                history-key="activity_description"
+                lang-key="description#lang"
+                preferred-key="description#preferred"
+                :label="getLabel('description', 'description')"
+                :tooltip="
+                  getLabel(
+                    'description',
+                    'Free-text description of the event or activity that took place. Can be provided in multiple languages.',
+                    'doc',
+                  )
+                "
+                :placeholder="
+                  getLabel(
+                    'description',
+                    'e.g. This pilot project focuses on the 3D acquisition and asset documentation of 18 Attic funerary monuments from the Antikensammlung, Berlin. Conducted in 2025 as a collaboration between the Staatliche Museen zu Berlin and the Bonn Center for Digital Humanities ...',
+                    'plac',
+                  )
+                "
+                :required="true"
+                :current-locale="currentLocale"
+                :default-lang="defaultMetadataLanguage || 'de'"
+              />
+              <MultilingualTextareaList
+                v-model="form['hasGeneralPurpose']"
+                history-key="activity_purpose"
+                lang-key="hasGeneralPurpose#lang"
+                preferred-key="hasGeneralPurpose#preferred"
+                :label="getLabel('hasGeneralPurpose', 'hasGeneralPurpose')"
+                :tooltip="
+                  getLabel(
+                    'hasGeneralPurpose',
+                    'A free text description of the general goal or purpose of an activity – e.g. practising, preparing, monitoring, researching, designing, testing, etc.',
+                    'doc',
+                  )
+                "
+                :placeholder="
+                  getLabel(
+                    'hasGeneralPurpose',
+                    'e.g. The digitization has a research-oriented purpose, aiming to support the use of the assets in scholarly contexts. At the same time, the campaign serves as a pilot project for prototyping documentation processes.',
+                    'plac',
+                  )
+                "
+                :recommended="true"
+                :current-locale="currentLocale"
+                :default-lang="defaultMetadataLanguage || 'de'"
+              />
+              <div class="col-span-full border border-base-300 bg-base-100 p-4 sm:p-5 rounded-xl mb-5 shadow-2xs form-control w-full">
                 <div class="flex flex-row items-center justify-between mb-1">
                   <div class="flex items-center gap-1">
                     <label class="label p-0"
@@ -1793,7 +1708,7 @@
                   <div class="grid grid-cols-1 gap-x-6">
                     <!-- Automatic address adoption from the Organization Pool -->
                     <div
-                      class="col-span-full p-3.5 rounded-xl bg-base-200/70 border border-base-300 mb-4 text-xs"
+                      class="col-span-full p-3.5 rounded-xl bg-base-200/40 border border-base-300 mb-4 text-xs"
                     >
                       <div
                         class="flex items-center justify-between gap-2 flex-wrap"
@@ -2762,128 +2677,31 @@
               </div>
             </div>
             <div v-if="activeDrawerField === 'consistsOf'">
-              <!-- Quick 3D Workflow Presets -->
-              <div
-                class="mb-4 p-3 bg-base-200/50 rounded-xl border border-base-300"
-              >
-                <div
-                  class="text-xs font-bold uppercase tracking-wider text-base-content/70 mb-2 flex items-center gap-1.5"
-                >
-                  <span>⚡</span>
-                  {{
-                    currentLocale === "de"
-                      ? "Schnellauswahl für 3D-Digitalisierungsworkflows:"
-                      : "Quick Presets for 3D Digitization Workflows:"
-                  }}
-                </div>
-                <div class="flex flex-wrap gap-1.5">
-                  <button
-                    type="button"
-                    class="btn btn-xs btn-neutral gap-1"
-                    @click="applyConsistsOfPreset('structured_light')"
-                  >
-                    <span>📸</span>
-                    {{
-                      currentLocale === "de"
-                        ? "Streifenlicht-Scanning (Artec Leo)"
-                        : "Structured-Light Scanning (Artec Leo)"
-                    }}
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs btn-neutral gap-1"
-                    @click="applyConsistsOfPreset('photogrammetry')"
-                  >
-                    <span>📷</span>
-                    {{
-                      currentLocale === "de"
-                        ? "Nahbereichs-Photogrammetrie (Nikon Z8 / SfM)"
-                        : "Photogrammetry (Nikon Z8 / SfM)"
-                    }}
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs btn-neutral gap-1"
-                    @click="applyConsistsOfPreset('mesh_processing')"
-                  >
-                    <span>💻</span>
-                    {{
-                      currentLocale === "de"
-                        ? "Mesh-Verarbeitung & PBR (Blender)"
-                        : "Mesh Processing & PBR (Blender)"
-                    }}
-                  </button>
-                </div>
-              </div>
-
               <div class="grid grid-cols-1 gap-x-6">
-                <div class="form-control w-full mb-4">
-                  <div class="flex flex-row items-center justify-between">
-                    <div class="flex flex-row items-center">
-                      <label class="label"
-                        ><span class="label-text font-bold capitalize">{{
-                          getLabel(
-                            "consistsOf.hadSpecificPurpose",
-                            "hadSpecificPurpose",
-                          )
-                        }}</span
-                        ><span class="text-accent font-black">*</span></label
-                      >
-                      <div
-                        @click.stop.prevent
-                        class="tooltip tooltip-accent tooltip-right"
-                        :data-tip="
-                          getLabel(
-                            'consistsOf.hadSpecificPurpose',
-                            'A free text note describing the specific goal or purpose of this activity – e.g. carrying out 3D data acquisition, restoration, completing a survey, constructing a building.',
-                            'doc',
-                          )
-                        "
-                        v-if="
-                          getLabel(
-                            'consistsOf.hadSpecificPurpose',
-                            'A free text note describing the specific goal or purpose of this activity – e.g. carrying out 3D data acquisition, restoration, completing a survey, constructing a building.',
-                            'doc',
-                          )
-                        "
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            viewBox="0 0 512 512"
-                            fill="currentColor"
-                            stroke-width="2.5"
-                            stroke="currentColor"
-                            class="size-[1.2em] primary-content"
-                          >
-                            <path
-                              d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <LanguageBadgePicker
-                      v-model="drawerForm['hadSpecificPurpose#lang']"
-                    />
-                  </div>
-                  <textarea
-                    v-model="drawerForm['hadSpecificPurpose']"
-                    class="textarea textarea-bordered w-full h-24"
-                    :placeholder="
-                      getLabel(
-                        'consistsOf.hadSpecificPurpose',
-                        'e.g. High-precision structured-light scanning with a spatial resolution of 0.1 mm was carried out on the sepulchral sculptures.',
-                        'plac',
-                      )
-                    "
-                  ></textarea>
-                </div>
+                <MultilingualTextareaList
+                  v-model="drawerForm['hadSpecificPurpose']"
+                  :history-key="'consistsOf_purpose_' + detectConsistsOfStepKind(drawerForm)"
+                  lang-key="hadSpecificPurpose#lang"
+                  preferred-key="hadSpecificPurpose#preferred"
+                  :label="getLabel('consistsOf.hadSpecificPurpose', 'hadSpecificPurpose')"
+                  :tooltip="
+                    getLabel(
+                      'consistsOf.hadSpecificPurpose',
+                      'A free text note describing the specific goal or purpose of this activity – e.g. carrying out 3D data acquisition, restoration, completing a survey, constructing a building.',
+                      'doc',
+                    )
+                  "
+                  :placeholder="
+                    getLabel(
+                      'consistsOf.hadSpecificPurpose',
+                      'e.g. High-precision structured-light scanning with a spatial resolution of 0.1 mm was carried out on the sepulchral sculptures.',
+                      'plac',
+                    )
+                  "
+                  :required="true"
+                  :current-locale="currentLocale"
+                  :default-lang="defaultMetadataLanguage || 'de'"
+                />
                 <div class="form-control w-full mb-4">
                   <div class="flex flex-row items-center">
                     <label class="label"
@@ -3081,7 +2899,11 @@
                       <span
                         class="text-[11px] font-bold uppercase tracking-wider text-base-content/70"
                       >
-                        HECTOR 3D / KI-Verfahren
+                        {{
+                          currentLocale === "de"
+                            ? "HECTOR 3D-Verfahren"
+                            : "HECTOR 3D Methods"
+                        }}
                       </span>
                       <div class="flex items-center gap-2">
                         <input
@@ -3130,81 +2952,20 @@
                   </div>
                   <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
+                <!-- Dedicated AI Usage Field (IPTC Digital Source Type -> CARARE <techniques>) -->
                 <div class="form-control w-full mb-4">
-                  <div class="flex flex-row items-center justify-between">
-                    <div class="flex flex-row items-center">
-                      <label class="label"
-                        ><span class="label-text font-bold capitalize">{{
-                          getLabel("consistsOf.techniques", "techniques")
-                        }}</span
-                        ><span class="text-accent font-black">*</span></label
-                      >
-                      <div
-                        @click.stop.prevent
-                        class="tooltip tooltip-accent tooltip-right"
-                        :data-tip="
-                          getLabel(
-                            'consistsOf.techniques',
-                            'The techniques used in this specific activity.',
-                            'doc',
-                          )
-                        "
-                        v-if="
-                          getLabel(
-                            'consistsOf.techniques',
-                            'The techniques used in this specific activity.',
-                            'doc',
-                          )
-                        "
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            viewBox="0 0 512 512"
-                            fill="currentColor"
-                            stroke-width="2.5"
-                            stroke="currentColor"
-                            class="size-[1.2em] primary-content"
-                          >
-                            <path
-                              d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <LanguageBadgePicker
-                      v-model="drawerForm['techniques#lang']"
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    v-model="drawerForm['techniques']"
-                    class="input input-bordered w-full validator"
-                    :placeholder="
-                      getLabel(
-                        'consistsOf.techniques',
-                        'e.g. UV unwrapping; texture blending; physically based rendering (PBR)',
-                        'plac',
-                      )
-                    "
-                  />
-                  <!-- IPTC Digital Source Type (HECTOR 3D) -->
-                  <div
-                    class="mt-2 bg-base-200/50 p-2.5 rounded-lg border border-base-300 space-y-2"
-                  >
+                  <div class="p-3 rounded-xl bg-base-200/40 border border-base-300 space-y-2.5">
                     <div class="flex items-center justify-between gap-2">
-                      <span
-                        class="text-[11px] font-bold uppercase tracking-wider text-secondary"
-                      >
-                        IPTC Digital Source Type (HECTOR 3D)
-                      </span>
+                      <label class="label p-0">
+                        <span class="label-text font-bold text-secondary flex items-center gap-1.5">
+                          <span>✨</span>
+                          <span>{{
+                            currentLocale === "de"
+                              ? "KI-Einsatz (IPTC Digital Source Type)"
+                              : "AI Usage (IPTC Digital Source Type)"
+                          }}</span>
+                        </span>
+                      </label>
                       <a
                         href="https://cv.iptc.org/newscodes/digitalsourcetype/"
                         @click.prevent="openExternalUrl('https://cv.iptc.org/newscodes/digitalsourcetype/')"
@@ -3213,6 +2974,13 @@
                         IPTC ↗
                       </a>
                     </div>
+                    <p class="text-[11px] text-base-content/65 leading-relaxed">
+                      {{
+                        currentLocale === "de"
+                          ? "Optional: Falls in diesem Schritt generative oder trainierte KI eingesetzt wurde, wählen Sie hier den passenden IPTC-Standardbegriff (wird im CARARE-XML unter <techniques> gespeichert)."
+                          : "Optional: If generative or trained AI was used in this step, select the applicable IPTC standard term (stored in CARARE XML under <techniques>)."
+                      }}
+                    </p>
                     <div class="flex flex-wrap gap-1.5">
                       <button
                         v-for="iptc in IPTC_AI_TERMS"
@@ -3237,8 +3005,19 @@
                         >×</span>
                       </button>
                     </div>
+                    <div v-if="drawerForm['techniques']" class="pt-1">
+                      <input
+                        type="text"
+                        v-model="drawerForm['techniques']"
+                        class="input input-xs input-bordered w-full font-mono text-[11px] bg-base-100"
+                        :placeholder="
+                          currentLocale === 'de'
+                            ? 'Ausgewählter IPTC-Eintrag / Technik...'
+                            : 'Selected IPTC entry / technique...'
+                        "
+                      />
+                    </div>
                   </div>
-                  <div class="validator-hint">{{ t("validationHint") }}</div>
                 </div>
                 <div class="form-control w-full mb-4">
                   <div class="flex flex-row items-center justify-between">
@@ -3470,6 +3249,25 @@
                   class="input input-bordered w-full mb-4"
                   :placeholder="getLabel('hasPart', '', 'plac')"
                 />
+              </div>
+
+              <!-- Reusable recent workflow steps (filtered by active language & capture vs processing) -->
+              <div
+                v-if="visibleRecentConsistsOfSteps.length > 0"
+                class="mt-3 p-3 bg-base-200/40 rounded-xl border border-base-300"
+              >
+                <div class="flex flex-wrap gap-1.5">
+                  <button
+                    v-for="(recent, rIdx) in visibleRecentConsistsOfSteps"
+                    :key="rIdx"
+                    type="button"
+                    class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary/60 hover:bg-primary/10 normal-case font-normal max-w-[260px] truncate"
+                    @click="applyRecentConsistsOfStep(recent)"
+                    :title="recent.hadSpecificPurpose || recent.methods"
+                  >
+                    <span class="truncate">{{ recent.label }}</span>
+                  </button>
+                </div>
               </div>
 
               <div class="form-control w-full"></div>
@@ -3751,6 +3549,7 @@ import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
 import PersonAssignmentList from "../components/PersonAssignmentList.vue";
 import TemporalSection from "../components/TemporalSection.vue";
 import SpatialSection from "../components/SpatialSection.vue";
+import MultilingualTextareaList from "../components/MultilingualTextareaList.vue";
 import {
   savedOrganizations,
   recentOrganizations,
@@ -4963,8 +4762,8 @@ const fieldLabels = {
     placDe: "",
   },
   "consistsOf.hadSpecificPurpose": {
-    en: "Had Specific Purpose",
-    de: "Hatte Bestimmten Zweck",
+    en: "Purpose",
+    de: "Zweck",
     docEn:
       "A free text note describing the specific goal or purpose of this activity – e.g. carrying out 3D data acquisition, restoration, completing a survey, constructing a building.",
     docDe:
@@ -4993,37 +4792,37 @@ const fieldLabels = {
     placDe: "z.B. 2025-01-30",
   },
   "consistsOf.methods": {
-    en: "Methods",
-    de: "Methoden",
+    en: "Method / Technique",
+    de: "Methode / Verfahren",
     docEn:
-      "The methods used in this specific activity – e.g. open area excavation, sample survey, restoration, photogrammetric survey.",
+      "The methods and techniques used in this specific activity – e.g. structured-light scanning, close-range photogrammetry, mesh decimation, UV unwrapping.",
     docDe:
-      "Die in dieser Teilaktivität verwendete(n) Methode(n) – z.B. Flächengrabung, Survey, Restaurierung, photogrammetrische Vermessung.",
+      "Die in dieser Teilaktivität verwendete(n) Methode(n) und Verfahren – z.B. Streifenlicht-Scanning, Nahbereichs-Photogrammetrie, Mesh-Dezimierung, UV-Unwrapping.",
     placEn:
-      "e.g. structured-light 3D scanning | close-range photogrammetric survey | 3D data processing",
+      "e.g. structured-light 3D scanning | close-range photogrammetry | 3D data processing",
     placDe:
-      "z.B. Structured-Light-3D-Scanning | Nahbereichs-Photogrammetrie | 3D-Datenverarbeitung",
+      "z.B. Streifenlicht-3D-Scanning | Nahbereichs-Photogrammetrie | 3D-Datenverarbeitung",
   },
   "consistsOf.techniques": {
-    en: "Techniques",
-    de: "Techniken",
-    docEn: "The techniques used in this specific activity.",
-    docDe: "Die in dieser Teilaktivität verwendete(n) Technik(en).",
+    en: "AI Usage / Techniques",
+    de: "KI-Einsatz / Techniken",
+    docEn: "Optional IPTC AI classification or specific techniques used in this activity.",
+    docDe: "Optionale IPTC-KI-Einordnung oder ergänzende Techniken dieser Teilaktivität.",
     placEn:
-      "e.g. UV unwrapping; texture blending; physically based rendering (PBR)",
+      "e.g. IPTC Digital Source Type or specific technique",
     placDe:
-      "z.B. UV-Unwrapping; Texturüberblendung; Physically Based Rendering (PBR)",
+      "z.B. IPTC Digital Source Type oder spezifische Technik",
   },
   "consistsOf.materials": {
-    en: "Materials",
-    de: "Materialien",
-    docEn: "The materials used during the event method.",
+    en: "Auxiliary & Consumable Materials",
+    de: "Hilfs- und Verbrauchsmaterialien",
+    docEn: "Auxiliary and consumable materials used during the activity (e.g. scale bars, color targets, coded markers, scanning spray).",
     docDe:
-      "Die während der Methode in dieser Teilaktivität verwendeten Materialien.",
+      "Während der Teilaktivität verwendete Hilfs- und Verbrauchsmaterialien (z.B. Maßstabsleisten, Farbreferenzkarten, Passmarken, Mattierungsspray).",
     placEn:
-      "e.g. conservation materials, bonding agents (for restoration work)",
+      "e.g. scale bars with coded targets, color reference chart",
     placDe:
-      "z.B. Konservierungsmittel, Verbindungsmittel (bei Restaurierungsarbeiten)",
+      "z.B. Maßstabsleisten mit Passmarken, Farbreferenzkarte",
   },
   "consistsOf.equipment": {
     en: "Equipment",
@@ -5403,56 +5202,130 @@ const activeDrawerField = ref("");
 const drawerEditIndex = ref(-1);
 const drawerForm = reactive({});
 
-const applyConsistsOfPreset = (type) => {
-  const isDe = currentLocale.value === "de";
-  if (type === "structured_light") {
-    drawerForm["hadSpecificPurpose"] = isDe
-      ? "Hochpräzise berührungslose Streifenlicht-3D-Erfassung der Oberfläche zur Erstellung geometrisch exakter digitaler Zwillinge."
-      : "High-precision non-contact structured-light 3D scanning of the surface for accurate digital twin geometry.";
-    drawerForm["methods"] = isDe
-      ? "Streifenlicht-Scanning (Structured light 3D scanning), automatische Punktwolken-Registrierung"
-      : "Structured light 3D scanning, automatic point cloud alignment & registration";
-    drawerForm["techniques"] = isDe
-      ? "Berührungsloses optisches Streifenprojektionsverfahren, Sub-Millimeter-Oberflächenabtastung"
-      : "Non-contact optical fringe projection, sub-millimeter surface sampling";
-    drawerForm["materials"] = isDe
-      ? "Kalibrierkörper, reflexionsminderndes Kreidespray (falls denkmalfachlich zulässig)"
-      : "Calibration target, anti-reflective scanning spray where conservationally approved";
-    drawerForm["equipment"] = isDe
-      ? "Hardware: Artec Leo 3D-Scanner (VCSEL Laser/Streifenlicht, 3D-Genauigkeit bis 0,1 mm); Software: Artec Studio 19 Professional"
-      : "Hardware: Artec Leo 3D Scanner (VCSEL structured light, 0.1 mm 3D accuracy); Software: Artec Studio 19 Professional";
-  } else if (type === "photogrammetry") {
-    drawerForm["hadSpecificPurpose"] = isDe
-      ? "Nahbereichs-Photogrammetrie zur hochauflösenden Textur- und Farbdatenerfassung sowie Structure-from-Motion (SfM) Rekonstruktion."
-      : "Close-range photogrammetry for high-resolution texture & color recording and Structure-from-Motion (SfM) mesh generation.";
-    drawerForm["methods"] = isDe
-      ? "Nahbereichs-Photogrammetrie (Close-range photogrammetry), Structure-from-Motion (SfM), Multi-View Stereo (MVS)"
-      : "Close-range photogrammetry, Structure-from-Motion (SfM), Multi-View Stereo (MVS)";
-    drawerForm["techniques"] = isDe
-      ? "Polarisierte Ringbeleuchtung (Cross-Polarisation zur Entspiegelung), Drehteller-gestütztes Multi-Winkel-Aufnahmeverfahren, Farbkalibrierung"
-      : "Cross-polarised ring lighting, turntable multi-angle capture sequence, color chart calibration";
-    drawerForm["materials"] = isDe
-      ? "X-Rite ColorChecker Passport, Maßstabsleisten mit Passmarken"
-      : "X-Rite ColorChecker Passport, scale bars with coded targets";
-    drawerForm["equipment"] = isDe
-      ? "Hardware: Nikon Z8 spiegellose Vollformatkamera (45.7 MP), Nikkor Z 50mm f/1.8 S, Polfilter, Studioblitze; Software: Agisoft Metashape Pro 2.1 / RealityCapture"
-      : "Hardware: Nikon Z8 full-frame camera (45.7 MP), Nikkor Z 50mm f/1.8 S, circular polarizers, studio strobes; Software: Agisoft Metashape Pro 2.1 / RealityCapture";
-  } else if (type === "mesh_processing") {
-    drawerForm["hadSpecificPurpose"] = isDe
-      ? "Post-Processing der Scandaten: Bereinigung, Remeshing/Retopologie, UV-Unwrapping und physikbasiertes Textur-Baking (PBR)."
-      : "Scan data post-processing: topology cleanup, retopology/decimation, UV unwrapping and physically based rendering (PBR) texture baking.";
-    drawerForm["methods"] = isDe
-      ? "Polygondezimierung, Quad-Remeshing, Normal-Map Baking von High-Poly auf Low-Poly, PBR Texturierung"
-      : "Polygon decimation, quad remeshing, normal map baking from high-poly to low-poly, PBR texture mapping";
-    drawerForm["techniques"] = isDe
-      ? "Multiresolution Mesh Decimation, Non-overlapping UV-Karten-Generierung, Tangent-Space Normal Baking"
-      : "Multiresolution mesh decimation, non-overlapping UV packing, tangent-space normal baking";
-    drawerForm["materials"] = "";
-    drawerForm["equipment"] = isDe
-      ? "Software: Blender 4.3 LTS, Substance 3D Painter / Designer, Instant Meshes"
-      : "Software: Blender 4.3 LTS, Substance 3D Painter / Designer, Instant Meshes";
+const RECENT_CONSISTS_OF_KEY = "hermes_recent_consists_of_v2";
+const extractPurposeString = (val) => {
+  if (!val) return "";
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    return val
+      .map((e) => (typeof e === "string" ? e : e?._value || ""))
+      .filter(Boolean)
+      .join(" ");
+  }
+  return String(val._value || "");
+};
+
+const detectConsistsOfStepKind = (step) => {
+  if (!step) return "capture";
+  if (step.stepKind === "processing" || step.stepKind === "capture") {
+    return step.stepKind;
+  }
+  const combined = `${extractPurposeString(step.hadSpecificPurpose)} ${step.methods || ""} ${step.techniques || ""}`;
+  if (
+    /post[- ]?processing|mesh|retopolog|dezimier|decimat|uv[- ]?unwr|pbr|textur|bake|baking|verarbeitung|bereinigung|cleanup|inpainting|animation/i.test(
+      combined,
+    )
+  ) {
+    return "processing";
+  }
+  return "capture";
+};
+
+const loadRecentConsistsOfSteps = () => {
+  try {
+    const raw = localStorage.getItem(RECENT_CONSISTS_OF_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.slice(0, 24) : [];
+  } catch {
+    return [];
   }
 };
+const recentConsistsOfSteps = ref(loadRecentConsistsOfSteps());
+
+const visibleRecentConsistsOfSteps = computed(() => {
+  const activeLang = String(currentLocale.value || "de").toLowerCase();
+  const activeKind = detectConsistsOfStepKind(drawerForm);
+  return recentConsistsOfSteps.value
+    .filter(
+      (r) =>
+        String(r?.lang || "de").toLowerCase() === activeLang &&
+        (r?.stepKind || "capture") === activeKind,
+    )
+    .slice(0, 3);
+});
+
+const recordRecentConsistsOfStep = (step) => {
+  if (!step || (!step.hadSpecificPurpose && !step.methods)) return;
+  const label = (
+    step.methods ||
+    step.hadSpecificPurpose ||
+    "Schritt"
+  )
+    .toString()
+    .trim()
+    .slice(0, 56);
+  const stepLang = String(
+    step["hadSpecificPurpose#lang"] ||
+      step["methods#lang"] ||
+      currentLocale.value ||
+      "de",
+  ).toLowerCase();
+  const stepKind = detectConsistsOfStepKind(step);
+  const entry = {
+    label,
+    lang: stepLang,
+    stepKind,
+    hadSpecificPurpose: step.hadSpecificPurpose || "",
+    methods: step.methods || "",
+    techniques: step.techniques || "",
+    materials: step.materials || "",
+    equipment: step.equipment || "",
+  };
+  const otherBuckets = recentConsistsOfSteps.value.filter(
+    (r) =>
+      String(r?.lang || "de").toLowerCase() !== stepLang ||
+      (r?.stepKind || "capture") !== stepKind,
+  );
+  const sameBucketOthers = recentConsistsOfSteps.value
+    .filter(
+      (r) =>
+        String(r?.lang || "de").toLowerCase() === stepLang &&
+        (r?.stepKind || "capture") === stepKind &&
+        (r.hadSpecificPurpose !== entry.hadSpecificPurpose ||
+          r.methods !== entry.methods),
+    )
+    .slice(0, 2);
+  const next = [entry, ...sameBucketOthers, ...otherBuckets].slice(0, 24);
+  recentConsistsOfSteps.value = next;
+  try {
+    localStorage.setItem(RECENT_CONSISTS_OF_KEY, JSON.stringify(next));
+  } catch {}
+};
+
+const applyRecentConsistsOfStep = (recent) => {
+  if (!recent) return;
+  drawerForm["hadSpecificPurpose"] = recent.hadSpecificPurpose || "";
+  drawerForm["methods"] = recent.methods || "";
+  drawerForm["techniques"] = recent.techniques || "";
+  drawerForm["materials"] = recent.materials || "";
+  drawerForm["equipment"] = recent.equipment || "";
+};
+
+// Auto-seed recent consistsOf steps from loaded examples/templates (excluding DAP entries)
+watch(
+  () => form["consistsOf"],
+  (list) => {
+    if (!Array.isArray(list)) return;
+    list.forEach((step) => {
+      if (!step || step.dapId) return;
+      const uid = String(step["methods#termUID"] || "");
+      const p = String(step.hadSpecificPurpose || "");
+      if (uid.includes("/dap/DAP-") || /Dimension [1-5] (von|of) 5/i.test(p)) return;
+      recordRecentConsistsOfStep(step);
+    });
+  },
+  { immediate: true, deep: true },
+);
 
 // --- Template State and Logic ---
 const saveSuccessBadge = ref(false);
@@ -5907,6 +5780,7 @@ const saveDrawer = () => {
       drawerForm["startDate"] = normalizeYearDate(drawerForm["startDate"]);
     if (drawerForm["endDate"])
       drawerForm["endDate"] = normalizeYearDate(drawerForm["endDate"]);
+    recordRecentConsistsOfStep(drawerForm);
   } else if (field === "temporal") {
     if (
       isFutureDate(drawerForm["timeSpan.startDate"]) ||
@@ -6122,7 +5996,7 @@ const displayedHector3dMethods = computed(() => {
     return hector3dSearchResults.value;
   }
   const curated = CURATED_HECTOR_3D_TERMS.filter(
-    (t) => t.category !== "ai_iptc",
+    (t) => t.category !== "ai_iptc" && t.category !== "ai",
   ).map((t) => ({
     ...t,
     label: currentLocale.value === "de" ? t.de : t.en,

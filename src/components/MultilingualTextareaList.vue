@@ -46,11 +46,12 @@
       <div
         v-for="(entry, idx) in normalizedEntries"
         :key="idx"
-        class="flex flex-col sm:flex-row items-stretch sm:items-start gap-2.5 p-3 rounded-xl bg-base-200/30 border border-base-200"
+        class="flex flex-col sm:flex-row items-stretch sm:items-start gap-2.5 p-3 rounded-xl bg-base-200/40 border border-base-300"
       >
         <textarea
           :value="entry._value"
           @input="updateText(idx, $event.target.value)"
+          @blur="recordRecentText(entry._value, entry[langKey])"
           class="textarea textarea-bordered w-full min-h-[5.5rem] flex-1 min-w-0 bg-base-100"
           :placeholder="placeholder"
         ></textarea>
@@ -117,11 +118,28 @@
         </div>
       </div>
     </div>
+
+    <!-- Reusable recent entries for active language -->
+    <div
+      v-if="visibleRecentEntries.length > 0"
+      class="mt-3 pt-2.5 border-t border-base-200/80 flex flex-wrap items-center gap-1.5"
+    >
+      <button
+        v-for="(rec, rIdx) in visibleRecentEntries"
+        :key="rIdx"
+        type="button"
+        class="btn btn-xs btn-ghost border border-base-300 bg-base-200/40 hover:border-primary/60 hover:bg-primary/10 normal-case font-normal max-w-[260px] truncate"
+        :title="rec.text"
+        @click.prevent="applyRecentEntry(rec)"
+      >
+        <span class="truncate">{{ rec.text }}</span>
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, inject, ref } from "vue";
+import { computed, inject, ref, watch } from "vue";
 import LanguageBadgePicker from "./LanguageBadgePicker.vue";
 
 const props = defineProps({
@@ -136,6 +154,10 @@ const props = defineProps({
   langKey: {
     type: String,
     default: "lang",
+  },
+  historyKey: {
+    type: String,
+    default: "",
   },
   preferredKey: {
     type: String,
@@ -256,6 +278,93 @@ const removeEntry = (idx) => {
   next.splice(idx, 1);
   if (wasPreferred && next.length > 0) {
     next[0][props.preferredKey] = true;
+  }
+  emitNext(next);
+};
+
+// Last 3 reusable entries persisted strictly per module+field
+const recentStorageKey = computed(() => {
+  const rawKey = props.historyKey || `${props.langKey}_${props.label || "text"}`;
+  return `hermes_recent_text_${String(rawKey).replace(/[^a-zA-Z0-9_-]/g, "_")}_v2`;
+});
+
+const loadRecentEntries = () => {
+  try {
+    const raw = localStorage.getItem(recentStorageKey.value);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.slice(0, 6) : [];
+  } catch {
+    return [];
+  }
+};
+
+const recentEntries = ref(loadRecentEntries());
+
+const visibleRecentEntries = computed(() => {
+  const activeLang = String(props.currentLocale || fallbackLang.value || "de").toLowerCase();
+  return recentEntries.value
+    .filter((r) => String(r?.lang || "").toLowerCase() === activeLang)
+    .slice(0, 3);
+});
+
+const recordRecentText = (text, lang) => {
+  const trimmed = String(text || "").trim();
+  if (trimmed.length < 4) return;
+  const normalizedLang = String(lang || fallbackLang.value || "de").toLowerCase();
+  const entry = { text: trimmed, lang: normalizedLang };
+  const otherLangs = recentEntries.value.filter(
+    (r) => r.lang !== normalizedLang,
+  );
+  const sameLangOthers = recentEntries.value
+    .filter((r) => r.lang === normalizedLang && r.text !== trimmed)
+    .slice(0, 2);
+  const next = [entry, ...sameLangOthers, ...otherLangs].slice(0, 12);
+  recentEntries.value = next;
+  try {
+    localStorage.setItem(recentStorageKey.value, JSON.stringify(next));
+  } catch {}
+};
+
+// Auto-seed from loaded examples/templates across all languages
+watch(
+  normalizedEntries,
+  (entries) => {
+    if (!Array.isArray(entries)) return;
+    entries.forEach((e) => {
+      if (e && String(e._value || "").trim().length >= 4) {
+        recordRecentText(e._value, e[props.langKey]);
+      }
+    });
+  },
+  { immediate: true, deep: true },
+);
+
+const applyRecentEntry = (rec) => {
+  if (!rec || !rec.text) return;
+  const next = normalizedEntries.value.map((e) => ({ ...e }));
+  const recLang = String(rec.lang || fallbackLang.value || "de").toLowerCase();
+  const emptySameLang = next.findIndex(
+    (e) =>
+      !String(e._value || "").trim() &&
+      String(e[props.langKey] || "").toLowerCase() === recLang,
+  );
+  const anyEmpty = next.findIndex((e) => !String(e._value || "").trim());
+  const existingSameLang = next.findIndex(
+    (e) => String(e[props.langKey] || "").toLowerCase() === recLang,
+  );
+  if (emptySameLang >= 0) {
+    next[emptySameLang]._value = rec.text;
+  } else if (anyEmpty >= 0) {
+    next[anyEmpty]._value = rec.text;
+    next[anyEmpty][props.langKey] = recLang;
+  } else if (existingSameLang >= 0) {
+    next[existingSameLang]._value = rec.text;
+  } else {
+    next.push({
+      _value: rec.text,
+      [props.langKey]: recLang,
+      [props.preferredKey]: false,
+    });
   }
   emitNext(next);
 };

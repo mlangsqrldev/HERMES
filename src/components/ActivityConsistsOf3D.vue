@@ -88,7 +88,7 @@
     </div>
 
     <!-- 1. METHOD SELECTION -->
-    <div class="mb-4 p-4 bg-base-200/35 rounded-xl border border-base-200">
+    <div class="mb-4 p-4 bg-base-200/40 rounded-xl border border-base-300">
       <div class="flex items-center justify-between mb-2">
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
@@ -163,24 +163,6 @@
               : "TLS (Terrestrial Laser Scan)"
           }}</span>
         </button>
-
-        <button
-          type="button"
-          class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
-          :class="
-            activeMethod === 'hybrid'
-              ? 'btn-neutral text-neutral-content font-bold shadow-xs'
-              : 'btn-ghost border border-base-300 hover:border-neutral/60'
-          "
-          @click="selectMethod('hybrid')"
-        >
-          <span>🔀</span>
-          <span>{{
-            currentLocale === "de"
-              ? "Hybrid (SLS + Photogrammetrie)"
-              : "Hybrid (SLS + Photogrammetry)"
-          }}</span>
-        </button>
       </div>
     </div>
 
@@ -188,10 +170,10 @@
     <div class="grid grid-cols-1 gap-4 mb-4">
       <!-- Left: Hardware Equipment -->
       <div
-        class="p-4 bg-base-200/35 rounded-xl border border-base-200 flex flex-col justify-between"
+        class="p-4 bg-base-200/40 rounded-xl border border-base-300 flex flex-col justify-between"
       >
         <div>
-          <div class="flex items-center justify-between mb-2">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
             <label
               class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
             >
@@ -202,24 +184,50 @@
                   : "Hardware Equipment (Camera / Scanner)"
               }}</span>
             </label>
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-secondary gap-1 font-semibold text-[11px]"
+              @click.prevent="isEqPickerOpen = true"
+            >
+              <span>📷</span>
+              <span>{{
+                currentLocale === "de"
+                  ? "Aus Gerätepool wählen"
+                  : "Pick from Equipment Pool"
+              }}</span>
+            </button>
           </div>
 
-          <!-- Quick Presets -->
-          <div class="flex flex-wrap gap-1.5 mb-3">
+          <!-- Saved Equipment Pool Chips -->
+          <div v-if="poolHardwareLabels.length > 0" class="flex flex-wrap gap-1.5 mb-2.5">
             <button
-              v-for="hw in currentHwPresets"
-              :key="hw.name"
+              v-for="hwName in poolHardwareLabels"
+              :key="hwName"
               type="button"
               class="preset-chip"
               :class="
-                selectedHardware.includes(hw.name)
+                selectedHardware.includes(hwName)
                   ? 'ring-2 ring-primary bg-primary/15 font-bold'
                   : ''
               "
-              @click="toggleHardware(hw.name)"
+              @click="toggleHardware(hwName)"
             >
-              <span>{{ selectedHardware.includes(hw.name) ? "✓" : "+" }}</span>
-              <span>{{ hw.name }}</span>
+              <span>{{ selectedHardware.includes(hwName) ? "✓" : "+" }}</span>
+              <span>{{ hwName }}</span>
+            </button>
+          </div>
+
+          <!-- Selected Hardware Tags (when picked from pool) -->
+          <div v-else-if="selectedHardware.length > 0" class="flex flex-wrap gap-1.5 mb-2.5">
+            <button
+              v-for="hwName in selectedHardware"
+              :key="hwName"
+              type="button"
+              class="preset-chip ring-2 ring-primary bg-primary/15 font-bold"
+              @click="toggleHardware(hwName)"
+            >
+              <span>✓</span>
+              <span>{{ hwName }}</span>
             </button>
           </div>
         </div>
@@ -240,7 +248,7 @@
     <!-- 3. PROCESSING & POST-PROCESSING SUB-ACTIVITIES -->
     <div
       id="act-processing"
-      class="flex flex-wrap items-center justify-between gap-3 p-3 bg-primary/5 rounded-xl border border-primary/20 scroll-mt-24"
+      class="flex flex-wrap items-center justify-between gap-3 p-3 bg-base-200/40 rounded-xl border border-base-300 scroll-mt-24"
     >
       <div class="text-xs text-base-content/70">
         <span>{{
@@ -307,7 +315,7 @@
             </span>
             <span class="font-bold text-base-content leading-snug">
               {{
-                item.hadSpecificPurpose ||
+                getStepPurposeText(item) ||
                 (currentLocale === "de"
                   ? "Teilschritt ohne Titel"
                   : "Sub-activity")
@@ -390,11 +398,51 @@
         </div>
       </div>
     </div>
+
+    <EquipmentPickerModal
+      :is-open="isEqPickerOpen"
+      :current-locale="currentLocale"
+      @close="isEqPickerOpen = false"
+      @select="handleEquipmentPoolSelect"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
+import EquipmentPickerModal from "./EquipmentPickerModal.vue";
+import { savedEquipment } from "../utils/sharedState";
+
+const isEqPickerOpen = ref(false);
+
+const poolHardwareLabels = computed(() => {
+  const list = Array.isArray(savedEquipment.value) ? savedEquipment.value : [];
+  return list
+    .map((eq) => {
+      if (!eq) return "";
+      const brand = String(eq.manufacturer || "").trim();
+      const model = String(eq.model || eq.name || "").trim();
+      if (brand && model && !model.toLowerCase().includes(brand.toLowerCase())) {
+        return `${brand} ${model}`;
+      }
+      return model || brand;
+    })
+    .filter(Boolean);
+});
+
+const handleEquipmentPoolSelect = (eq) => {
+  if (!eq) return;
+  const brand = String(eq.manufacturer || "").trim();
+  const model = String(eq.model || eq.name || "").trim();
+  const label =
+    brand && model && !model.toLowerCase().includes(brand.toLowerCase())
+      ? `${brand} ${model}`
+      : model || brand;
+  if (label && !selectedHardware.value.includes(label)) {
+    selectedHardware.value.push(label);
+  }
+  isEqPickerOpen.value = false;
+};
 
 const props = defineProps({
   consistsOfList: {
@@ -409,11 +457,29 @@ const props = defineProps({
 
 const emit = defineEmits(["add-step", "edit-step", "remove-step"]);
 
+const getStepPurposeText = (item) => {
+  const val = item?.hadSpecificPurpose;
+  if (!val) return "";
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    const loc = String(props.currentLocale || "de").toLowerCase();
+    const byLang = val.find(
+      (e) => String(e?.["hadSpecificPurpose#lang"] || e?.lang || "").toLowerCase() === loc && e?._value,
+    );
+    if (byLang) return byLang._value;
+    const pref = val.find((e) => (e?.["hadSpecificPurpose#preferred"] || e?.preferred) && e?._value);
+    if (pref) return pref._value;
+    const first = val.find((e) => e?._value || typeof e === "string");
+    return typeof first === "string" ? first : first?._value || "";
+  }
+  return String(val._value || "");
+};
+
 const isDapItem = (item) => {
   if (!item) return false;
   if (item.isDap) return true;
   const m = String(item.methods || "");
-  const p = String(item.hadSpecificPurpose || "");
+  const p = getStepPurposeText(item);
   const uid = String(item["methods#termUID"] || "");
   return (
     /DAP-[1-6]/i.test(m) ||
@@ -618,6 +684,7 @@ const addPredefinedSubactivity = (kind) => {
     }
 
     const captureStep = {
+      stepKind: "capture",
       hadSpecificPurpose: purposeText,
       "hadSpecificPurpose#lang": lang,
       startDate: new Date().toISOString().slice(0, 10),
@@ -637,6 +704,7 @@ const addPredefinedSubactivity = (kind) => {
 
   if (kind === "processing" || kind === "both") {
     const procStep = {
+      stepKind: "processing",
       hadSpecificPurpose: isDe
         ? "3D-Post-Processing: Bereinigung der Punktwolke, Netzoptimierung, UV-Unwrapping und Textur-Baking"
         : "3D post-processing: point cloud cleanup, mesh decimation, UV unwrapping and texture baking",

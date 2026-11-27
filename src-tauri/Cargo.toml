@@ -1,6 +1,6 @@
 [package]
 name = "hermes"
-version = "0.1.36"
+version = "0.1.37"
 description = "HERitage Metadata Entry System"
 authors = ["Bonn Center for Digital Humanities (BCDH), University of Bonn"]
 license = "MIT"

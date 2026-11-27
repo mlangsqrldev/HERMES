@@ -347,7 +347,7 @@
                     {{ currentLocale === "de" ? "Status" : "Status" }}
                   </th>
 
-                  <th>
+                  <th class="w-28 max-w-[120px] whitespace-normal leading-tight">
                     {{ currentLocale === "de" ? "Datensatz-ID" : "Record ID" }}
                   </th>
 
@@ -709,7 +709,7 @@
 
                   <div class="form-control w-full mb-4">
                     <div
-                      class="flex flex-wrap justify-between items-center mb-1 gap-2"
+                      class="flex flex-wrap justify-between items-center mb-2 gap-2"
                     >
                       <div class="flex flex-row items-center">
                         <label class="label pb-0"
@@ -985,7 +985,7 @@
                     <div class="validator-hint">{{ t("validationHint") }}</div>
                   </div>
 
-                  <div class="col-span-full pt-2 mt-1 border-t border-base-200">
+                  <div class="col-span-full mt-3">
                     <div class="flex justify-between items-center mb-2">
                       <div class="flex flex-row items-center">
                         <h4
@@ -1333,6 +1333,7 @@
 
               <MultilingualTextareaList
                 v-model="form['description']"
+                history-key="heritage_description"
                 lang-key="description#lang"
                 preferred-key="description#preferred"
                 :label="getLabel('description', 'description')"
@@ -1620,6 +1621,7 @@
 
                   <MultilingualTextareaList
                     v-model="form['conditions.conditionAssessment']"
+                    history-key="heritage_condition"
                     lang-key="conditionAssessment#lang"
                     preferred-key="conditionAssessment#preferred"
                     :label="
@@ -1890,7 +1892,7 @@
                 <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('characters', 'This is a set of index information to describe the character of the monument. Content providers are strongly recommended to complete this element.', 'doc') }}</div> -->
 
                 <div class="grid grid-cols-1 gap-x-6">
-                  <div class="col-span-full pt-2 mt-1 border-t border-base-200">
+                  <div class="col-span-full mt-3">
                     <div class="flex justify-between items-center mb-2">
                       <div class="flex flex-row items-center">
                         <h4
@@ -2013,7 +2015,7 @@
                     />
                   </div>
 
-                  <div class="col-span-full pt-2 mt-1 border-t border-base-200">
+                  <div class="col-span-full mt-3">
                     <div class="flex justify-between items-center mb-2">
                       <div class="flex flex-row items-center">
                         <h4
@@ -2230,7 +2232,7 @@
                     </ul>
                   </div>
 
-                  <div class="col-span-full pt-2 mt-1 border-t border-base-200">
+                  <div class="col-span-full mt-3">
                     <div class="flex justify-between items-center mb-2">
                       <div class="flex flex-row items-center">
                         <h4

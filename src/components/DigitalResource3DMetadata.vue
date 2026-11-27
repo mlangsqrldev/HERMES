@@ -86,7 +86,7 @@
     </div>
 
     <!-- 1. RESSOURCEN- & ASSET-TYP -->
-    <div class="mb-4 p-4 bg-base-200/35 rounded-xl border border-base-200">
+    <div class="mb-4 p-4 bg-base-200/40 rounded-xl border border-base-300">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
@@ -134,7 +134,7 @@
       v-if="
         acquisitionMethod === 'photogrammetry' || acquisitionMethod === 'hybrid'
       "
-      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
+      class="p-4 bg-base-200/40 rounded-xl border border-base-300 mb-4"
     >
       <div class="flex items-center justify-between mb-3">
         <div
@@ -411,7 +411,7 @@
     <!-- ============================================================ -->
     <div
       v-if="acquisitionMethod === 'sls' || acquisitionMethod === 'hybrid'"
-      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
+      class="p-4 bg-base-200/40 rounded-xl border border-base-300 mb-4"
     >
       <div class="flex items-center justify-between mb-3">
         <div
@@ -697,7 +697,7 @@
     <!-- ============================================================ -->
     <div
       v-if="acquisitionMethod === 'tls' || acquisitionMethod === 'hybrid'"
-      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
+      class="p-4 bg-base-200/40 rounded-xl border border-base-300 mb-4"
     >
       <div class="flex items-center justify-between mb-3">
         <div
@@ -977,7 +977,7 @@
     <!-- ============================================================ -->
     <!-- SECTION 3: DATEIFORMATE (CARARE <format>)                    -->
     <!-- ============================================================ -->
-    <div class="mb-4 p-4 bg-base-200/35 rounded-xl border border-base-200">
+    <div class="mb-4 p-4 bg-base-200/40 rounded-xl border border-base-300">
       <div class="flex items-center justify-between mb-2">
         <label
           class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5"
@@ -1139,7 +1139,7 @@
     <!-- ============================================================ -->
     <div
       v-if="assetType === 'mesh' || assetType === 'pointcloud'"
-      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
+      class="p-4 bg-base-200/40 rounded-xl border border-base-300 mb-4"
     >
       <div
         class="font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5 mb-3"
@@ -1340,7 +1340,7 @@
     <!-- ============================================================ -->
     <!-- SECTION 4B: METROLOGY — ACCURACY & RESOLUTION (DAP/SCHEMA)   -->
     <!-- ============================================================ -->
-    <div class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4">
+    <div class="p-4 bg-base-200/40 rounded-xl border border-base-300 mb-4">
       <div
         class="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3 border-b border-info/20"
       >
@@ -1719,7 +1719,7 @@
     <!-- SECTION 5: FILE SIZE                                         -->
     <!-- ============================================================ -->
     <div
-      class="p-4 bg-base-200/35 rounded-xl border border-base-200 mb-4"
+      class="p-4 bg-base-200/40 rounded-xl border border-base-300 mb-4"
       data-xml-tag="extent"
     >
       <div class="max-w-md">
@@ -3044,6 +3044,15 @@ const generateSummaries = () => {
   if (accuracyRmse.value) metBits.push(`RMSE: ${accuracyRmse.value}`);
   if (resolutionSpatial.value)
     metBits.push(`Spatial Res.: ${resolutionSpatial.value}`);
+  if (
+    photoSensor.value &&
+    acquisitionMethod.value !== "photogrammetry" &&
+    acquisitionMethod.value !== "hybrid"
+  ) {
+    metBits.push(
+      `${isDe ? "Sensorauflösung" : "Sensor Res."}: ${photoSensor.value}`,
+    );
+  }
   if (photoGsd.value) metBits.push(`GSD: ${photoGsd.value}`);
   if (metBits.length > 0) {
     parts.push(`${isDe ? "Metrologie" : "Metrology"}: ${metBits.join(" | ")}`);

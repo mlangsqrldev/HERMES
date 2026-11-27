@@ -107,12 +107,7 @@
       <div
         v-for="dim in DAP_DIMENSIONS"
         :key="dim.id"
-        class="p-4 rounded-xl border bg-base-200/35 transition-colors"
-        :class="
-          hasDimContent(dim.id)
-            ? 'border-success/40 bg-success/5'
-            : 'border-base-300'
-        "
+        class="p-4 rounded-xl bg-base-200/40 border border-base-300 transition-colors"
       >
         <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
           <div class="flex items-center gap-2 flex-wrap">
@@ -167,6 +162,7 @@
             <textarea
               v-model="entry._value"
               @input="syncToConsistsOf"
+              @blur="recordRecentDap(dim.id, entry._value, entry.lang)"
               rows="3"
               class="textarea textarea-bordered w-full flex-1 min-w-0 bg-base-100 text-sm leading-relaxed"
               :placeholder="
@@ -210,6 +206,23 @@
               </button>
             </div>
           </div>
+        </div>
+
+        <!-- Reusable recent entries for this DAP dimension (active language only) -->
+        <div
+          v-if="getVisibleRecentDap(dim.id).length > 0"
+          class="mt-2.5 pt-2 border-t border-base-300/60 flex flex-wrap items-center gap-1.5"
+        >
+          <button
+            v-for="(rec, rIdx) in getVisibleRecentDap(dim.id)"
+            :key="rIdx"
+            type="button"
+            class="btn btn-xs btn-ghost border border-base-300 bg-base-100 hover:border-primary/60 hover:bg-primary/10 normal-case font-normal max-w-[260px] truncate"
+            :title="rec.text"
+            @click.prevent="applyRecentDap(dim.id, rec)"
+          >
+            <span class="truncate">{{ rec.text }}</span>
+          </button>
         </div>
       </div>
     </div>
@@ -576,6 +589,85 @@ const clearAllDap = () => {
   });
   syncToConsistsOf();
 };
+
+const RECENT_DAP_KEY = "hermes_recent_dap_v1";
+const loadRecentDap = () => {
+  try {
+    const raw = localStorage.getItem(RECENT_DAP_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+};
+const recentDap = reactive(loadRecentDap());
+
+const getVisibleRecentDap = (dimId) => {
+  const activeLang = String(props.currentLocale || defaultLang() || "de").toLowerCase();
+  const list = Array.isArray(recentDap[dimId]) ? recentDap[dimId] : [];
+  return list
+    .filter((r) => String(r?.lang || "").toLowerCase() === activeLang)
+    .slice(0, 3);
+};
+
+const recordRecentDap = (dimId, text, lang) => {
+  const trimmed = String(text || "").trim();
+  if (trimmed.length < 4) return;
+  const normalizedLang = String(lang || defaultLang() || "de").toLowerCase();
+  const current = Array.isArray(recentDap[dimId]) ? recentDap[dimId] : [];
+  const entry = { text: trimmed, lang: normalizedLang };
+  const otherLangs = current.filter((r) => r.lang !== normalizedLang);
+  const sameLangOthers = current
+    .filter((r) => r.lang === normalizedLang && r.text !== trimmed)
+    .slice(0, 2);
+  recentDap[dimId] = [entry, ...sameLangOthers, ...otherLangs].slice(0, 12);
+  try {
+    localStorage.setItem(RECENT_DAP_KEY, JSON.stringify(recentDap));
+  } catch {}
+};
+
+const applyRecentDap = (dimId, rec) => {
+  if (!rec || !rec.text) return;
+  const list = dimTexts[dimId] || [];
+  const recLang = String(rec.lang || defaultLang() || "de").toLowerCase();
+  const emptySameLang = list.findIndex(
+    (e) =>
+      !String(e._value || "").trim() &&
+      String(e.lang || "").toLowerCase() === recLang,
+  );
+  const anyEmpty = list.findIndex((e) => !String(e._value || "").trim());
+  const existingSameLang = list.findIndex(
+    (e) => String(e.lang || "").toLowerCase() === recLang,
+  );
+  if (emptySameLang >= 0) {
+    list[emptySameLang]._value = rec.text;
+  } else if (anyEmpty >= 0) {
+    list[anyEmpty]._value = rec.text;
+    list[anyEmpty].lang = recLang;
+  } else if (existingSameLang >= 0) {
+    list[existingSameLang]._value = rec.text;
+  } else {
+    list.push({ _value: rec.text, lang: recLang, preferred: list.length === 0 });
+  }
+  dimTexts[dimId] = [...list];
+  syncToConsistsOf();
+};
+
+// Auto-seed recent DAP entries across all languages whenever dimTexts is populated (e.g. from loaded examples/templates)
+watch(
+  dimTexts,
+  () => {
+    DAP_DIMENSIONS.forEach((dim) => {
+      const list = dimTexts[dim.id] || [];
+      list.forEach((entry) => {
+        if (entry && String(entry._value || "").trim().length >= 4) {
+          recordRecentDap(dim.id, entry._value, entry.lang);
+        }
+      });
+    });
+  },
+  { immediate: true, deep: true },
+);
 
 watch(
   () => props.form["consistsOf"],
